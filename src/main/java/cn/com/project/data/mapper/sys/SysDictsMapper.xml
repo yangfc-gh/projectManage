@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.sys.SysDictsMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.sys.SysDicts">
+    <id column="dcode" jdbcType="VARCHAR" property="dcode" />
+    <result column="pcode" jdbcType="VARCHAR" property="pcode" />
+    <result column="dname" jdbcType="VARCHAR" property="dname" />
+    <result column="sortno" jdbcType="INTEGER" property="sortno" />
+    <result column="state" jdbcType="TINYINT" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dcode, pcode, dname, sortno, `state`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dicts
+    where dcode = #{dcode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_dicts
+    <where>
+      <if test="dname != null and ''.toString() != dname">
+        and dname like concat('%', #{dname,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="state != null">
+        and `state` = #{state,jdbcType=TINYINT}
+      </if>
+      <if test="pcode != null">
+        and pcode = #{pcode,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by sortno
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_dicts
+    where dcode = #{dcode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.sys.SysDicts">
+    insert into sys_dicts (dcode, pcode, dname, 
+      sortno, `state`)
+    values (#{dcode,jdbcType=VARCHAR}, #{pcode,jdbcType=VARCHAR}, #{dname,jdbcType=VARCHAR}, 
+      #{sortno,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.sys.SysDicts">
+    insert into sys_dicts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dcode != null">
+        dcode,
+      </if>
+      <if test="pcode != null">
+        pcode,
+      </if>
+      <if test="dname != null">
+        dname,
+      </if>
+      <if test="sortno != null">
+        sortno,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dcode != null">
+        #{dcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pcode != null">
+        #{pcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dname != null">
+        #{dname,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null">
+        #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.sys.SysDicts">
+    update sys_dicts
+    <set>
+      <if test="pcode != null">
+        pcode = #{pcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dname != null">
+        dname = #{dname,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null">
+        sortno = #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=TINYINT},
+      </if>
+    </set>
+    where dcode = #{dcode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.sys.SysDicts">
+    update sys_dicts
+    set dname = #{dname,jdbcType=VARCHAR}
+    where dcode = #{dcode,jdbcType=VARCHAR}
+  </update>
+  <update id="sortNo">
+    <foreach collection="list" item="itm" separator=";">
+      update sys_dicts set sortno=#{itm.sortno,jdbcType=INTEGER} where dcode = #{itm.dcode,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+</mapper>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+	<style>
+		.footBtn {
+			position: absolute;
+			bottom: 10px;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+    <div class="page-content" style="margin-bottom: 50px;">
+        <div class="row">
+            <div class="col-xs-12">
+                <form id="roleForm" class="form-horizontal">
+					<input type="hidden" name="rid" th:value="${roleInfo?.rid}" />
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="name">角色名称:</label>
+						<div class="col-sm-9">
+							<input th:value="${roleInfo?.name}" type="text" id="name" name="name" placeholder="角色名称" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="remark">备注:</label>
+						<div class="col-sm-9">
+							<textarea th:text="${roleInfo?.remark}" class="form-control" id="remark" name="remark" placeholder=""></textarea>
+						</div>
+					</div>
+				</form>
+            </div>
+        </div>
+    </div>
+	<div class="footBtn">
+	    <div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-4"></div>
+				<div class="9">
+					<button id="saveBtn" class="btn btn-info btn-sm" onclick="saveInfo()">确定</button>&nbsp;&nbsp;&nbsp;
+					<button class="btn btn-sm" onclick="closeOpen()">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script>
+		$(function(){
+			
+		});
+		function saveInfo(){
+			$('#saveBtn').attr("disabled","disabled")
+			if (!$('#name').val()) {
+				layer.msg('请填写角色名称')
+				$('#name').focus()
+				$('#saveBtn').removeAttr("disabled")
+				return;
+			}
+			var formData = $("#roleForm").serialize()
+			postRequest($('#contextDiv').html()+'/role/update', formData, function(data){
+				if(data.result) {
+					layer.msg('操作成功')
+					closeOpen()
+					doQuery()
+				}else{
+					layer.msg(data.message)
+				}
+			})
+		}
+	</script>
+</body>
+</html>

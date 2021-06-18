@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="page-content">
+			<input type="hidden" id="rid" name="rid" th:value="${roleInfo?.rid}" />
+			<div class="page-header">
+				<h4 th:text="'【'+${roleInfo?.name}+'】的权限菜单'">
+					权限菜单
+				</h4>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<button class="pull-right btn btn-primary btn-sm" onclick="doSave()">保存</button>
+				</div>
+				<div class="col-xs-12">
+					<ul id="treeMenu" class="ztree" style="width:260px; overflow:auto;height: 500px;"></ul>
+				</div>
+			</div>
+		</div>
+	<script>
+		var basePath = $('#contextDiv').html()
+		var settingMenu = {
+		  view: {
+			dblClickExpand: false,
+			showLine: true,
+			selectedMulti: false
+		  },
+		  check: {
+			enable: true,
+			chkStyle: "checkbox",
+			chkboxType: { "Y": "ps", "N": "ps" }
+		  },
+		  data: {
+			key: {
+				name: 'mname'
+			},
+			simpleData: {
+			  enable: true,
+			  idKey: "mid",
+			  pIdKey: "pid",
+			  rootPId: 0
+			}
+		  },
+		  callback: {
+			onClick: nodeClick
+		  }
+		};
+		$(function(){
+			postRequest(basePath+'/menu/list', {}, function(response){
+				if(response.result && response.data) {
+					response.data.forEach(o => {
+						if(o.pid == '0') {
+							o.open = true;
+						}
+					})
+					var zTree = $("#treeMenu");
+					zTree = $.fn.zTree.init(zTree, settingMenu, response.data);
+					postRequest(basePath+'/role/menus/'+$('#rid').val(), {}, function(response1){
+						if(response1.result && response1.data) {
+							response1.data.forEach(o => {
+								var node = zTree.getNodeByParam("mid", o.mid, null)
+								if (node) {
+									// 保存权限时保存了父节点
+									// 如果是父节点则不级联选中子节点（因为在授权时可能是半选）
+									if (node.isParent) {
+										zTree.checkNode(node, true, false)
+									} else {
+										// 如果是子节点则必须级联上级（因为必须在权限数据里包含父节点，否则加载菜单不好加载）
+										zTree.checkNode(node, true, true)
+									}
+								}
+							})
+						}
+					})
+				}
+			})
+		});
+		function nodeClick (event, treeId, treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("treeMenu")
+			zTree.checkNode(treeNode,!treeNode.checked, true)
+		}
+		function doSave(){
+			var zTree = $.fn.zTree.getZTreeObj("treeMenu")
+			var chedNodes = zTree.getCheckedNodes(true)
+			var params = []
+			var param = {}
+			chedNodes.forEach(o => {
+				param = {}
+				param.rid = $('#rid').val()
+				param.mid = o.mid
+				param.add = 1
+				param.del = 1
+				param.upd = 1
+				params.push(param)
+			})
+			postRequest(basePath+'/role/linkMenu/'+$('#rid').val(), {params:JSON.stringify(params)}, function(response1){
+				if(response1.result) {
+					layer.msg('配置成功',
+					{icon: 6,
+					time: 2000,
+					offset: 'r',
+					anim: 1})
+				} else {
+					layer.msg('保存失败',
+					{icon: 5,
+					time: 2000,
+					offset: 'r',
+					anim: 6
+					})
+				}
+			})
+		}
+	</script>
+	</body>
+</html>

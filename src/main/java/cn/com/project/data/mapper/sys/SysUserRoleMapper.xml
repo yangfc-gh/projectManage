@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.sys.SysUserRoleMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.sys.SysUserRole">
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="rid" jdbcType="VARCHAR" property="rid" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapSubUser" type="cn.com.project.data.model.sys.SysUserRole">
+    <association column="uid" property="user" select="cn.com.project.data.dao.sys.SysUserMapper.selectByPrimaryKey" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapSubRole" type="cn.com.project.data.model.sys.SysUserRole">
+    <association column="rid" property="role" select="cn.com.project.data.dao.sys.SysRoleMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    uid, rid
+  </sql>
+  <select id="selectByRole" parameterType="java.lang.String" resultMap="ResultMapSubUser">
+    select
+    <include refid="Base_Column_List" />
+    from sys_user_role
+    where rid = #{rid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByUser" parameterType="java.lang.String" resultMap="ResultMapSubRole">
+    select
+    <include refid="Base_Column_List" />
+    from sys_user_role
+    where uid = #{uid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByRole" parameterType="java.lang.String">
+    delete from sys_user_role
+    where rid = #{rid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByUser" parameterType="java.lang.String">
+    delete from sys_user_role
+    where uid = #{uid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.sys.SysUserRole">
+    insert into sys_user_role (`uid`, rid)
+    values (#{uid,jdbcType=VARCHAR}, #{rid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertBatch" parameterType="cn.com.project.data.model.sys.SysUserRole">
+    insert into sys_user_role (`uid`, rid)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.uid,jdbcType=VARCHAR}, #{item.rid,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.sys.SysUserRole">
+    insert into sys_user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        `uid`,
+      </if>
+      <if test="rid != null">
+        rid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="rid != null">
+        #{rid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.sys.SysMenuMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.sys.SysMenu">
+    <id column="mid" jdbcType="VARCHAR" property="mid" />
+    <result column="mname" jdbcType="VARCHAR" property="mname" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="sortno" jdbcType="INTEGER" property="sortno" />
+    <result column="state" jdbcType="TINYINT" property="state" />
+  </resultMap>
+  <resultMap id="ResultMapSub" extends="BaseResultMap" type="cn.com.project.data.model.sys.SysMenu">
+    <collection column="{pid=mid, uid=uid}" property="children" select="cn.com.project.data.dao.sys.SysMenuMapper.selectByPid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sm.mid, sm.mname, sm.path, sm.pid, sm.icon, sm.sortno, sm.`state`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu sm
+    where sm.mid = #{mid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu sm
+    <where>
+      <if test="mname != null and ''.toString() != mname">
+        and sm.mname like concat('%,#{mname,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="state != null">
+        and sm.`state` = #{state,jdbcType=TINYINT}
+      </if>
+    </where>
+    order by sortno
+  </select>
+  <select id="selectByPid" resultMap="ResultMapSub">
+    select
+    <include refid="Base_Column_List" />, #{uid,jdbcType=VARCHAR} uid
+    from sys_menu sm
+    <where>
+      <if test="pid != null and ''.toString() != pid">
+        and sm.pid = #{pid,jdbcType=VARCHAR}
+      </if>
+      <if test="uid != null and ''.toString() != uid">
+        and sm.mid in (select srm.mid from sys_user_role sur, sys_role_menu srm where sur.rid=srm.rid and sur.uid=#{uid,jdbcType=VARCHAR})
+      </if>
+    </where>
+    and sm.`state` = 1
+    order by sm.sortno
+  </select>
+  <select id="selectSub" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu sm
+    where sm.pid = #{pid,jdbcType=VARCHAR}
+    and sm.`state` = 1
+    order by sm.sortno
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_menu
+    where mid = #{mid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.sys.SysMenu">
+    insert into sys_menu (mid, mname, path,
+      pid, icon, sortno, `state`)
+    values (#{mid,jdbcType=VARCHAR}, #{mname,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR},
+      #{pid,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{sortno,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.sys.SysMenu">
+    insert into sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mid != null">
+        mid,
+      </if>
+      <if test="mname != null">
+        mname,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="sortno != null">
+        sortno,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mid != null">
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="mname != null">
+        #{mname,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null">
+        #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.sys.SysMenu">
+    update sys_menu
+    <set>
+      <if test="mname != null">
+        mname = #{mname,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null">
+        sortno = #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=TINYINT},
+      </if>
+    </set>
+    where mid = #{mid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.sys.SysMenu">
+    update sys_menu
+    set mname = #{mname,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR}
+    where mid = #{mid,jdbcType=VARCHAR}
+  </update>
+  <update id="sortNo">
+    <foreach collection="list" item="itm" separator=";">
+      update sys_menu set sortno=#{itm.sortno,jdbcType=INTEGER} where mid = #{itm.mid,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+</mapper>

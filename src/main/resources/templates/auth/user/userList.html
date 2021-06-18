@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<tr th:each="user, state: ${users}">
+			<td th:text="${state.index + 1}"></td>
+			<td th:text="${user.name}"></td>
+			<td th:text="${user.gender == '1' ? '男' : '女'}"></td>
+			<td th:text="${user.phone}"></td>
+			<td th:text="${user.position}"></td>
+			<td th:text="${user.loginname}"></td>
+			<td th:text="${user.state == 1 ? '正常' : '禁用'}"></td>
+			<td>
+				<button class="btn btn-minier btn-yellow" th:if="${user.loginname != 'admin' and user.loginname != 'manager'}" th:onclick="toEdit(this, [[${user.uid}]])">编辑</button>&nbsp;
+				<button class="btn btn-minier btn-light" th:if="${user.loginname != 'admin' and user.loginname != 'manager' and user.state==1}" th:onclick="changeState([[${user.uid}]], '0')">禁用</button>
+				<button class="btn btn-minier btn-light"  th:if="${user.loginname != 'admin' and user.loginname != 'manager' and user.state==0}" th:onclick="changeState([[${user.uid}]], '1')">启用</button>
+				<button class="btn btn-minier btn-purple" th:if="${user.loginname != 'admin' and user.loginname != 'manager'}" th:onclick="grantRole(this, [[${user.uid}]])">配置角色</button>
+			</td>
+		</tr>
+	</body>
+</html>

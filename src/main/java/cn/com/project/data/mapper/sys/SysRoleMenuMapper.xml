@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.sys.SysRoleMenuMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.sys.SysRoleMenu">
+    <result column="rid" jdbcType="VARCHAR" property="rid" />
+    <result column="mid" jdbcType="VARCHAR" property="mid" />
+    <result column="add" jdbcType="TINYINT" property="add" />
+    <result column="del" jdbcType="TINYINT" property="del" />
+    <result column="upd" jdbcType="TINYINT" property="upd" />
+  </resultMap>
+  <resultMap id="ResultMapSubMenu" extends="BaseResultMap" type="cn.com.project.data.model.sys.SysRoleMenu">
+    <association property="menu" column="mid" select="cn.com.project.data.dao.sys.SysMenuMapper.selectByPrimaryKey"></association>
+  </resultMap>
+  <resultMap id="ResultMapSubRole" extends="BaseResultMap" type="cn.com.project.data.model.sys.SysRoleMenu">
+    <association property="role" column="rid" select="cn.com.project.data.dao.sys.SysRoleMapper.selectByPrimaryKey"></association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    rid, mid, `add`, del, upd
+  </sql>
+  <select id="selectByRole" parameterType="java.lang.String" resultMap="ResultMapSubMenu">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role_menu
+    where rid = #{rid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByMenu" parameterType="java.lang.String" resultMap="ResultMapSubRole">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role_menu
+    where mid = #{mid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByRole" parameterType="java.lang.String">
+    delete from sys_role_menu
+    where rid = #{rid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByMenu" parameterType="java.lang.String">
+    delete from sys_role_menu
+    where mid = #{mid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.sys.SysRoleMenu">
+    insert into sys_role_menu (rid, mid, `add`, 
+      del, upd)
+    values (#{rid,jdbcType=VARCHAR}, #{mid,jdbcType=VARCHAR}, #{add,jdbcType=TINYINT}, 
+      #{del,jdbcType=TINYINT}, #{upd,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertBatch" parameterType="cn.com.project.data.model.sys.SysRoleMenu">
+    insert into sys_role_menu (rid, mid, `add`,
+    del, upd)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.rid,jdbcType=VARCHAR}, #{item.mid,jdbcType=VARCHAR}, #{item.add,jdbcType=TINYINT},
+      #{item.del,jdbcType=TINYINT}, #{item.upd,jdbcType=TINYINT})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.sys.SysRoleMenu">
+    insert into sys_role_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        rid,
+      </if>
+      <if test="mid != null">
+        mid,
+      </if>
+      <if test="add != null">
+        `add`,
+      </if>
+      <if test="del != null">
+        del,
+      </if>
+      <if test="upd != null">
+        upd,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        #{rid,jdbcType=VARCHAR},
+      </if>
+      <if test="mid != null">
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="add != null">
+        #{add,jdbcType=TINYINT},
+      </if>
+      <if test="del != null">
+        #{del,jdbcType=TINYINT},
+      </if>
+      <if test="upd != null">
+        #{upd,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

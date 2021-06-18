@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<tr th:each="role, state: ${roles}">
+			<td th:text="${state.index + 1}"></td>
+			<td th:text="${role.name}"></td>
+			<td th:text="${role.remark}">无</td>
+			<td>
+				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${role.rid}]])">编辑</button>&nbsp;
+				<!-- <button class="btn btn-minier btn-light">删除</button>&nbsp; -->
+				<button class="btn btn-minier btn-purple" th:onclick="grantUser(this, [[${role.rid}]])">授权用户</button>&nbsp; 
+				<button class="btn btn-minier btn-purple" th:onclick="grantMenu(this, [[${role.rid}]])">权限菜单</button>
+			</td>
+		</tr>
+	</body>
+</html>

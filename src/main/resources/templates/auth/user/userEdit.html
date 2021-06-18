@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			.footBtn {
+			position: absolute;
+			bottom: 10px;
+			width: 100%;
+		}
+	</style>
+	</head>
+	<body>
+		<div class="page-content" style="margin-bottom: 50px;">
+			<div class="row">
+				<div class="col-xs-12">
+					<form id="userForm" class="form-horizontal">
+						<input type="hidden" name="uid" th:value="${userInfo?.uid}" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="name">姓名:</label>
+							<div class="col-sm-9">
+								<input th:value="${userInfo?.name}" type="text" id="name" name="name" placeholder="姓名" class="form-control"
+								 autocomplete="off" maxlength="20" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="gender">性别:</label>
+							<div class="col-sm-9">
+								<select th:value="${userInfo?.gender}" class="form-control" name="gender">
+									<option value="">请选择性别</option>
+									<option value="1" th:selected="${'1' eq userInfo?.gender}">男</option>
+									<option value="0" th:selected="${'0' eq userInfo?.gender}">女</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="position">职务:</label>
+							<div class="col-sm-9">
+								<input th:value="${userInfo?.position}" type="text" id="position" name="position" placeholder="职务" class="form-control"
+								 autocomplete="off" maxlength="20" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="phone">手机:</label>
+							<div class="col-sm-9">
+								<input th:value="${userInfo?.phone}" type="text" id="phone" name="phone" placeholder="手机号" class="form-control"
+								  oninput="value=value.replace(/[^0-9]/g,'');"
+								 autocomplete="off" maxlength="11" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="loginname">登录名:</label>
+							<div class="col-sm-9">
+								<input th:value="${userInfo?.loginname}" type="text" id="loginname" name="loginname" placeholder="字母数字"
+								 oninput="value=value.replace(/[^\w]/g,'');"
+								 class="form-control" autocomplete="off" maxlength="25" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="loginname">备注:</label>
+							<div class="col-sm-9">
+								<textarea th:text="${userInfo?.remark}" rows="2" id="remark" name="remark" class="form-control"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="footBtn">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="9">
+						<button id="saveBtn" class="btn btn-info btn-sm" onclick="saveInfo()">确定</button>&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-sm" onclick="closeOpen()">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+
+			});
+
+			function saveInfo() {
+				$('#saveBtn').attr("disabled", "disabled")
+				if (!$('#name', $('#userForm')).val()) {
+					layer.msg('请填写姓名')
+					$('#name', $('#userForm')).focus()
+					$('#saveBtn').removeAttr("disabled")
+					return;
+				}
+				var formData = $("#userForm").serialize()
+				postRequest($('#contextDiv').html() + '/user/update', formData, function(data) {
+					if (data.result) {
+						layer.msg('操作成功')
+						closeOpen()
+						doQuery()
+					} else {
+						layer.msg(data.message)
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

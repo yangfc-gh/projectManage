@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" data-flag="login_page_flag_4_ajax_request_redirect">
+		<title>项目管理</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<link rel="icon" th:href="@{/static/images/logo.jpg}" type="image/jpg" />
+		<link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" />
+		<link rel="stylesheet" th:href="@{/static/css/ace.min.css}" class="ace-main-stylesheet" id="main-ace-style" />
+		<link rel="stylesheet" th:href="@{/static/font-awesome/4.5.0/css/font-awesome.min.css}" />
+	</head>
+	<body class="login-layout light-login">
+		<div class="main-container">
+			<div class="main-content">
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-1">
+						<div class="login-container">
+							<div class="center">
+								<h1>
+									<!-- <i class="ace-icon fa fa-leaf green"></i>
+									<span class="red">Ace</span> -->
+									<span class="grey" id="id-text2">项目管理</span>
+								</h1>
+								<!-- <h4 class="blue" id="id-company-text">&copy; Company Name</h4> -->
+							</div>
+
+							<div class="space-6"></div>
+
+							<div class="position-relative">
+								<div id="login-box" class="login-box visible widget-box no-border">
+									<div class="widget-body">
+										<div class="widget-main">
+											<h6 class="header blue lighter bigger">
+												<i class="ace-icon fa fa-coffee green"></i>
+												<span th:style="${#strings.isEmpty(message) ? '' : 'color:red'}" th:text="${#strings.isEmpty(message) ? '请输入登录信息' : message}"></span>
+											</h6>
+
+											<div class="space-6"></div>
+
+											<form name="loginForm" method="post" th:action="${#httpServletRequest.getContextPath()+'/doLogin' }">
+												<fieldset>
+													<label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input required="required" type="text" name="loginname" class="form-control" placeholder="登录名" />
+															<i class="ace-icon fa fa-user"></i>
+														</span>
+													</label>
+
+													<label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input required="required" type="password" name="password" class="form-control" placeholder="密码" />
+															<i class="ace-icon fa fa-lock"></i>
+														</span>
+													</label>
+
+													<div class="space"></div>
+
+													<div class="clearfix">
+														<!-- <label class="inline">
+															<input type="checkbox" class="ace" />
+															<span class="lbl"> Remember Me</span>
+														</label> -->
+
+														<button type="submit" class="width-35 pull-right btn btn-sm btn-primary">
+															<i class="ace-icon fa fa-key"></i>
+															<span class="bigger-110">登 录</span>
+														</button>
+													</div>
+
+													<div class="space-4"></div>
+												</fieldset>
+											</form>
+										</div>
+									</div><!-- /.widget-body -->
+								</div><!-- /.login-box -->
+							</div><!-- /.position-relative -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.main-content -->
+		</div><!-- /.main-container -->
+		
+	<script th:src="@{/static/js/jquery-2.1.4.min.js}"></script>
+	<script th:src="@{/static/js/bootstrap.min.js}"></script>
+	<script th:src="@{/static/js/ace-elements.min.js}"></script><!--有个ace_scroll的function需要导这个js-->
+	<script th:src="@{/static/js/ace.min.js}"></script>
+	</body>
+</html>

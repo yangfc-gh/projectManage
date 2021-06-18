@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="page-content">
+			<input type="hidden" id="rid" name="rid" th:value="${roleInfo?.rid}" />
+			<div class="page-header">
+				<h4 th:text="'【'+${roleInfo?.name}+'】授权用户'">
+					角色用户
+				</h4>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<button class="pull-right btn btn-primary btn-sm" onclick="doSave()">保存</button>
+				</div>
+				<div class="col-xs-12">
+					<ul id="treeUser" class="ztree" style="width:260px; overflow:auto;height: 500px;"></ul>
+				</div>
+			</div>
+		</div>
+	<script>
+		var basePath = $('#contextDiv').html()
+		var settingMenu = {
+			view: {
+				showLine: false
+			},
+			check: {
+				enable: true,
+				chkStyle: "checkbox",
+				chkboxType: { "Y": "ps", "N": "ps" }
+			},
+			data: {
+				simpleData: {
+				  enable: true
+				}
+			},
+			callback: {
+				onClick: nodeClick
+			}
+		}
+		$(function(){
+			postRequest(basePath+'/user/all', {state:'1'}, function(response){
+				if(response.result && response.data) {
+					var zTree = $("#treeUser")
+					zTree = $.fn.zTree.init(zTree, settingMenu, response.data);
+					postRequest(basePath+'/role/users/'+$('#rid').val(), {}, function(response1){
+						if(response1.result && response1.data) {
+							response1.data.forEach(o => {
+								var node = zTree.getNodeByParam("uid", o.uid, null)
+								if (node) {
+									zTree.checkNode(node, true, true)
+								}
+							})
+						}
+					})
+				}
+			})
+		});
+		function nodeClick (event, treeId, treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("treeUser")
+			zTree.checkNode(treeNode,!treeNode.checked, true)
+		}
+		function doSave(){
+			var zTree = $.fn.zTree.getZTreeObj("treeUser")
+			var chedNodes = zTree.getCheckedNodes(true)
+			var params = []
+			var param = {}
+			chedNodes.forEach(o => {
+				param = {}
+				param.rid = $('#rid').val()
+				param.uid = o.uid
+				params.push(param)
+			})
+			postRequest(basePath+'/role/linkUser/'+$('#rid').val(), {params:JSON.stringify(params)}, function(response1){
+				if(response1.result) {
+					layer.msg('配置成功',
+					{icon: 6,
+					time: 2000,
+					offset: 'r',
+					anim: 1})
+				} else {
+					layer.msg('保存失败',
+					{icon: 5,
+					time: 2000,
+					offset: 'r', 
+					anim: 6
+					})
+				}
+			})
+		}
+	</script>
+	</body>
+</html>

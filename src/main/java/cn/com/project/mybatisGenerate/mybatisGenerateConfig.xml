@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- 使用 Mybatis Generator jar生成dao、mapper、xml -->
+<generatorConfiguration>
+
+ <context id="DB2Tables" targetRuntime="MyBatis3" defaultModelType="flat">
+ 	
+ 	<property name="autoDelimitKeywords" value="true"/>
+ 	<property name="beginningDelimiter" value="`" />
+    <property name="endingDelimiter" value="`" />
+    <!-- 自定义注释生成器  MyBGCommon类为我自定义的继承CommentGenerator的类 -->
+    <commentGenerator type="cn.com.project.mybatisGenerate.MBGCommon">
+    	<!-- 关闭自动生成的注释 -->
+		<property name="suppressAllComments" value="true" />
+        <property name="suppressDate" value="true" />
+    </commentGenerator>
+    <!-- 定义如何连接目标数据库 -->
+    <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+            connectionURL="jdbc:mysql://47.96.133.206:3306/db_projectmanage?useSSL=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8"
+            userId="projectManage" password="projectManage_123">
+    </jdbcConnection>
+    <javaTypeResolver >
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+    <!-- 指定生成 Java 模型对象所属的包   bean -->
+    <javaModelGenerator targetPackage="cn.com.project.data.model.obj" targetProject="src/main/java">
+		<property name="enableSubPackages" value="false" />
+		<property name="trimStrings" value="true" />
+	</javaModelGenerator>
+	<!-- 指定生成 SQL 映射文件所属的包和的目标项目   mapper.xml--><!-- 注：重新生成xml时，会保留原xml内容在文档询问，需去手动删除 -->
+	<sqlMapGenerator targetPackage="cn.com.project.data.mapper.obj" targetProject="src/main/java">
+		<property name="enableSubPackages" value="false" />
+	</sqlMapGenerator>
+	<!-- 指定目标包和目标项目生成的客户端接口和类     dao -->
+	<javaClientGenerator type="XMLMAPPER" targetPackage="cn.com.project.data.dao.obj" targetProject="src/main/java">
+		<property name="enableSubPackages" value="true" />
+	</javaClientGenerator>
+	<!-- 设置要生成的表名 (需要必须有主键才会生成update、delete、select,而且新版本的generator不会生成删、改查方法，目前不知道原因)-->
+	<!-- insert 和 insertSelective 区别前者所有字段，后者只新增不为null的字段，update方法也是这样 -->
+		<table tableName="corporate" enableCountByExample="false"
+		enableUpdateByExample="false" enableDeleteByExample="false"
+		enableSelectByExample="false" selectByExampleQueryId="false"
+		enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
+		enableDeleteByPrimaryKey="true">
+		</table>
+	 <table tableName="customer" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+			enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
+			enableDeleteByPrimaryKey="true">
+	 </table>
+	 <table tableName="supplier" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+			enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
+			enableDeleteByPrimaryKey="true">
+	 </table>
+  </context>
+</generatorConfiguration>

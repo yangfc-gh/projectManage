@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.sys.SysLogMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.sys.SysLog">
+    <id column="logid" jdbcType="VARCHAR" property="logid" />
+    <result column="optuser" jdbcType="VARCHAR" property="optuser" />
+    <result column="logtime" jdbcType="TIMESTAMP" property="logtime" />
+    <result column="resume" jdbcType="VARCHAR" property="resume" />
+    <result column="logtype" jdbcType="VARCHAR" property="logtype" />
+    <result column="entity" jdbcType="VARCHAR" property="entity" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.com.project.data.model.sys.SysLog">
+    <result column="describe" jdbcType="LONGVARCHAR" property="describe" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    logid, optuser, logtime, resume, logtype, entity
+  </sql>
+  <sql id="Blob_Column_List">
+    `describe`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_log
+    where logid = #{logid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_log
+    where logid = #{logid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.sys.SysLog">
+    insert into sys_log (logid, optuser,
+      resume, logtype, entity, 
+      `describe`)
+    values (#{logid,jdbcType=VARCHAR}, #{optuser,jdbcType=VARCHAR},
+      #{resume,jdbcType=VARCHAR}, #{logtype,jdbcType=VARCHAR}, #{entity,jdbcType=VARCHAR}, 
+      #{describe,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.sys.SysLog">
+    insert into sys_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logid != null">
+        logid,
+      </if>
+      <if test="optuser != null">
+        optuser,
+      </if>
+      <if test="resume != null">
+        resume,
+      </if>
+      <if test="logtype != null">
+        logtype,
+      </if>
+      <if test="entity != null">
+        entity,
+      </if>
+      <if test="describe != null">
+        `describe`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logid != null">
+        #{logid,jdbcType=VARCHAR},
+      </if>
+      <if test="optuser != null">
+        #{optuser,jdbcType=VARCHAR},
+      </if>
+      <if test="resume != null">
+        #{resume,jdbcType=VARCHAR},
+      </if>
+      <if test="logtype != null">
+        #{logtype,jdbcType=VARCHAR},
+      </if>
+      <if test="entity != null">
+        #{entity,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null">
+        #{describe,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.sys.SysLog">
+    update sys_log
+    <set>
+      <if test="optuser != null">
+        optuser = #{optuser,jdbcType=VARCHAR},
+      </if>
+      <if test="logtime != null">
+        logtime = #{logtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resume != null">
+        resume = #{resume,jdbcType=VARCHAR},
+      </if>
+      <if test="logtype != null">
+        logtype = #{logtype,jdbcType=VARCHAR},
+      </if>
+      <if test="entity != null">
+        entity = #{entity,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null">
+        `describe` = #{describe,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where logid = #{logid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.com.project.data.model.sys.SysLog">
+    update sys_log
+    set optuser = #{optuser,jdbcType=VARCHAR},
+      logtime = #{logtime,jdbcType=TIMESTAMP},
+      resume = #{resume,jdbcType=VARCHAR},
+      logtype = #{logtype,jdbcType=VARCHAR},
+      entity = #{entity,jdbcType=VARCHAR},
+      `describe` = #{describe,jdbcType=LONGVARCHAR}
+    where logid = #{logid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.sys.SysLog">
+    update sys_log
+    set optuser = #{optuser,jdbcType=VARCHAR},
+      logtime = #{logtime,jdbcType=TIMESTAMP},
+      resume = #{resume,jdbcType=VARCHAR},
+      logtype = #{logtype,jdbcType=VARCHAR},
+      entity = #{entity,jdbcType=VARCHAR}
+    where logid = #{logid,jdbcType=VARCHAR}
+  </update>
+</mapper>
