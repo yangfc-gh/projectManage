@@ -7,10 +7,11 @@
     <result column="shortname" jdbcType="VARCHAR" property="shortname" />
     <result column="ctype" jdbcType="VARCHAR" property="ctype" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
   </resultMap>
   <sql id="Base_Column_List">
-    cid, `name`, shortname, ctype, remark, ctime
+    cid, `name`, shortname, ctype, remark, `status`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -18,17 +19,30 @@
     from corporate
     where cid = #{cid,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from corporate
+    <where>
+      `status` = 1
+      <if test="name != null and ''.toString() != name">
+        and (`name` like concat('%', #{name,jdbcType=VARCHAR}, '%') or shortname like concat('%', #{name,jdbcType=VARCHAR}, '%'))
+      </if>
+      <if test="ctype != null and ''.toString() != ctype">
+        and ctype = #{ctype,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by ctime desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from corporate
     where cid = #{cid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.obj.Corporate">
     insert into corporate (cid, `name`, shortname, 
-      ctype, remark, ctime
-      )
+      ctype, remark)
     values (#{cid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{shortname,jdbcType=VARCHAR}, 
-      #{ctype,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP}
-      )
+      #{ctype,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.com.project.data.model.obj.Corporate">
     insert into corporate
@@ -48,9 +62,6 @@
       <if test="remark != null">
         remark,
       </if>
-      <if test="ctime != null">
-        ctime,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="cid != null">
@@ -67,9 +78,6 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="ctime != null">
-        #{ctime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -88,8 +96,8 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="ctime != null">
-        ctime = #{ctime,jdbcType=TIMESTAMP},
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
       </if>
     </set>
     where cid = #{cid,jdbcType=VARCHAR}
@@ -99,8 +107,7 @@
     set `name` = #{name,jdbcType=VARCHAR},
       shortname = #{shortname,jdbcType=VARCHAR},
       ctype = #{ctype,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      ctime = #{ctime,jdbcType=TIMESTAMP}
+      remark = #{remark,jdbcType=VARCHAR}
     where cid = #{cid,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -15,8 +15,14 @@ public class Corporate {
     /**类型（1自有2友方）*/
     private String ctype;
 
+    /**类型（1自有2友方）*/
+    private String ctypeName;
+
     /**备注*/
     private String remark;
+
+    /**状态1正常0禁用*/
+    private String status;
 
     private Date ctime;
 
@@ -60,11 +66,27 @@ public class Corporate {
         this.remark = remark == null ? null : remark.trim();
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
     public Date getCtime() {
         return ctime;
     }
 
     public void setCtime(Date ctime) {
         this.ctime = ctime;
+    }
+
+    public String getCtypeName() {
+        return ctypeName;
+    }
+
+    public void setCtypeName(String ctypeName) {
+        this.ctypeName = ctypeName;
     }
 }

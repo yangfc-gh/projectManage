@@ -27,6 +27,9 @@ public class Supplier {
     /**备注*/
     private String remark;
 
+    /**状态1正常0禁用*/
+    private String status;
+
     private Date ctime;
 
     public String getSid() {
@@ -91,6 +94,14 @@ public class Supplier {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     public Date getCtime() {
