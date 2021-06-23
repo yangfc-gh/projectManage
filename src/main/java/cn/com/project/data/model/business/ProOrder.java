@@ -12,14 +12,23 @@ public class ProOrder {
     /**客户*/
     private String customerId;
 
+    private String customerText;
+
     /**区域*/
     private String area;
+
+    private String areaText;
 
     /**项目名称*/
     private String projectName;
 
+    /**来源*/
+    private String source;
+
     /**状态0新1询价2报价3合同4结*/
     private String status;
+
+    private String statusText;
 
     /**备注描述*/
     private String remark;
@@ -171,5 +180,37 @@ public class ProOrder {
 
     public void setOtimee(String otimee) {
         this.otimee = otimee;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getAreaText() {
+        return areaText;
+    }
+
+    public void setAreaText(String areaText) {
+        this.areaText = areaText;
+    }
+
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
+
+    public String getCustomerText() {
+        return customerText;
+    }
+
+    public void setCustomerText(String customerText) {
+        this.customerText = customerText;
     }
 }

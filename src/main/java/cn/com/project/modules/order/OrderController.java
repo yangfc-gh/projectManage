@@ -1,8 +1,13 @@
 package cn.com.project.modules.order;
 
 import cn.com.project.common.*;
+import cn.com.project.data.dao.obj.CorporateMapper;
+import cn.com.project.data.dao.obj.CustomerMapper;
+import cn.com.project.data.dao.obj.SupplierMapper;
 import cn.com.project.data.dao.sys.SysDictsMapper;
 import cn.com.project.data.model.business.ProOrder;
+import cn.com.project.data.model.obj.Corporate;
+import cn.com.project.data.model.obj.Customer;
 import cn.com.project.data.model.sys.SysDicts;
 import cn.com.project.data.model.sys.SysUser;
 import cn.com.project.modules.order.service.OrderService;
@@ -43,6 +48,12 @@ public class OrderController {
     @Autowired
     OrderService orderService;
     @Autowired
+    CorporateMapper corporateMapper;
+    @Autowired
+    CustomerMapper customerMapper;
+    @Autowired
+    SupplierMapper supplierMapper;
+    @Autowired
     SysDictsMapper sysDictsMapper;
     @Autowired
     SysLogComponent sysLogComponent;
@@ -56,7 +67,13 @@ public class OrderController {
         // 所有字典
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);
         List<SysDicts> ddzt = sysDictsList.stream().filter(d -> "D_DDZT".equals(d.getPcode())).collect(Collectors.toList());
+        List<SysDicts> quyu = sysDictsList.stream().filter(d -> "D_QUYU".equals(d.getPcode())).collect(Collectors.toList());
         modelAndView.addObject("dict_ddzt", ddzt);
+        modelAndView.addObject("dict_quyu", quyu);
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        modelAndView.addObject("corporates", corporates);
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        modelAndView.addObject("customers", customers);
         modelAndView.setViewName(templatePath+"orderIndex");
         return modelAndView;
     }
@@ -74,12 +91,12 @@ public class OrderController {
         SysDicts dicts = new SysDicts();
         dicts.setState((byte)1);
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(dicts);
-        List<SysDicts> ywbg = sysDictsList.stream().filter(d -> "YWBG".equals(d.getPcode())).collect(Collectors.toList());
-        List<SysDicts> zclx = sysDictsList.stream().filter(d -> "ZCLX".equals(d.getPcode())).collect(Collectors.toList());
-        List<SysDicts> kz = sysDictsList.stream().filter(d -> "KZ".equals(d.getPcode())).collect(Collectors.toList());
-        modelAndView.addObject("dict_ywbg", ywbg);
-        modelAndView.addObject("dict_zclx", zclx);
-        modelAndView.addObject("dict_kz", kz);
+        List<SysDicts> quyu = sysDictsList.stream().filter(d -> "D_QUYU".equals(d.getPcode())).collect(Collectors.toList());
+        modelAndView.addObject("dict_quyu", quyu);
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        modelAndView.addObject("corporates", corporates);
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        modelAndView.addObject("customers", customers);
         modelAndView.setViewName(templatePath+"orderEdit");
         return modelAndView;
     }
@@ -117,12 +134,17 @@ public class OrderController {
         modelAndView.addObject("resInfo", resInfo);
         // 所有字典
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);
-        // 翻译一下【刻章】字典项
-        // 刻章字典项下子项转成map
-        Map<String, String> kzCodes = sysDictsList.stream().filter(d -> "KZ".equals(d.getPcode())).collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
-        // 翻译一下【状态】字典项
-        // 状态字典项转成map
-        Map<String, String> ddztCodes = sysDictsList.stream().filter(d -> "DDZT".equals(d.getPcode())).collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
+        // 翻译一下字典项
+        // 字典项转成map
+        Map<String, String> ddzt = sysDictsList.stream().filter(d -> "D_DDZT".equals(d.getPcode())).collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
+        Map<String, String> quyu = sysDictsList.stream().filter(d -> "D_QUYU".equals(d.getPcode())).collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+        for(ProOrder order1 : resInfo.getList()){
+            order1.setAreaText(quyu.get(order1.getArea()));
+            order1.setCustomerText(cust.get(order1.getCustomerId()));
+            order1.setStatusText(ddzt.get(order1.getStatus()));
+        }
         modelAndView.addObject("orders", orders);
         modelAndView.setViewName(templatePath+"orderList");
         return modelAndView;

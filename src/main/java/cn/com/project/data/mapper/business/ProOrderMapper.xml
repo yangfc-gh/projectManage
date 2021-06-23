@@ -7,6 +7,7 @@
     <result column="customer_id" jdbcType="VARCHAR" property="customerId" />
     <result column="area" jdbcType="VARCHAR" property="area" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="bidder_z" jdbcType="VARCHAR" property="bidderZ" />
@@ -17,8 +18,8 @@
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
   <sql id="Base_Column_List">
-    oid, ono, customer_id, area, project_name, `status`, remark, bidder_z, bid_amount, 
-    bid_detail, creater
+    oid, ono, customer_id, area, project_name, source, `status`, remark, bidder_z, bid_amount,
+    bid_detail, creater, ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -26,17 +27,39 @@
     from pro_order
     where oid = #{oid,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_order o
+    <where>
+      <if test="ono != null and ''.toString() != ono">
+        and o.ono like concat('%', #{ono,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="area != null and ''.toString() != area">
+        and o.area = #{area,jdbcType=VARCHAR}
+      </if>
+      <if test="otimeb != null and ''.toString() != otimeb">
+        and o.ctime &gt;= concat(#{otimeb,jdbcType=VARCHAR}, ' 00:00:00')
+      </if>
+      <if test="otimee != null and ''.toString() != otimee">
+        and o.ctime &lt;= concat(#{otimee,jdbcType=VARCHAR}, ' 23:59:59')
+      </if>
+      <if test="status != null and ''.toString() != status">
+        and o.`status` = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_order
     where oid = #{oid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProOrder">
     insert into pro_order (oid, ono, customer_id, 
-      area, project_name,
+      area, project_name, source,
       remark, bidder_z, bid_amount, 
       bid_detail, creater)
     values (#{oid,jdbcType=VARCHAR}, #{ono,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, 
-      #{area,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR},
+      #{area,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR},
       #{remark,jdbcType=VARCHAR}, #{bidderZ,jdbcType=VARCHAR}, #{bidAmount,jdbcType=DECIMAL}, 
       #{bidDetail,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR})
   </insert>
@@ -58,8 +81,8 @@
       <if test="projectName != null">
         project_name,
       </if>
-      <if test="status != null">
-        `status`,
+      <if test="source != null">
+        source,
       </if>
       <if test="remark != null">
         remark,
@@ -93,8 +116,8 @@
       <if test="projectName != null">
         #{projectName,jdbcType=VARCHAR},
       </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -128,6 +151,9 @@
       <if test="projectName != null">
         project_name = #{projectName,jdbcType=VARCHAR},
       </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         `status` = #{status,jdbcType=VARCHAR},
       </if>
@@ -154,6 +180,7 @@
     set customer_id = #{customerId,jdbcType=VARCHAR},
       area = #{area,jdbcType=VARCHAR},
       project_name = #{projectName,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       bidder_z = #{bidderZ,jdbcType=VARCHAR},
       bid_amount = #{bidAmount,jdbcType=DECIMAL},
