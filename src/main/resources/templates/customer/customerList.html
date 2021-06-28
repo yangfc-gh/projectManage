@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="customer, state: ${resInfo.list}">
+			<td th:text="${state.index + 1}"></td>
+			<td th:text="${customer.name?:''}"></td>
+			<td th:text="${customer.shortname}"></td>
+			<td th:text="${customer.areaName}"></td>
+			<td th:text="${customer.remark}"></td>
+			<td>
+				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${customer.cid}]])">编辑</button>&nbsp;
+				<button class="btn btn-minier btn-light" th:onclick="delPlace([[${customer.cid}]])">删除</button>&nbsp;
+			</td>
+		</tr>
+	</body>
+</html>

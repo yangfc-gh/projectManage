@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="corporate, state: ${resInfo.list}">
+			<td th:text="${state.index + 1}"></td>
+			<td th:text="${corporate.name?:''}"></td>
+			<td th:text="${corporate.shortname}"></td>
+			<td th:text="${corporate.ctypeName}"></td>
+			<td th:text="${corporate.remark}"></td>
+			<td>
+				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${corporate.cid}]])">编辑</button>&nbsp;
+				<button class="btn btn-minier btn-light" th:onclick="delPlace([[${corporate.cid}]])">删除</button>&nbsp;
+			</td>
+		</tr>
+	</body>
+</html>

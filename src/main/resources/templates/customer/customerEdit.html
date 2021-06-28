@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			.footBtn {
+				position: sticky;
+				bottom: 0px;
+				padding-top: 5px;
+				padding-bottom: 10px;
+				width: 100%;
+				background-color: #D8D8D8;
+				opacity: 0.9;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page-content" style="margin-bottom: 50px;">
+			<div class="row">
+				<div class="col-xs-12">
+					<form id="customerForm" class="form-horizontal">
+						<input type="hidden" name="cid" th:value="${customerInfo?.cid}" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="name">名称:</label>
+							<div class="col-sm-8">
+								<input th:value="${customerInfo?.name}" type="text" id="name" name="name" placeholder="全称" class="form-control"
+								 autocomplete="off" maxlength="100" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="pno">简称:</label>
+							<div class="col-sm-8">
+								<input th:value="${customerInfo?.shortname}" type="text" id="shortname" name="shortname" placeholder="简称" class="form-control"
+								 autocomplete="off" maxlength="30" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="position">区域:</label>
+							<div class="col-sm-8">
+								<select class="form-control" id="area" name="area">
+									<option th:each="quyu : ${dict_quyu}" th:value="${quyu.dcode}" th:selected="${quyu.dcode eq orderInfo?.business}"  th:text="${quyu.dname}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="sealmode">备注:</label>
+							<div class="col-sm-8">
+								<textarea th:text="${customerInfo?.remark}" rows="2" id="remark" name="remark" class="form-control"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="footBtn">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="9">
+						<button id="saveBtn" class="btn btn-info btn-sm" onclick="saveInfo()">确定</button>&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-sm" onclick="closeOpen()">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+
+			});
+
+			function saveInfo() {
+				$('#saveBtn').attr("disabled", "disabled")
+				if (!$('#name', $('#customerForm')).val()) {
+					layer.msg('请填写名称')
+					$('#name', $('#customerForm')).focus()
+					$('#saveBtn').removeAttr("disabled")
+					return;
+				}
+				var formData = $("#customerForm").serialize()
+				postRequest($('#contextDiv').html() + '/customer/update', formData, function(data) {
+					if (data.result) {
+						layer.msg('操作成功')
+						closeOpen()
+						doQuery()
+					} else {
+						layer.msg(data.message)
+					}
+				})
+			}
+		</script>
+	</body>
+</html>
