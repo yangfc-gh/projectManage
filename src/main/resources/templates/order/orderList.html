@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="order, state: ${resInfo.list}">
+			<td class="center" th:text="${state.index + 1}"></td>
+			<td th:text="${#dates.format(order.ctime, 'yyyy-MM-dd')}"></td>
+			<td th:text="${order.projectName}"></td>
+			<td th:text="${order.areaText}"></td>
+			<td th:text="${order.customerText}"></td>
+			<td th:text="${order.source}"></td>
+			<td th:text="${order.statusText}"></td>
+			<td th:text="${order.remark}"></td>
+			<td>
+				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${order.oid}]])">编辑</button>&nbsp;
+				<button class="btn btn-minier btn-purple" th:onclick="showDetail(this, [[${order.oid}]])">查看</button>
+				<button class="btn btn-minier btn-danger" th:onclick="toDel(this, [[${order.oid}]])">删除</button>
+			</td>
+		</tr>
+	</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					供应商信息
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form id="querySupplierForm" class="form-horizontal" role="form">
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 col-md-3 col-lg-3 control-label no-padding-right" for="form-field-1">供应商名称</label>
+							<div class="col-sm-8 col-md-8 col-lg-8">
+								<input type="text" id="name" name="name" placeholder="供应商名称/简称" autocomplete="off" class="form-control col-xs-10 col-md-12" />
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="otime">业务产品</label>
+							<div class="col-sm-8 col-md-8 col-lg-8">
+								<input type="text" id="business" name="business" placeholder="业务产品" autocomplete="off" class="form-control col-xs-10 col-md-12" />
+							</div>
+						</div>
+						<div class="form-group col-xs-12 col-sm-12 text-right">
+							<button type="button" class="btn btn-success btn-sm" onclick="toEdit(null, '')">新&nbsp;增</button>
+							<button type="button" class="btn btn-sm btn-primary" onclick="doQuery()">查&nbsp;询</button>
+							<!-- <button type="button" class="btn btn-sm btn-grey" onclick="doExportPlace()">导&nbsp;出</button> -->
+						</div>
+					</form>
+					<span class="pull-left" id="totalDiv"></span>
+					<table id="simple-table" class="table  table-bordered table-hover">
+						<thead>
+							<tr>
+								<th class="center">#</th>
+								<th style="width: 250px;">供应商名称</th>
+								<th>简称</th>
+								<th>业务产品</th>
+								<th>联系人</th>
+								<th>联系电话</th>
+								<th>地址</th>
+								<th>备注</th>
+								<th></th>
+							</tr>
+						</thead>
+		
+						<tbody id="mainTBody">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	<script>
+		$(function(){
+			doQuery()
+		});
+		// 新增或修改
+		function toEdit(obj, sid) {
+			if (obj) {
+				obj.blur() // 一个小bug，就是虽然有遮罩层，但敲空格会再次点击按钮
+			}
+			postRequest($('#contextDiv').html()+'/supplier/toEdit', {sid: sid}, function(data){
+				lidx = layer.open({
+				  type: 1,
+				  // skin: 'layui-layer-rim', //加上边框
+				  title: '编辑供应商信息',
+				  area: ['500px', '70%'], //宽高
+				  content: data
+				})
+			})
+		}
+		// 查询
+		function doQuery() {
+			$('#mainTBody').html('')
+			var formData = $("#querySupplierForm").serialize()
+			postRequest($('#contextDiv').html()+'/supplier/list', formData, function(data){
+				$('#mainTBody').html(data)
+				if ($('#totalRows').val()) {
+					$('#totalDiv').text('共 '+ $('#totalRows').val() + ' 条')
+				}
+			})
+		}
+		function doExportPlace() {
+			var formData = $("#querySupplierForm").serialize()
+			window.location.href = $('#contextDiv').html() + '/supplier/export?'+ formData
+		}
+		function delPlace(sid) {
+			layer.confirm('确定删除此供应商吗？', {
+				btn: ['确定', '取消'] //按钮
+			}, function() {
+				postRequest($('#contextDiv').html() + '/supplier/del/' + sid, {}, function(data) {
+					if (data.result) {
+						layer.msg('操作成功')
+						doQuery()
+					} else {
+						layer.msg(data.message)
+					}
+				})
+			})
+		}
+		// 关闭当前layer的open窗口
+		function closeOpen() {
+			if(lidx){
+				layer.close(lidx)
+			}
+		}
+	</script>
+	</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			.footBtn {
+				position: sticky;
+				bottom: 0px;
+				padding-top: 5px;
+				padding-bottom: 10px;
+				width: 100%;
+				background-color: #D8D8D8;
+				opacity: 0.9;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page-content" style="margin-bottom: 50px;">
+			<div class="row">
+				<div class="col-xs-12">
+					<form id="orderForm" class="form-horizontal">
+						<input type="hidden" id="oid" name="oid" th:value="${orderInfo?.oid}" />
+						<input type="hidden" id="status" name="status" th:value="${orderInfo?.status}" />
+						<!-- <div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="ono">订单号*:</label>
+							<div class="col-sm-8">
+								<input th:value="${orderInfo?.ono}" type="text" id="ono" name="ono" placeholder="订单号" class="form-control"
+								 autocomplete="off" maxlength="30" />
+							</div>
+						</div> -->
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="area">区域*:</label>
+							<div class="col-sm-8">
+								<select class="form-control" id="area" name="area">
+									<option value=""></option>
+									<option th:each="quyu : ${dict_quyu}" th:value="${quyu.dcode}" th:selected="${quyu.dcode eq orderInfo?.area}"  th:text="${quyu.dname}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="customerId">客户:</label>
+							<div class="col-sm-8">
+								<select name="customerId" class="form-control">
+									<option value=""></option>
+									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="projectName">项目名称:</label>
+							<div class="col-sm-8">
+								<input th:value="${orderInfo?.projectName}" type="text" id="projectName" name="projectName" placeholder="项目名称" class="form-control"
+								 autocomplete="off" maxlength="200" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="source">订单来源:</label>
+							<div class="col-sm-8">
+								<input th:value="${orderInfo?.source}" type="text" id="source" name="source" placeholder="订单来源" class="form-control"
+								 autocomplete="off" maxlength="50" />
+							</div>
+						</div>
+						<div class="form-group layui-form-item">
+							<label class="col-sm-3 control-label no-padding-right" for="bidderZ">中标方:</label>
+							<div class="col-sm-8">
+								<select name="bidderZ" class="form-control">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="bidAmount">中标金额:</label>
+							<div class="col-sm-8">
+								<input th:value="${orderInfo?.bidAmount}" type="text" id="bidAmount" name="bidAmount" placeholder="中标金额" class="form-control"
+								 oninput="value=value.replace(/[^0-9\.]/g,'');"
+								 autocomplete="off" maxlength="17" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="bidDetail">中标明细:</label>
+							<div class="col-sm-8">
+								<textarea th:text="${orderInfo?.bidDetail}" rows="4" id="bidDetail" name="bidDetail" class="form-control"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="sealmode">备注:</label>
+							<div class="col-sm-8">
+								<textarea th:text="${orderInfo?.remark}" rows="2" id="remark" name="remark" class="form-control"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="footBtn">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="9">
+						<button id="saveBtn" class="btn btn-info btn-sm" onclick="saveInfo()">保存</button>&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-white btn-default" onclick="closeOpen()">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+			});
+
+			function saveInfo(state) {
+				$('#saveBtn').attr("disabled", "disabled")
+				if (validate ()) {
+					var formData = $("#orderForm").serialize()
+					postRequest($('#contextDiv').html() + '/order/update', formData, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							closeOpen()
+							doQuery()
+						} else {
+							layer.msg(data.message)
+						}
+					})
+				} else {
+					$('#saveBtn').removeAttr("disabled")
+				}
+			}
+			
+			function validate () {
+				if (!$('#area', $('#orderForm')).val()) {
+					layer.msg('请填写区域')
+					$('#area', $('#orderForm')).focus()
+					return false
+				}
+				if (!$('#projectName', $('#orderForm')).val()) {
+					layer.msg('请填写项目名称')
+					$('#projectName', $('#orderForm')).focus()
+					return false
+				}
+				return true
+			}
+		</script>
+	</body>
+</html>

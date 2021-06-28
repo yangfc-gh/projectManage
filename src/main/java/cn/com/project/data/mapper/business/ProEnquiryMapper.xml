@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.business.ProEnquiryMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProEnquiry">
+    <id column="eid" jdbcType="VARCHAR" property="eid" />
+    <result column="oid" jdbcType="VARCHAR" property="oid" />
+    <result column="supplier" jdbcType="VARCHAR" property="supplier" />
+    <result column="total" jdbcType="DECIMAL" property="total" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <resultMap id="ResultMap_sub" extends="BaseResultMap" type="cn.com.project.data.model.business.ProEnquiry">
+    <collection property="enquiryDetails" column="eid" select="cn.com.project.data.dao.business.ProEnquiryDetailMapper.selectByEid"></collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    e.eid, e.oid, e.supplier, e.total, e.remark, e.ctime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />, s.`name` supplierName
+    from pro_enquiry e left join supplier s on e.supplier=s.sid
+    where eid = #{eid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />, s.`name` supplierName
+    from pro_enquiry e left join supplier s on e.supplier=s.sid
+    where e.oid = #{oid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_enquiry e
+    where e.eid = #{eid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.business.ProEnquiry">
+    insert into pro_enquiry (eid, oid, supplier, 
+      total, remark, ctime, 
+      utime)
+    values (#{eid,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{supplier,jdbcType=VARCHAR}, 
+      #{total,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP}, 
+      #{utime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProEnquiry">
+    insert into pro_enquiry
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eid != null">
+        eid,
+      </if>
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="supplier != null">
+        supplier,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="ctime != null">
+        ctime,
+      </if>
+      <if test="utime != null">
+        utime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eid != null">
+        #{eid,jdbcType=VARCHAR},
+      </if>
+      <if test="oid != null">
+        #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="supplier != null">
+        #{supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null">
+        #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.business.ProEnquiry">
+    update pro_enquiry
+    <set>
+      <if test="oid != null">
+        oid = #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="supplier != null">
+        supplier = #{supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null">
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null">
+        utime = #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where eid = #{eid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProEnquiry">
+    update pro_enquiry
+    set oid = #{oid,jdbcType=VARCHAR},
+      supplier = #{supplier,jdbcType=VARCHAR},
+      total = #{total,jdbcType=DECIMAL},
+      remark = #{remark,jdbcType=VARCHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP},
+      utime = #{utime,jdbcType=TIMESTAMP}
+    where eid = #{eid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.business.ProEnquiryDetailMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProEnquiryDetail">
+    <id column="did" jdbcType="VARCHAR" property="did" />
+    <result column="eid" jdbcType="VARCHAR" property="eid" />
+    <result column="pname" jdbcType="VARCHAR" property="pname" />
+    <result column="pcode" jdbcType="VARCHAR" property="pcode" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="quantity" jdbcType="DECIMAL" property="quantity" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="total" jdbcType="DECIMAL" property="total" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <!-- 查询父级 -->
+  <resultMap id="ResultMap_upper" extends="BaseResultMap" type="cn.com.project.data.model.business.ProEnquiryDetail">
+    <association property="enquiry" column="eid" select="cn.com.project.data.dao.business.ProEnquiryMapper.selectByPrimaryKey"></association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    did, eid, pname, pcode, model, unit, quantity, price, total, remark, ctime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_enquiry_detail
+    where did = #{did,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByEid" parameterType="java.lang.String" resultMap="ResultMap_upper">
+    select
+    <include refid="Base_Column_List" />
+    from pro_enquiry_detail
+    where eid = #{eid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_enquiry_detail
+    where did = #{did,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.business.ProEnquiryDetail">
+    insert into pro_enquiry_detail (did, eid, pname, 
+      pcode, model, unit, 
+      quantity, price, total, 
+      remark
+      )
+    values (#{did,jdbcType=VARCHAR}, #{eid,jdbcType=VARCHAR}, #{pname,jdbcType=VARCHAR}, 
+      #{pcode,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{quantity,jdbcType=DECIMAL}, #{price,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL}, 
+      #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertBatch">
+    insert into pro_enquiry_detail (did, eid, pname,
+    pcode, model, unit,
+    quantity, price, total,
+    remark
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.did,jdbcType=VARCHAR}, #{item.eid,jdbcType=VARCHAR}, #{item.pname,jdbcType=VARCHAR},
+      #{item.pcode,jdbcType=VARCHAR}, #{item.model,jdbcType=VARCHAR}, #{item.unit,jdbcType=VARCHAR},
+      #{item.quantity,jdbcType=DECIMAL}, #{item.price,jdbcType=DECIMAL}, #{item.total,jdbcType=DECIMAL},
+      #{item.remark,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProEnquiryDetail">
+    insert into pro_enquiry_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="did != null">
+        did,
+      </if>
+      <if test="eid != null">
+        eid,
+      </if>
+      <if test="pname != null">
+        pname,
+      </if>
+      <if test="pcode != null">
+        pcode,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="unit != null">
+        unit,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="ctime != null">
+        ctime,
+      </if>
+      <if test="utime != null">
+        utime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="did != null">
+        #{did,jdbcType=VARCHAR},
+      </if>
+      <if test="eid != null">
+        #{eid,jdbcType=VARCHAR},
+      </if>
+      <if test="pname != null">
+        #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="pcode != null">
+        #{pcode,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=DECIMAL},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null">
+        #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.business.ProEnquiryDetail">
+    update pro_enquiry_detail
+    <set>
+      <if test="eid != null">
+        eid = #{eid,jdbcType=VARCHAR},
+      </if>
+      <if test="pname != null">
+        pname = #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="pcode != null">
+        pcode = #{pcode,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=DECIMAL},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null">
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null">
+        utime = #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where did = #{did,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProEnquiryDetail">
+    update pro_enquiry_detail
+    set eid = #{eid,jdbcType=VARCHAR},
+      pname = #{pname,jdbcType=VARCHAR},
+      pcode = #{pcode,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=DECIMAL},
+      price = #{price,jdbcType=DECIMAL},
+      total = #{total,jdbcType=DECIMAL},
+      remark = #{remark,jdbcType=VARCHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP},
+      utime = #{utime,jdbcType=TIMESTAMP}
+    where did = #{did,jdbcType=VARCHAR}
+  </update>
+</mapper>

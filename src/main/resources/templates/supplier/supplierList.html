@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="supplier, state: ${resInfo.list}">
+			<td th:text="${state.index + 1}"></td>
+			<td th:text="${supplier.name?:''}"></td>
+			<td th:text="${supplier.shortname}"></td>
+			<td th:text="${supplier.business}"></td>
+			<td th:text="${supplier.contacts}"></td>
+			<td th:text="${supplier.phone}"></td>
+			<td th:text="${supplier.address}"></td>
+			<td th:text="${supplier.remark}"></td>
+			<td>
+				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${supplier.sid}]])">编辑</button>&nbsp;
+				<button class="btn btn-minier btn-light" th:onclick="delPlace([[${supplier.sid}]])">删除</button>&nbsp;
+			</td>
+		</tr>
+	</body>
+</html>

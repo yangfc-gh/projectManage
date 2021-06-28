@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>询价登记</title>
+		<style>
+			.footBtn {
+				position: sticky;
+				bottom: 0px;
+				padding-top: 5px;
+				padding-bottom: 10px;
+				width: 100%;
+				background-color: #D8D8D8;
+				opacity: 0.9;
+			}
+			table {
+				border-collapse: collapse;
+			}
+			th, td {
+				border: solid 1px #6D6D6D;
+				padding: 5px 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page-content" style="margin-bottom: 50pxmin-height: 250px">
+			<div class="row">
+				<div class="col-xs-12">
+					<form id="enquiryForm" class="form-horizontal" method="post">
+						<input type="hidden" id="oid" name="oid" th:value="${oid}" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="supplier">供应商:</label>
+							<div class="col-sm-8">
+								<select id="supplier" name="supplier" class="form-control">
+									<option value=""></option>
+									<option th:each="supp : ${suppliers}" th:value="${supp.sid}" th:text="${supp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="remark">备注:</label>
+							<div class="col-sm-8">
+								<textarea id="remark" name="remark" class="form-control" th:text="${enterprise?.remark}"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="business">询价表:</label>
+							<div class="col-sm-8">
+								<input id="attachment" name="attachment" type="file" class=""
+								 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+								 onclick="this.value=null"> 
+								<div id="files"></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="bidAmount">总金额:</label>
+							<div class="col-sm-8">
+								<input type="text" id="total" name="total" placeholder="" readonly="readonly" class="form-control"
+								 oninput="value=value.replace(/[^0-9\.]/g,'')"
+								 autocomplete="off" maxlength="17" />
+							</div>
+						</div>
+						<div id="fileContent" class="row" style="min-height: 200px">
+							
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="footBtn">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="9">
+						<button id="saveBtn" class="btn btn-primary btn-sm" onclick="saveEnquiry()">保存</button>&nbsp&nbsp&nbsp
+						<button class="btn btn-white btn-default" onclick="closeSubWindow()">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+				$('#attachment').bind('change', function(e) {
+					var files = e.target.files
+					if(files.length == 0) return
+					var f = files[0]
+					if(!/\.xlsx$/g.test(f.name) && !/\.xls$/g.test(f.name)) {
+						layer.msg('仅支持读取xlsx格式！')
+						return
+					}
+					readWorkbookFromLocalFile(f, function(workbook) {
+						readWorkbook(workbook)
+					})
+				})
+			})
+
+			function saveEnquiry() {
+				if (validate()) {
+					$('#saveBtn').attr("disabled", "disabled")
+					var enquiry = {}
+					enquiry.oid = $('#oid').val()
+					enquiry.supplier = $('#supplier').val()
+					enquiry.total = $('#total').val()
+					enquiry.enquiryDetails = organizeData()
+					// 有子集合的对象提交，简单方法就是提交json字符串，contentType必须设置json。所以此处没办法使用封装的postRequest函数
+					$.ajax({
+						url: $('#contextDiv').html() + '/orderHandle/enquiry/add',
+						type: "post",
+						data: JSON.stringify(enquiry),
+						cache: false,
+						processData: false,
+						contentType: "application/json;charset=utf-8",
+						success: function(data) {
+							if (data.result) {
+								layer.msg('操作成功')
+								closeSubWindow()
+								doQuery()
+							} else {
+								layer.msg(data.message)
+							}
+						},
+						error: function(e) {
+							layer.msg("网络错误，请重试！！")
+						}
+					})
+				}
+			}
+			
+			// 读取本地excel文件
+			function readWorkbookFromLocalFile(file, callback) {
+				var reader = new FileReader()
+				reader.onload = function(e) {
+					var data = e.target.result
+					var workbook = XLSX.read(data, {type: 'binary'})
+					if(callback) callback(workbook)
+				}
+				reader.readAsBinaryString(file)
+			}
+			
+			function readWorkbook(workbook) {
+				var sheetNames = workbook.SheetNames // 工作表名称集合
+				var worksheet = workbook.Sheets[sheetNames[0]] // 这里我们只读取第一张sheet
+				var csv = XLSX.utils.sheet_to_csv(worksheet)
+				// $('#fileContent').html(csv2table(csv))
+				document.getElementById("fileContent").innerHTML = csv2table(csv)
+				verifyData()
+			}
+			// 将csv转换成表格
+			function csv2table(csv)
+			{
+				var html = '<table id="excelContent">'
+				var rows = csv.split('\n')
+				rows.shift() //第一行是标题行,忽略(业务上根据模板判断的，非技术上的移除)
+				rows.pop() // 最后一行没用的（技术上的移除）
+				var idx = 0
+				rows.forEach(function(row, idx) {
+					var columns = row.split(',')
+					html += '<tr>'
+					columns.forEach(function(column) {
+						html += '<td>'+column+'</td>'
+					})
+					html += '</tr>'
+				})
+				html += '</table>'
+				return html
+			}
+
+			function validate() {
+				if (!$('#supplier', $('#enquiryForm')).val()) {
+					layer.msg('请选择供应商')
+					$('#supplier', $('#enquiryForm')).focus()
+					return false
+				}
+				if (!$('#total', $('#enquiryForm')).val()) {
+					layer.msg('请上传询价附件')
+					$('#total', $('#enquiryForm')).focus()
+					return false
+				}
+				return true
+			}
+			// 验证文件是否有数据、核算总计、验证关键数据是否有空的
+			function verifyData() {
+				var trs = $('#excelContent tbody tr').not(':first')
+				if(!trs){
+					layer.msg('无上传数据，请核对上传的文件是否正确')
+					return
+				}
+				var total = 0
+				$.each(trs,function(idx,itm){
+					var vvv = Number($(this).find('td').eq(7).html() ? $(this).find('td').eq(7).html() : 0)
+					if(!isNaN(vvv)){
+						total += vvv
+					}
+				});
+				$('#total').val(total)
+				var name_verify = true
+				var unit_verify = true
+				var quantity_verify = true
+				var price_verify = true
+				var number_verify = true // 必须是数字的校验
+				$.each(trs,function(idx,itm){
+					if(!$(this).find('td').eq(1).html()){
+						name_verify = false
+					}
+					if(!$(this).find('td').eq(4).html()){
+						unit_verify = false
+					}
+					if(!$(this).find('td').eq(5).html()){
+						quantity_verify = false
+					}
+					if(!$(this).find('td').eq(6).html()){
+						price_verify = false
+					}
+					if (isNaN(Number($(this).find('td').eq(5).html() ? $(this).find('td').eq(5).html() : 0)) 
+					|| isNaN(Number($(this).find('td').eq(6).html() ? $(this).find('td').eq(6).html() : 0)) 
+					|| isNaN(Number($(this).find('td').eq(7).html() ? $(this).find('td').eq(7).html() : 0))){
+						number_verify = false
+					}
+				});
+				var verifyRes = new Array()
+				if(!name_verify){
+					verifyRes.push('产品名称有空的')
+				}
+				if(!unit_verify){
+					verifyRes.push('单位有空的')
+				}
+				if(!quantity_verify){
+					verifyRes.push('数量有空的')
+				}
+				if(!price_verify){
+					verifyRes.push('单价有空的')
+				}
+				if(!number_verify){
+					verifyRes.push('数量、单位、总价必须是数字')
+				}
+				if(verifyRes.length != 0){
+					layer.msg(verifyRes.join(", "))
+					return
+				}
+				// organizeData()
+			}
+			function organizeData(){
+				var allDatas = new Array()
+				var record = {}
+				$.each($('#excelContent tbody tr').not(':first'), function(idx,itm){
+					record = {}
+					// record.oid = $('#oid').val()
+					// record.supplier = 
+					record.pname = $(this).find('td').eq(1).html()
+					record.pcode = $(this).find('td').eq(2).html()
+					record.model = $(this).find('td').eq(3).html()
+					record.unit = $(this).find('td').eq(4).html()
+					record.quantity = $(this).find('td').eq(5).html()
+					record.price = $(this).find('td').eq(6).html()
+					record.total = $(this).find('td').eq(7).html()
+					record.remark = $(this).find('td').eq(8).html()
+					allDatas.push(record)
+				});
+				return allDatas
+			}
+		</script>
+	</body>
+</html>

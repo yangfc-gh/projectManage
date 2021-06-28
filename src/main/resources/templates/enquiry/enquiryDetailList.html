@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title>询价条目明细</title>
+	</head>
+	<body>
+		<!-- <input type="hidden" id="totalRows" th:value="${resInfo?.total}" /> -->
+		<tr th:each="enquiryDetail, state: ${details}">
+			<!-- <td class="center" th:text="${state.index + 1}"></td> -->
+			<td th:text="${enquiryDetail.enquiry?.supplierName}"></td>
+			<td th:text="${enquiryDetail.pname}"></td>
+			<td th:text="${enquiryDetail.pcode}"></td>
+			<td th:text="${enquiryDetail.model}"></td>
+			<td th:text="${enquiryDetail.unit}"></td>
+			<td th:text="${enquiryDetail.quantity}"></td>
+			<td th:text="${enquiryDetail.price}"></td>
+			<td th:text="${enquiryDetail.total}"></td>
+			<td th:text="${enquiryDetail.remark}"></td>
+		</tr>
+	</body>
+</html>
