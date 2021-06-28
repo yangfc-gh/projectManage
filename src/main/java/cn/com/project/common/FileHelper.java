@@ -13,7 +13,7 @@ public class FileHelper extends org.apache.commons.io.FileUtils {
 	/**
 	 * 常用（ 保存|上传|下载） 路径
 	 */
-	public static String FILE_SAVE_PATH = os.startsWith("win") ? "D:/annes/" : "/usr/annes/";
+	public static String FILE_SAVE_PATH = os.startsWith("win") ? "D:/annex/pm/" : "/home/annex/pm/";
 	
 	/**
 	 * 上传单个文件自定义文件夹

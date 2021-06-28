@@ -2,6 +2,7 @@ package cn.com.project.data.model.business;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class ProOrder {
     private String oid;
@@ -36,6 +37,8 @@ public class ProOrder {
     /**中标方*/
     private String bidderZ;
 
+    private String bidderZText;
+
     /**中标金额*/
     private BigDecimal bidAmount;
 
@@ -48,6 +51,12 @@ public class ProOrder {
     private Date ctime;
 
     private Date utime;
+
+    private ProQuotation quotation;
+    private ProContract contract;
+    private List<ProEnquiry> enquiries;
+    private List<ProBidder> bidders;
+    private List<ProDeposit> deposits;
 
     /**订单创建时间起止-查询用*/
     private String otime;
@@ -212,5 +221,53 @@ public class ProOrder {
 
     public void setCustomerText(String customerText) {
         this.customerText = customerText;
+    }
+
+    public String getBidderZText() {
+        return bidderZText;
+    }
+
+    public void setBidderZText(String bidderZText) {
+        this.bidderZText = bidderZText;
+    }
+
+    public List<ProEnquiry> getEnquiries() {
+        return enquiries;
+    }
+
+    public void setEnquiries(List<ProEnquiry> enquiries) {
+        this.enquiries = enquiries;
+    }
+
+    public ProQuotation getQuotation() {
+        return quotation;
+    }
+
+    public void setQuotation(ProQuotation quotation) {
+        this.quotation = quotation;
+    }
+
+    public List<ProBidder> getBidders() {
+        return bidders;
+    }
+
+    public void setBidders(List<ProBidder> bidders) {
+        this.bidders = bidders;
+    }
+
+    public List<ProDeposit> getDeposits() {
+        return deposits;
+    }
+
+    public void setDeposits(List<ProDeposit> deposits) {
+        this.deposits = deposits;
+    }
+
+    public ProContract getContract() {
+        return contract;
+    }
+
+    public void setContract(ProContract contract) {
+        this.contract = contract;
     }
 }

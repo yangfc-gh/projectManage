@@ -25,37 +25,25 @@
       <property name="forceBigDecimals" value="false" />
     </javaTypeResolver>
     <!-- 指定生成 Java 模型对象所属的包   bean -->
-    <javaModelGenerator targetPackage="cn.com.project.data.model.obj" targetProject="src/main/java">
+    <javaModelGenerator targetPackage="cn.com.project.data.model.business" targetProject="src/main/java">
 		<property name="enableSubPackages" value="false" />
 		<property name="trimStrings" value="true" />
 	</javaModelGenerator>
 	<!-- 指定生成 SQL 映射文件所属的包和的目标项目   mapper.xml--><!-- 注：重新生成xml时，会保留原xml内容在文档询问，需去手动删除 -->
-	<sqlMapGenerator targetPackage="cn.com.project.data.mapper.obj" targetProject="src/main/java">
+	<sqlMapGenerator targetPackage="cn.com.project.data.mapper.business" targetProject="src/main/java">
 		<property name="enableSubPackages" value="false" />
 	</sqlMapGenerator>
 	<!-- 指定目标包和目标项目生成的客户端接口和类     dao -->
-	<javaClientGenerator type="XMLMAPPER" targetPackage="cn.com.project.data.dao.obj" targetProject="src/main/java">
+	<javaClientGenerator type="XMLMAPPER" targetPackage="cn.com.project.data.dao.business" targetProject="src/main/java">
 		<property name="enableSubPackages" value="true" />
 	</javaClientGenerator>
 	<!-- 设置要生成的表名 (需要必须有主键才会生成update、delete、select,而且新版本的generator不会生成删、改查方法，目前不知道原因)-->
 	<!-- insert 和 insertSelective 区别前者所有字段，后者只新增不为null的字段，update方法也是这样 -->
-		<table tableName="corporate" enableCountByExample="false"
+		<table tableName="pro_contract" enableCountByExample="false"
 		enableUpdateByExample="false" enableDeleteByExample="false"
 		enableSelectByExample="false" selectByExampleQueryId="false"
 		enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
 		enableDeleteByPrimaryKey="true">
 		</table>
-	 <table tableName="customer" enableCountByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false"
-			enableSelectByExample="false" selectByExampleQueryId="false"
-			enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
-			enableDeleteByPrimaryKey="true">
-	 </table>
-	 <table tableName="supplier" enableCountByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false"
-			enableSelectByExample="false" selectByExampleQueryId="false"
-			enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
-			enableDeleteByPrimaryKey="true">
-	 </table>
   </context>
 </generatorConfiguration>

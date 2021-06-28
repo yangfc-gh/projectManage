@@ -17,6 +17,13 @@
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
+  <resultMap id="ResultMapDetail" extends="BaseResultMap" type="cn.com.project.data.model.business.ProOrder">
+    <association property="quotation" column="oid" select="cn.com.project.data.dao.business.ProQuotationMapper.selectByOid"></association>
+    <association property="contract" column="oid" select="cn.com.project.data.dao.business.ProContractMapper.selectByOid"></association>
+    <collection property="bidders" column="oid" select="cn.com.project.data.dao.business.ProBidderMapper.selectByOid"></collection>
+    <collection property="enquiries" column="oid" select="cn.com.project.data.dao.business.ProEnquiryMapper.selectByOid"></collection>
+    <collection property="deposits" column="oid" select="cn.com.project.data.dao.business.ProDepositMapper.selectByOid"></collection>
+  </resultMap>
   <sql id="Base_Column_List">
     oid, ono, customer_id, area, project_name, source, `status`, remark, bidder_z, bid_amount,
     bid_detail, creater, ctime
@@ -32,6 +39,9 @@
     <include refid="Base_Column_List" />
     from pro_order o
     <where>
+      <if test="projectName != null and ''.toString() != projectName">
+        and o.project_name like concat('%', #{projectName,jdbcType=VARCHAR}, '%')
+      </if>
       <if test="ono != null and ''.toString() != ono">
         and o.ono like concat('%', #{ono,jdbcType=VARCHAR}, '%')
       </if>
@@ -48,6 +58,12 @@
         and o.`status` = #{status,jdbcType=VARCHAR}
       </if>
     </where>
+  </select>
+  <select id="selectDetail" parameterType="java.lang.String" resultMap="ResultMapDetail">
+    select
+    <include refid="Base_Column_List" />
+    from pro_order o
+    where oid = #{oid,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_order

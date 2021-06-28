@@ -1,3 +1,10 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /project
+    load-on-starup: 1
+    session:
+      timeout: 7200
 spring:
   thymeleaf:
     enabled: true  #开启thymeleaf视图解析
@@ -42,12 +49,14 @@ spring:
     use-global-data-source-stat: true
     # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
     connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-server:
-  port: 8082
-  servlet:
-    context-path: /project
-    load-on-starup: 1
-    session:
-      timeout: 7200
+logging:
+  level:
+    com.simple: trace
+    com.simple.first.main: debug
+  file:
+    path: /opt/projectmanage/log
+    pattern:
+      console: '%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n'
+      file: '%d{yyyy-MM-dd} === [%thread] === %-5level === %logger{50} ==== %msg%n'
 mybatis:
   mapper-locations: classpath:cn/com/project/data/mapper/*/*.xml

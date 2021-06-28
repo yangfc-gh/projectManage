@@ -30,7 +30,7 @@
 				<a href="javascript:void(0)" class="navbar-brand">
 					<small>
 						<i class="fa fa-leaf"></i>
-						企宝通
+						项目管理
 					</small>
 				</a>
 			</div>
@@ -98,8 +98,8 @@
 		<script th:src="@{/static/js/ace-elements.min.js}"></script><!--有个ace_scroll的function需要导这个js-->
 		<script th:src="@{/static/js/ace.min.js}"></script>
 		<script th:src="@{/static/js/layer.js}"></script>
-		<script th:src="@{/static/js/layui.js}"></script>
 		<script th:src="@{/static/js/self.js}"></script>
+		<script th:src="@{/static/js/xlsx.core.min.js}"></script>
 		<script th:src="@{/static/ztree/jquery.ztree.all.min.js}"></script>
 		<script>
 			var lidx;
@@ -108,7 +108,7 @@
 				  elem: '#id-date', //指定元素
 				  range: true
 				});
-				$('#menuList li a').bind('click', function(){
+				$('#menuList li a').unbind('click').bind('click', function(){
 					if (!$(this).is('.dropdown-toggle')) { // 子节点才进行样式切换和请求
 						$('#menuList li').removeClass('active');
 						$(this).parent().addClass('active');

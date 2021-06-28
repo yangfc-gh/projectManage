@@ -2,6 +2,9 @@ package cn.com.project.data.model.obj;
 
 import java.util.Date;
 
+/**
+ * 主体（我方主体和友方主体）
+ */
 public class Corporate {
     /**主体id*/
     private String cid;

@@ -52,8 +52,6 @@ public class OrderController {
     @Autowired
     CustomerMapper customerMapper;
     @Autowired
-    SupplierMapper supplierMapper;
-    @Autowired
     SysDictsMapper sysDictsMapper;
     @Autowired
     SysLogComponent sysLogComponent;
@@ -111,7 +109,14 @@ public class OrderController {
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);
         // 翻译一下【刻章】字典项
         Map<String, String> dicts = sysDictsList.stream().collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
-
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+        order.setStatusText(StringUtils.isNotBlank(order.getStatus()) ? dicts.get(order.getStatus()) : "");
+        order.setCustomerText(StringUtils.isNotBlank(order.getCustomerId()) ? cust.get(order.getCustomerId()) : "");
+        order.setAreaText(StringUtils.isNotBlank(order.getArea()) ? dicts.get(order.getArea()) : "");
+        order.setBidderZText(StringUtils.isNotBlank(order.getBidderZ()) ? corp.get(order.getBidderZ()) : "");
         modelAndView.addObject("orderInfo", order);
         modelAndView.setViewName(templatePath+"orderDetail");
         return modelAndView;
