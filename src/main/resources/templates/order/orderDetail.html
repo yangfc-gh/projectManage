@@ -33,6 +33,7 @@
 					<button th:onclick="toQuotation([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">报价单 </button>
 					<button th:onclick="toBidder([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">新增竞标方 </button>
 					<button th:onclick="toDeposit([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">新增保证金 </button>
+					<button th:onclick="toContract([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">合同 </button>
 				</div>
 			</div>
 			<div class="row">
@@ -155,14 +156,14 @@
 											<div class="profile-info-name"> 报价单<small>(发客户)</small> </div>
 											<div class="profile-info-value">
 												<!-- <span class="" id="customerAnnexName" th:text="${orderInfo.quotation.customerAnnexName}"></span> -->
-												<p th:onclick="toDownloadAnnex([[${orderInfo.quotation.customerAnnexPath}]])" style="color: #007DDB;cursor: pointer;" th:on title="点击下载" th:text="${orderInfo.quotation.customerAnnexName}"></p>
+												<p th:onclick="toDownloadQuotationAnnex([[${orderInfo.quotation.customerAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${orderInfo.quotation.customerAnnexName}"></p>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
 											<div class="profile-info-name"> 明细<small>(自留)</small> </div>
 											<div class="profile-info-value">
 												<!-- <span class="" id="selfAnnesName" th:text="${orderInfo.quotation.selfAnnesName}"></span> -->
-												<p th:onclick="toDownloadAnnex([[${orderInfo.quotation.selfAnnexPath}]])" style="color: #007DDB;cursor: pointer;" th:on title="点击下载" th:text="${orderInfo.quotation.selfAnnesName}"></p>
+												<p th:onclick="toDownloadQuotationAnnex([[${orderInfo.quotation.selfAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${orderInfo.quotation.selfAnnesName}"></p>
 											</div>
 										</div>
 									</div>
@@ -255,61 +256,118 @@
 								</a>
 							</div>
 						
-							<div class="panel-collapse collapse in" id="collapseContract">
+							<div th:if="${orderInfo.contract}" class="panel-collapse collapse in" id="collapseContract">
 								<div class="panel-body">
 									<div class="profile-user-info profile-user-info-striped">
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 项目名称 </div>
+											<div class="profile-info-name"> 合同名称 </div>
 											<div class="profile-info-value">
-												<span class="" id="projectName" th:text="${orderInfo?.projectName}"></span>
+												<span class="" id="cname" th:text="${orderInfo.contract.cname}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 时间 </div>
+											<div class="profile-info-name"> 合同号 </div>
 											<div class="profile-info-value">
-												<span class="" id="otime" th:text="${#dates.format(orderInfo?.ctime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+												<span class="" id="cno" th:text="${orderInfo.contract.cno}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 客户 </div>
+											<div class="profile-info-name"> 合同金额 </div>
 											<div class="profile-info-value">
-												<span class="" id="customerText" th:text="${orderInfo?.customerText}"></span>
+												<span class="" id="amount" th:text="${orderInfo.contract.amount}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 区域 </div>
+											<div class="profile-info-name"> 工程名称 </div>
 											<div class="profile-info-value">
-												<span class="" id="areaText" th:text="${orderInfo?.areaText}"></span>
+												<span class="" id="pname" th:text="${orderInfo.contract.pname}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 中标方 </div>
+											<div class="profile-info-name"> 签订日期 </div>
 											<div class="profile-info-value">
-												<span class="" id="bidderZText" th:text="${orderInfo?.bidderZText}"></span>
+												<span class="" id="signDate" th:text="${orderInfo.contract.signDate}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 来源 </div>
+											<div class="profile-info-name"> 附件 </div>
 											<div class="profile-info-value">
-												<span class="" id="source" th:text="${orderInfo?.source}"></span>
+												<span id="annexName" th:onclick="toDownloadContractAnnex([[${orderInfo.contract.annexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载"  th:text="${orderInfo.contract.annexName}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 中标金额 </div>
+											<div class="profile-info-name"> 甲方 </div>
 											<div class="profile-info-value">
-												<span class="" id="bidAmount" th:text="${orderInfo?.bidAmount}"></span>
+												<span class="" id="partya" th:text="${orderInfo.contract.partya}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
-											<div class="profile-info-name"> 明细 </div>
+											<div class="profile-info-name"> 乙方 </div>
 											<div class="profile-info-value">
-												<span class="" id="bidDetail" th:text="${orderInfo?.bidDetail}"></span>
+												<span class="" id="partyb" th:text="${orderInfo.contract.partyb}"></span>
 											</div>
 										</div>
-										<div class="col-xs-12 col-sm-12 col-md-12 profile-info-row">
-											<div class="profile-info-name"> 备注 </div>
+										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+											<div class="profile-info-name"> 使用方 </div>
 											<div class="profile-info-value">
-												<span class="" id="remark" th:text="${orderInfo?.remark}"></span>
+												<span class="" id="partyu" th:text="${orderInfo.contract.partyu}"></span>
+											</div>
+										</div>
+										
+										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+											<div class="profile-info-name"> 执行方 </div>
+											<div class="profile-info-value">
+												<span class="" id="partyz" th:text="${orderInfo.contract.partyz}"></span>
+											</div>
+										</div>
+									</div>
+									<div class="panel panel-default" style="margin: 5px 12px;">
+										<div class="panel-heading">
+											<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseTwo_1">
+												<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+												&nbsp;合同款项信息 <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
+											</a>
+											<span class="pull-right">
+												<button th:onclick="toPayment([[${orderInfo.contract.cid}]], null)" type="button" class="btn btn-mini btn-primary">添加款项</button>
+											</span>
+										</div>
+										<div class="panel-collapse collapse in" id="collapseTwo_1">
+											<div class="panel-body">
+												<div id="payment-div" style="padding: 2px 12px;">
+													<table id="payment-table" class="table table-bordered table-hover">
+														<thead>
+															<tr>
+																<th>款项</th>
+																<th>金额</th>
+																<th>应回日期</th>
+																<th>备注</th>
+																<th>回款金额</th>
+																<th>回款日期</th>
+																<th>票据</th>
+																<th>回款说明</th>
+																<th></th>
+															</tr>
+														</thead>
+														<tbody id="payment-tbody">
+															<tr th:each="payment, state: ${orderInfo.contract.payments}">
+																<td th:text="${payment.payName}"></td>
+																<td th:text="${payment.amount}"></td>
+																<td th:text="${payment.expectedDate}"></td>
+																<td th:text="${payment.expectedRemark}"></td>
+																<td th:text="${payment.payAmount}"></td>
+																<td th:text="${payment.payDate}"></td>
+																<td>
+																	<span th:onclick="toDownloadContractPaymentAnnex([[${payment.billPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${payment.billName}"></span>
+																</td>
+																<td th:text="${payment.remark}"></td>
+																<th>
+																	<button th:onclick="toPayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-primary btn-mini">修改</button>
+																	<button th:onclick="delPayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-primary btn-white btn-mini">删除</button>
+																</th>
+															</tr>
+														</tbody>
+													</table>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -414,60 +472,43 @@
 				})
 			}
 			
-			//// 编辑企业信息
-			function toEnterprise(oid) {
-				postRequest($('#contextDiv').html() + '/info/toEnterprise/' + oid, {}, function(data) {
+			// 合同
+			function toContract(oid) {
+				postRequest($('#contextDiv').html() + '/contract/toEdit', {oid: oid}, function(data) {
 					subopenid = layer.open({
 						type: 1,
 						// skin: 'layui-layer-rim', //加上边框
-						title: '编辑企业信息',
-						area: ['800px', '90%'], //宽高
-						content: data
-					})
-				})
-			}
-			//// 编辑出资方
-			function toFund(eid, fid) {
-				postRequest($('#contextDiv').html() + '/info/toFund/' + eid, {
-					fid: fid
-				}, function(data) {
-					subopenid = layer.open({
-						type: 1,
-						// skin: 'layui-layer-rim', //加上边框
-						title: '编辑出资方信息',
-						area: ['600px', '80%'], //宽高
-						content: data
-					})
-				})
-			}
-			//// 编辑人员
-			function toPerson(eid, pid) {
-				postRequest($('#contextDiv').html() + '/info/toPerson/' + eid, {
-					pid: pid
-				}, function(data) {
-					subopenid = layer.open({
-						type: 1,
-						// skin: 'layui-layer-rim', //加上边框
-						title: '编辑人员信息',
-						area: ['600px', '80%'], //宽高
+						title: '合同',
+						area: ['60%', '80%'], //宽高
 						content: data
 					})
 				})
 			}
 			
+			// 合同-款项
+			function toPayment(cid, pid) {
+				postRequest($('#contextDiv').html() + '/contract/payment/toEdit', {cid:cid, pid:pid}, function(data) {
+					subopenid = layer.open({
+						type: 1,
+						// skin: 'layui-layer-rim', //加上边框
+						title: '合同款项',
+						area: ['60%', '80%'], //宽高
+						content: data
+					})
+				})
+			}
 			// 下载报价单或报价明细单
-			function toDownloadAnnex (annexId) {
+			function toDownloadQuotationAnnex (annexId) {
 				window.location.href = $('#contextDiv').html() + '/quotation/downloadAnnex/'+ annexId
 			}
-			// 下载完结材料
-			function toDownloadDoc (fid, idx) {
-				window.location.href = $('#contextDiv').html() + '/filed/downloadDoc?fid='+ fid + '&idx=' + idx
+			// 下载合同电子档
+			function toDownloadContractAnnex (annexId) {
+				window.location.href = $('#contextDiv').html() + '/contract/downloadAnnex/'+ annexId
 			}
-			// 下载完结材料
-			function toDownloadOrderDoc (oid, idx) {
-				window.location.href = $('#contextDiv').html() + '/order/downloadOrderDoc?oid='+ oid + '&idx=' + idx
+			// 下载款项票据附件
+			function toDownloadContractPaymentAnnex (annexId) {
+				window.location.href = $('#contextDiv').html() + '/contract/payment/downloadAnnex/'+ annexId
 			}
-			
 			
 			// 关闭详情窗口打开的子窗口
 			function closeSubWindow() {

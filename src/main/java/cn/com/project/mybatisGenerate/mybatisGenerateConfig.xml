@@ -39,7 +39,7 @@
 	</javaClientGenerator>
 	<!-- 设置要生成的表名 (需要必须有主键才会生成update、delete、select,而且新版本的generator不会生成删、改查方法，目前不知道原因)-->
 	<!-- insert 和 insertSelective 区别前者所有字段，后者只新增不为null的字段，update方法也是这样 -->
-		<table tableName="pro_contract" enableCountByExample="false"
+		<table tableName="pro_supplycontract" enableCountByExample="false"
 		enableUpdateByExample="false" enableDeleteByExample="false"
 		enableSelectByExample="false" selectByExampleQueryId="false"
 		enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"

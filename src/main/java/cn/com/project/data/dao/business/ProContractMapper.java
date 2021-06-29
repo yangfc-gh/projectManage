@@ -13,6 +13,8 @@ public interface ProContractMapper {
 
     ProContract selectByOid(String oid);
 
+    ProContract selectByAnnexId(String annexId);
+
     int updateByPrimaryKeySelective(ProContract record);
 
     int updateByPrimaryKey(ProContract record);

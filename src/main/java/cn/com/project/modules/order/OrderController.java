@@ -5,6 +5,7 @@ import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.dao.obj.CustomerMapper;
 import cn.com.project.data.dao.obj.SupplierMapper;
 import cn.com.project.data.dao.sys.SysDictsMapper;
+import cn.com.project.data.model.business.ProContract;
 import cn.com.project.data.model.business.ProOrder;
 import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Customer;
@@ -109,14 +110,29 @@ public class OrderController {
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);
         // 翻译一下【刻章】字典项
         Map<String, String> dicts = sysDictsList.stream().collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
+        // 全部主体信息
         List<Corporate> corporates = corporateMapper.selectByCondition(null);
         Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部客户信息
         List<Customer> customers = customerMapper.selectByCondition(null);
         Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+        // 翻译订单状态
         order.setStatusText(StringUtils.isNotBlank(order.getStatus()) ? dicts.get(order.getStatus()) : "");
+        // 翻译客户名称
         order.setCustomerText(StringUtils.isNotBlank(order.getCustomerId()) ? cust.get(order.getCustomerId()) : "");
+        // 翻译区域名称
         order.setAreaText(StringUtils.isNotBlank(order.getArea()) ? dicts.get(order.getArea()) : "");
+        // 翻译中标方名称
         order.setBidderZText(StringUtils.isNotBlank(order.getBidderZ()) ? corp.get(order.getBidderZ()) : "");
+        // 翻译合同中信息
+        if (null != order.getContract()) {
+            ProContract contract = order.getContract();
+            contract.setStatus(contract.getStatus().equals("0") ? "进行中" : "已完结");
+            contract.setPartya(cust.get(contract.getPartya()));
+            contract.setPartyb(corp.get(contract.getPartyb()));
+            contract.setPartyz(corp.get(contract.getPartyz()));
+            contract.setPartyu(cust.get(contract.getPartyu()));
+        }
         modelAndView.addObject("orderInfo", order);
         modelAndView.setViewName(templatePath+"orderDetail");
         return modelAndView;

@@ -4,6 +4,9 @@ import cn.com.project.data.model.obj.Corporate;
 
 import java.util.List;
 
+/**
+ * 主体管理（我方主体和友方主体）
+ */
 public interface CorporateMapper {
     int deleteByPrimaryKey(String cid);
 

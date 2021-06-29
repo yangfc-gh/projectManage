@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.business.ProSupplycontractMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProSupplycontract">
+    <id column="scid" jdbcType="VARCHAR" property="scid" />
+    <result column="oid" jdbcType="VARCHAR" property="oid" />
+    <result column="ono" jdbcType="VARCHAR" property="ono" />
+    <result column="cname" jdbcType="VARCHAR" property="cname" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="partyA" jdbcType="VARCHAR" property="partya" />
+    <result column="partyB" jdbcType="VARCHAR" property="partyb" />
+    <result column="sign_date" jdbcType="VARCHAR" property="signDate" />
+    <result column="delivery_date" jdbcType="VARCHAR" property="deliveryDate" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="annex_name" jdbcType="VARCHAR" property="annexName" />
+    <result column="annex_path" jdbcType="VARCHAR" property="annexPath" />
+    <result column="delivery_name" jdbcType="VARCHAR" property="deliveryName" />
+    <result column="delivery_path" jdbcType="VARCHAR" property="deliveryPath" />
+    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    scid, oid, ono, cname, amount, partyA, partyB, sign_date, delivery_date, description, 
+    remark, `status`, annex_name, annex_path, delivery_name, delivery_path, ctime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_supplycontract
+    where scid = #{scid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract
+    where oid = #{oid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByAnnexId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract
+    where annex_path = #{annexId,jdbcType=VARCHAR} or delivery_path = #{annexId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_supplycontract
+    where scid = #{scid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.business.ProSupplycontract">
+    insert into pro_supplycontract (scid, oid, ono, 
+      cname, amount, partyA, 
+      partyB, sign_date, delivery_date, 
+      description, remark,
+      annex_name, annex_path, delivery_name, 
+      delivery_path
+      )
+    values (#{scid,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{ono,jdbcType=VARCHAR}, 
+      #{cname,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{partya,jdbcType=VARCHAR}, 
+      #{partyb,jdbcType=VARCHAR}, #{signDate,jdbcType=VARCHAR}, #{deliveryDate,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+      #{annexName,jdbcType=VARCHAR}, #{annexPath,jdbcType=VARCHAR}, #{deliveryName,jdbcType=VARCHAR}, 
+      #{deliveryPath,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProSupplycontract">
+    insert into pro_supplycontract
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="scid != null">
+        scid,
+      </if>
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="ono != null">
+        ono,
+      </if>
+      <if test="cname != null">
+        cname,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="partya != null">
+        partyA,
+      </if>
+      <if test="partyb != null">
+        partyB,
+      </if>
+      <if test="signDate != null">
+        sign_date,
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="annexName != null">
+        annex_name,
+      </if>
+      <if test="annexPath != null">
+        annex_path,
+      </if>
+      <if test="deliveryName != null">
+        delivery_name,
+      </if>
+      <if test="deliveryPath != null">
+        delivery_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="scid != null">
+        #{scid,jdbcType=VARCHAR},
+      </if>
+      <if test="oid != null">
+        #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="ono != null">
+        #{ono,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null">
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="partya != null">
+        #{partya,jdbcType=VARCHAR},
+      </if>
+      <if test="partyb != null">
+        #{partyb,jdbcType=VARCHAR},
+      </if>
+      <if test="signDate != null">
+        #{signDate,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        #{deliveryDate,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="annexName != null">
+        #{annexName,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPath != null">
+        #{annexPath,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryName != null">
+        #{deliveryName,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryPath != null">
+        #{deliveryPath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.business.ProSupplycontract">
+    update pro_supplycontract
+    <set>
+      <if test="oid != null">
+        oid = #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="ono != null">
+        ono = #{ono,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null">
+        cname = #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="partya != null">
+        partyA = #{partya,jdbcType=VARCHAR},
+      </if>
+      <if test="partyb != null">
+        partyB = #{partyb,jdbcType=VARCHAR},
+      </if>
+      <if test="signDate != null">
+        sign_date = #{signDate,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date = #{deliveryDate,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="annexName != null">
+        annex_name = #{annexName,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPath != null">
+        annex_path = #{annexPath,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryName != null">
+        delivery_name = #{deliveryName,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryPath != null">
+        delivery_path = #{deliveryPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where scid = #{scid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProSupplycontract">
+    update pro_supplycontract
+    set ono = #{ono,jdbcType=VARCHAR},
+      cname = #{cname,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      partyA = #{partya,jdbcType=VARCHAR},
+      partyB = #{partyb,jdbcType=VARCHAR},
+      sign_date = #{signDate,jdbcType=VARCHAR},
+      delivery_date = #{deliveryDate,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      annex_name = #{annexName,jdbcType=VARCHAR},
+      annex_path = #{annexPath,jdbcType=VARCHAR},
+      delivery_name = #{deliveryName,jdbcType=VARCHAR},
+      delivery_path = #{deliveryPath,jdbcType=VARCHAR}
+    where scid = #{scid,jdbcType=VARCHAR}
+  </update>
+</mapper>

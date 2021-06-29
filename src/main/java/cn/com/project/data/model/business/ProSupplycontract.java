@@ -2,43 +2,26 @@ package cn.com.project.data.model.business;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
-/**
- * 合同信息
- */
-public class ProContract {
-    private String cid;
+public class ProSupplycontract {
+    private String scid;
 
-    /**订单*/
     private String oid;
 
-    /**合同编号*/
-    private String cno;
+    /**合同号*/
+    private String ono;
 
     /**合同名称*/
     private String cname;
 
-    /**工程名称*/
-    private String pname;
-
     /**合同金额*/
     private BigDecimal amount;
 
-    /**甲方*/
+    /**甲方(我方主体)*/
     private String partya;
 
-    /**乙方*/
+    /**乙方(供应商)*/
     private String partyb;
-
-    /**使用方*/
-    private String partyu;
-
-    /**执行方*/
-    private String partyz;
-
-    /**乙方和执行方合约金*/
-    private String treatybz;
 
     /**签订日期*/
     private String signDate;
@@ -52,32 +35,31 @@ public class ProContract {
     /**备注*/
     private String remark;
 
-    /**发票日期*/
-    private String invoiceDate;
+    /**状态*/
+    private String status;
 
-    /**发票金额*/
-    private BigDecimal invoiceAmount;
-
-    /**合同电子档*/
+    /**合同附件*/
     private String annexName;
 
-    /**本地名称*/
+    /**合同附件本地路径*/
     private String annexPath;
 
-    private String status;
+    /**送货单*/
+    private String deliveryName;
+
+    /**送货单本地路径*/
+    private String deliveryPath;
 
     private Date ctime;
 
     private Date utime;
 
-    private List<ProContractPayment> payments;
-
-    public String getCid() {
-        return cid;
+    public String getScid() {
+        return scid;
     }
 
-    public void setCid(String cid) {
-        this.cid = cid == null ? null : cid.trim();
+    public void setScid(String scid) {
+        this.scid = scid == null ? null : scid.trim();
     }
 
     public String getOid() {
@@ -88,12 +70,12 @@ public class ProContract {
         this.oid = oid == null ? null : oid.trim();
     }
 
-    public String getCno() {
-        return cno;
+    public String getOno() {
+        return ono;
     }
 
-    public void setCno(String cno) {
-        this.cno = cno == null ? null : cno.trim();
+    public void setOno(String ono) {
+        this.ono = ono == null ? null : ono.trim();
     }
 
     public String getCname() {
@@ -102,14 +84,6 @@ public class ProContract {
 
     public void setCname(String cname) {
         this.cname = cname == null ? null : cname.trim();
-    }
-
-    public String getPname() {
-        return pname;
-    }
-
-    public void setPname(String pname) {
-        this.pname = pname == null ? null : pname.trim();
     }
 
     public BigDecimal getAmount() {
@@ -134,30 +108,6 @@ public class ProContract {
 
     public void setPartyb(String partyb) {
         this.partyb = partyb == null ? null : partyb.trim();
-    }
-
-    public String getPartyu() {
-        return partyu;
-    }
-
-    public void setPartyu(String partyu) {
-        this.partyu = partyu == null ? null : partyu.trim();
-    }
-
-    public String getPartyz() {
-        return partyz;
-    }
-
-    public void setPartyz(String partyz) {
-        this.partyz = partyz == null ? null : partyz.trim();
-    }
-
-    public String getTreatybz() {
-        return treatybz;
-    }
-
-    public void setTreatybz(String treatybz) {
-        this.treatybz = treatybz == null ? null : treatybz.trim();
     }
 
     public String getSignDate() {
@@ -192,20 +142,12 @@ public class ProContract {
         this.remark = remark == null ? null : remark.trim();
     }
 
-    public String getInvoiceDate() {
-        return invoiceDate;
+    public String getStatus() {
+        return status;
     }
 
-    public void setInvoiceDate(String invoiceDate) {
-        this.invoiceDate = invoiceDate == null ? null : invoiceDate.trim();
-    }
-
-    public BigDecimal getInvoiceAmount() {
-        return invoiceAmount;
-    }
-
-    public void setInvoiceAmount(BigDecimal invoiceAmount) {
-        this.invoiceAmount = invoiceAmount;
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     public String getAnnexName() {
@@ -224,6 +166,22 @@ public class ProContract {
         this.annexPath = annexPath == null ? null : annexPath.trim();
     }
 
+    public String getDeliveryName() {
+        return deliveryName;
+    }
+
+    public void setDeliveryName(String deliveryName) {
+        this.deliveryName = deliveryName == null ? null : deliveryName.trim();
+    }
+
+    public String getDeliveryPath() {
+        return deliveryPath;
+    }
+
+    public void setDeliveryPath(String deliveryPath) {
+        this.deliveryPath = deliveryPath == null ? null : deliveryPath.trim();
+    }
+
     public Date getCtime() {
         return ctime;
     }
@@ -238,21 +196,5 @@ public class ProContract {
 
     public void setUtime(Date utime) {
         this.utime = utime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public List<ProContractPayment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<ProContractPayment> payments) {
-        this.payments = payments;
     }
 }

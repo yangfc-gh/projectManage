@@ -24,10 +24,13 @@
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
+  <resultMap id="ResultMap_sub" extends="BaseResultMap" type="cn.com.project.data.model.business.ProContract">
+    <collection property="payments" column="cid" select="cn.com.project.data.dao.business.ProContractPaymentMapper.selectByCid"></collection>
+  </resultMap>
   <sql id="Base_Column_List">
     cid, oid, cno, cname, pname, amount, partyA, partyB, partyU, partyZ, treatyBZ, sign_date, 
     delivery_date, description, remark, invoice_date, invoice_amount, annex_name, annex_path, 
-    ctime
+    ctime, `status`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -35,11 +38,17 @@
     from pro_contract
     where cid = #{cid,jdbcType=VARCHAR}
   </select>
-  <select id="selectByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByOid" parameterType="java.lang.String" resultMap="ResultMap_sub">
     select
     <include refid="Base_Column_List" />
     from pro_contract
     where oid = #{oid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByAnnexId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_contract
+    where annex_path = #{annexId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_contract
@@ -241,6 +250,9 @@
       <if test="annexPath != null">
         annex_path = #{annexPath,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
     </set>
     where cid = #{cid,jdbcType=VARCHAR}
   </update>
@@ -262,7 +274,7 @@
       invoice_date = #{invoiceDate,jdbcType=VARCHAR},
       invoice_amount = #{invoiceAmount,jdbcType=DECIMAL},
       annex_name = #{annexName,jdbcType=VARCHAR},
-      annex_path = #{annexPath,jdbcType=VARCHAR},
+      annex_path = #{annexPath,jdbcType=VARCHAR}
     where cid = #{cid,jdbcType=VARCHAR}
   </update>
 </mapper>

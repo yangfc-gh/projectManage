@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.business.ProSupplycontractPaymentMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProSupplycontractPayment">
+    <id column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="scid" jdbcType="VARCHAR" property="scid" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="pay_date" jdbcType="VARCHAR" property="payDate" />
+    <result column="pay_mode" jdbcType="VARCHAR" property="payMode" />
+    <result column="pay_corporate" jdbcType="VARCHAR" property="payCorporate" />
+    <result column="bill_name" jdbcType="VARCHAR" property="billName" />
+    <result column="bill_path" jdbcType="VARCHAR" property="billPath" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pid, scid, amount, pay_date, pay_mode, pay_corporate, bill_name, bill_path, remark, 
+    ctime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_supplycontract_payment
+    where pid = #{pid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByScid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract_payment
+    where scid = #{scid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByAnnexId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract_payment
+    where bill_path = #{annexId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_supplycontract_payment
+    where pid = #{pid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.business.ProSupplycontractPayment">
+    insert into pro_supplycontract_payment (pid, scid, amount, 
+      pay_date, pay_mode, pay_corporate, 
+      bill_name, bill_path, remark)
+    values (#{pid,jdbcType=VARCHAR}, #{scid,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, 
+      #{payDate,jdbcType=VARCHAR}, #{payMode,jdbcType=VARCHAR}, #{payCorporate,jdbcType=VARCHAR}, 
+      #{billName,jdbcType=VARCHAR}, #{billPath,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProSupplycontractPayment">
+    insert into pro_supplycontract_payment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="scid != null">
+        scid,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="payDate != null">
+        pay_date,
+      </if>
+      <if test="payMode != null">
+        pay_mode,
+      </if>
+      <if test="payCorporate != null">
+        pay_corporate,
+      </if>
+      <if test="billName != null">
+        bill_name,
+      </if>
+      <if test="billPath != null">
+        bill_path,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="scid != null">
+        #{scid,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payDate != null">
+        #{payDate,jdbcType=VARCHAR},
+      </if>
+      <if test="payMode != null">
+        #{payMode,jdbcType=VARCHAR},
+      </if>
+      <if test="payCorporate != null">
+        #{payCorporate,jdbcType=VARCHAR},
+      </if>
+      <if test="billName != null">
+        #{billName,jdbcType=VARCHAR},
+      </if>
+      <if test="billPath != null">
+        #{billPath,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.business.ProSupplycontractPayment">
+    update pro_supplycontract_payment
+    <set>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payDate != null">
+        pay_date = #{payDate,jdbcType=VARCHAR},
+      </if>
+      <if test="payMode != null">
+        pay_mode = #{payMode,jdbcType=VARCHAR},
+      </if>
+      <if test="payCorporate != null">
+        pay_corporate = #{payCorporate,jdbcType=VARCHAR},
+      </if>
+      <if test="billName != null">
+        bill_name = #{billName,jdbcType=VARCHAR},
+      </if>
+      <if test="billPath != null">
+        bill_path = #{billPath,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pid = #{pid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProSupplycontractPayment">
+    update pro_supplycontract_payment
+    set amount = #{amount,jdbcType=DECIMAL},
+      pay_date = #{payDate,jdbcType=VARCHAR},
+      pay_mode = #{payMode,jdbcType=VARCHAR},
+      pay_corporate = #{payCorporate,jdbcType=VARCHAR},
+      bill_name = #{billName,jdbcType=VARCHAR},
+      bill_path = #{billPath,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where pid = #{pid,jdbcType=VARCHAR}
+  </update>
+</mapper>
