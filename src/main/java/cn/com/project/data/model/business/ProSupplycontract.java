@@ -2,14 +2,18 @@ package cn.com.project.data.model.business;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+/**
+ * 供应合同
+ */
 public class ProSupplycontract {
     private String scid;
 
     private String oid;
 
     /**合同号*/
-    private String ono;
+    private String cno;
 
     /**合同名称*/
     private String cname;
@@ -54,6 +58,8 @@ public class ProSupplycontract {
 
     private Date utime;
 
+    private List<ProSupplycontractPayment> payments;
+
     public String getScid() {
         return scid;
     }
@@ -70,12 +76,12 @@ public class ProSupplycontract {
         this.oid = oid == null ? null : oid.trim();
     }
 
-    public String getOno() {
-        return ono;
+    public String getCno() {
+        return cno;
     }
 
-    public void setOno(String ono) {
-        this.ono = ono == null ? null : ono.trim();
+    public void setCno(String cno) {
+        this.cno = cno == null ? null : cno.trim();
     }
 
     public String getCname() {
@@ -196,5 +202,13 @@ public class ProSupplycontract {
 
     public void setUtime(Date utime) {
         this.utime = utime;
+    }
+
+    public List<ProSupplycontractPayment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<ProSupplycontractPayment> payments) {
+        this.payments = payments;
     }
 }

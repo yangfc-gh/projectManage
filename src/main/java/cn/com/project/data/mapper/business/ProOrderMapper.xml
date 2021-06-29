@@ -20,6 +20,7 @@
   <resultMap id="ResultMapDetail" extends="BaseResultMap" type="cn.com.project.data.model.business.ProOrder">
     <association property="quotation" column="oid" select="cn.com.project.data.dao.business.ProQuotationMapper.selectByOid"></association>
     <association property="contract" column="oid" select="cn.com.project.data.dao.business.ProContractMapper.selectByOid"></association>
+    <collection property="supplycontracts" column="oid" select="cn.com.project.data.dao.business.ProSupplycontractMapper.selectByOid"></collection>
     <collection property="bidders" column="oid" select="cn.com.project.data.dao.business.ProBidderMapper.selectByOid"></collection>
     <collection property="enquiries" column="oid" select="cn.com.project.data.dao.business.ProEnquiryMapper.selectByOid"></collection>
     <collection property="deposits" column="oid" select="cn.com.project.data.dao.business.ProDepositMapper.selectByOid"></collection>

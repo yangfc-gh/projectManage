@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProSupplycontract">
     <id column="scid" jdbcType="VARCHAR" property="scid" />
     <result column="oid" jdbcType="VARCHAR" property="oid" />
-    <result column="ono" jdbcType="VARCHAR" property="ono" />
+    <result column="cno" jdbcType="VARCHAR" property="cno" />
     <result column="cname" jdbcType="VARCHAR" property="cname" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
     <result column="partyA" jdbcType="VARCHAR" property="partya" />
@@ -21,8 +21,11 @@
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
+  <resultMap id="ResultMap_sub" extends="BaseResultMap" type="cn.com.project.data.model.business.ProSupplycontract">
+    <collection property="payments" column="scid" select="cn.com.project.data.dao.business.ProSupplycontractPaymentMapper.selectByScid"></collection>
+  </resultMap>
   <sql id="Base_Column_List">
-    scid, oid, ono, cname, amount, partyA, partyB, sign_date, delivery_date, description, 
+    scid, oid, cno, cname, amount, partyA, partyB, sign_date, delivery_date, description,
     remark, `status`, annex_name, annex_path, delivery_name, delivery_path, ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -31,7 +34,7 @@
     from pro_supplycontract
     where scid = #{scid,jdbcType=VARCHAR}
   </select>
-  <select id="selectByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByOid" parameterType="java.lang.String" resultMap="ResultMap_sub">
     select
     <include refid="Base_Column_List" />
     from pro_supplycontract
@@ -48,14 +51,14 @@
     where scid = #{scid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProSupplycontract">
-    insert into pro_supplycontract (scid, oid, ono, 
+    insert into pro_supplycontract (scid, oid, cno,
       cname, amount, partyA, 
       partyB, sign_date, delivery_date, 
       description, remark,
       annex_name, annex_path, delivery_name, 
       delivery_path
       )
-    values (#{scid,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{ono,jdbcType=VARCHAR}, 
+    values (#{scid,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{cno,jdbcType=VARCHAR},
       #{cname,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{partya,jdbcType=VARCHAR}, 
       #{partyb,jdbcType=VARCHAR}, #{signDate,jdbcType=VARCHAR}, #{deliveryDate,jdbcType=VARCHAR}, 
       #{description,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
@@ -72,8 +75,8 @@
       <if test="oid != null">
         oid,
       </if>
-      <if test="ono != null">
-        ono,
+      <if test="cno != null">
+        cno,
       </if>
       <if test="cname != null">
         cname,
@@ -122,8 +125,8 @@
       <if test="oid != null">
         #{oid,jdbcType=VARCHAR},
       </if>
-      <if test="ono != null">
-        #{ono,jdbcType=VARCHAR},
+      <if test="cno != null">
+        #{cno,jdbcType=VARCHAR},
       </if>
       <if test="cname != null">
         #{cname,jdbcType=VARCHAR},
@@ -172,8 +175,8 @@
       <if test="oid != null">
         oid = #{oid,jdbcType=VARCHAR},
       </if>
-      <if test="ono != null">
-        ono = #{ono,jdbcType=VARCHAR},
+      <if test="cno != null">
+        cno = #{cno,jdbcType=VARCHAR},
       </if>
       <if test="cname != null">
         cname = #{cname,jdbcType=VARCHAR},
@@ -219,7 +222,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProSupplycontract">
     update pro_supplycontract
-    set ono = #{ono,jdbcType=VARCHAR},
+    set cno = #{cno,jdbcType=VARCHAR},
       cname = #{cname,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=DECIMAL},
       partyA = #{partya,jdbcType=VARCHAR},

@@ -98,10 +98,12 @@
 		<script>
 			$(function() {
 				laydate.render({
-					elem: '#payDate'
+					elem: '#payDate',
+					trigger:'click'
 				});
 				laydate.render({
-					elem: '#backDate'
+					elem: '#backDate',
+					trigger:'click'
 				});
 			})
 			function saveDeposit() {

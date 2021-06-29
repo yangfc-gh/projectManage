@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>合同</title>
+		<style>
+			.footBtn {
+				position: sticky;
+				bottom: 0px;
+				padding-top: 5px;
+				padding-bottom: 10px;
+				width: 100%;
+				background-color: #D8D8D8;
+				opacity: 0.9;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page-content" style="margin-bottom: 50pxmin-height: 250px">
+			<div class="row">
+				<div class="col-xs-12">
+					<form id="contractForm" class="form-horizontal" method="post">
+						<input type="hidden" id="oid" name="oid" th:value="${contract?.oid}" />
+						<input type="hidden" id="cid" name="cid" th:value="${contract?.cid}" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="cno">合同号:</label>
+							<div class="col-sm-8">
+								<input type="text" id="cno" name="cno" th:value="${contract?.cno}" placeholder="" class="form-control" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="cname">合同名称:</label>
+							<div class="col-sm-8">
+								<input type="text" id="cname" name="cname" th:value="${contract?.cname}" placeholder="" class="form-control" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="pname">工程名称:</label>
+							<div class="col-sm-8">
+								<input type="text" id="pname" name="pname" th:value="${contract?.pname}" placeholder="" class="form-control" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="amount">合同金额:</label>
+							<div class="col-sm-8">
+								<input type="text" id="amount" name="amount" th:value="${contract?.amount}"  placeholder=""
+								 oninput="value=value.replace(/[^0-9\.]/g,'')"
+								 autocomplete="off" maxlength="17" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="signDate">签订日期:</label>
+							<div class="col-sm-8">
+								<input type="text" id="signDate" name="signDate" th:value="${contract?.signDate}" placeholder="" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="partya">甲方:</label>
+							<div class="col-sm-8">
+								<select id="partya" name="partya" class="form-control">
+									<option value=""></option>
+									<option th:each="cust : ${customers}" th:selected="${cust.cid eq contract?.partya}" th:value="${cust.cid}" th:text="${cust.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="partyb">乙方:</label>
+							<div class="col-sm-8">
+								<select id="partyb" name="partyb" class="form-control">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:selected="${corp.cid eq contract?.partyb}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="partyu">使用方:</label>
+							<div class="col-sm-8">
+								<select id="partyu" name="partyu" class="form-control">
+									<option value=""></option>
+									<option th:each="cust : ${customers}" th:selected="${cust.cid eq contract?.partyu}" th:value="${cust.cid}" th:text="${cust.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="partyz">执行方:</label>
+							<div class="col-sm-8">
+								<select id="partyz" name="partyz" class="form-control">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:selected="${corp.cid eq contract?.partyz}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="treatybz">乙执合约金:</label>
+							<div class="col-sm-8">
+								<input type="text" id="treatybz" name="treatybz" th:value="${contract?.treatybz}" placeholder="" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="deliveryDate">交付日期:</label>
+							<div class="col-sm-8">
+								<input type="text" id="deliveryDate" name="deliveryDate" th:value="${contract?.deliveryDate}" placeholder="" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="description">概述:</label>
+							<div class="col-sm-8">
+								<textarea id="description" name="description" rows="5" class="form-control" th:text="${contract?.description}"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="invoiceDate">发票日期:</label>
+							<div class="col-sm-8">
+								<input type="text" id="invoiceDate" name="invoiceDate" th:value="${contract?.invoiceDate}" placeholder="" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="invoiceAmount">发票金额:</label>
+							<div class="col-sm-8">
+								<input type="text" id="invoiceAmount" name="invoiceAmount" th:value="${contract?.invoiceAmount}"  placeholder=""
+								 oninput="value=value.replace(/[^0-9\.]/g,'')"
+								 autocomplete="off" maxlength="17" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="remark">备注:</label>
+							<div class="col-sm-8">
+								<textarea id="remark" name="remark" class="form-control" th:text="${contract?.remark}"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="business">合同电子档:</label>
+							<div class="col-sm-8">
+								<input id="attachment" name="attachment" type="file" class=""
+								 accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword, application/pdf,image/*"
+								 onclick="this.value=null"> 
+								<div id="files"></div>
+							</div>
+						</div>
+						<div th:if="${contract.annexName}" class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="business"></label>
+							<div class="col-sm-8">
+								已上传合同：<span th:text="${contract.annexName}"></span>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="footBtn">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="9">
+						<button id="saveBtn" class="btn btn-primary btn-sm" onclick="saveContract()">保存</button>&nbsp&nbsp&nbsp
+						<button class="btn btn-white btn-default" onclick="closeSubWindow()">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function() {
+				laydate.render({
+					elem: '#signDate',
+					trigger:'click'
+				})
+				laydate.render({
+					elem: '#deliveryDate',
+					trigger:'click'
+				})
+				laydate.render({
+					elem: '#invoiceDate',
+					trigger:'click'
+				})
+			})
+			function saveContract() {
+				if (validate ()) {
+					/* $('#saveBtn', $('#contractForm')).attr("disabled", "disabled")
+					var formData = $("#contractForm").serialize()
+					postRequest($('#contextDiv').html() + '/contract/update', formData, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							closeSubWindow()
+						} else {
+							layer.msg(data.message)
+						}
+					}) */
+					$('#saveBtn', $('#contractForm')).attr("disabled", "disabled")
+					var form = new FormData(document.getElementById("contractForm"));
+					$.ajax({
+						url: $('#contextDiv').html() + '/contract/update',
+						type: "post",
+						data: form,
+						cache: false,
+						processData: false,
+						contentType: false,
+						success: function(data) {
+							if (data.result) {
+								layer.msg('操作成功')
+								closeSubWindow()
+							} else {
+								layer.msg(data.message)
+							}
+						},
+						error: function(e) {
+							layer.msg("网络错误，请重试！！");
+						}
+					});
+				}
+			}
+			function validate() {
+				if (!$('#amount', $('#contractForm')).val()) {
+					layer.msg('请填写合同金额')
+					$('#amount', $('#contractForm')).focus()
+					return false
+				}
+				if (!$('#signDate', $('#contractForm')).val()) {
+					layer.msg('请填写签订日期')
+					$('#signDate', $('#contractForm')).focus()
+					return false
+				}
+				if (!$('#partya', $('#contractForm')).val()) {
+					layer.msg('请选择甲方')
+					$('#partya', $('#contractForm')).focus()
+					return false
+				}
+				if (!$('#partyb', $('#contractForm')).val()) {
+					layer.msg('请选择乙方')
+					$('#partyb', $('#contractForm')).focus()
+					return false
+				}
+				return true
+			}
+		</script>
+	</body>
+</html>

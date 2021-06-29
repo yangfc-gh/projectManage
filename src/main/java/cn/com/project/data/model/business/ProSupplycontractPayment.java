@@ -3,6 +3,9 @@ package cn.com.project.data.model.business;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 供应合同付款记录
+ */
 public class ProSupplycontractPayment {
     private String pid;
 

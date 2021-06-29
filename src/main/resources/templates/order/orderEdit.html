@@ -42,6 +42,7 @@
 							<label class="col-sm-3 control-label no-padding-right" for="customerId">客户:</label>
 							<div class="col-sm-8">
 								<select name="customerId" class="form-control">
+									<!-- <option value="" disabled selected>如果是新客户请先到[客户管理]功能里去新增一下</option> -->
 									<option value=""></option>
 									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
 								</select>

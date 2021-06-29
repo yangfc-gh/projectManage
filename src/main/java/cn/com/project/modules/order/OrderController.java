@@ -7,8 +7,11 @@ import cn.com.project.data.dao.obj.SupplierMapper;
 import cn.com.project.data.dao.sys.SysDictsMapper;
 import cn.com.project.data.model.business.ProContract;
 import cn.com.project.data.model.business.ProOrder;
+import cn.com.project.data.model.business.ProSupplycontract;
+import cn.com.project.data.model.business.ProSupplycontractPayment;
 import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Customer;
+import cn.com.project.data.model.obj.Supplier;
 import cn.com.project.data.model.sys.SysDicts;
 import cn.com.project.data.model.sys.SysUser;
 import cn.com.project.modules.order.service.OrderService;
@@ -52,6 +55,8 @@ public class OrderController {
     CorporateMapper corporateMapper;
     @Autowired
     CustomerMapper customerMapper;
+    @Autowired
+    SupplierMapper supplierMapper;
     @Autowired
     SysDictsMapper sysDictsMapper;
     @Autowired
@@ -116,6 +121,9 @@ public class OrderController {
         // 全部客户信息
         List<Customer> customers = customerMapper.selectByCondition(null);
         Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+        // 全部供应商信息
+        List<Supplier> suppliers = supplierMapper.selectByCondition(null);
+        Map<String, String> supp = suppliers.stream().collect(Collectors.toMap(Supplier::getSid, Supplier::getName));
         // 翻译订单状态
         order.setStatusText(StringUtils.isNotBlank(order.getStatus()) ? dicts.get(order.getStatus()) : "");
         // 翻译客户名称
@@ -132,6 +140,14 @@ public class OrderController {
             contract.setPartyb(corp.get(contract.getPartyb()));
             contract.setPartyz(corp.get(contract.getPartyz()));
             contract.setPartyu(cust.get(contract.getPartyu()));
+        }
+        // 翻译供应合同中信息
+        for (ProSupplycontract supplycontract : order.getSupplycontracts()) {
+            supplycontract.setPartya(corp.get(supplycontract.getPartya()));
+            supplycontract.setPartyb(supp.get(supplycontract.getPartyb()));
+            for (ProSupplycontractPayment payment : supplycontract.getPayments()) {
+                payment.setPayCorporate(StringUtils.isNotBlank(payment.getPayCorporate()) ? corp.get(payment.getPayCorporate()) : null);
+            }
         }
         modelAndView.addObject("orderInfo", order);
         modelAndView.setViewName(templatePath+"orderDetail");

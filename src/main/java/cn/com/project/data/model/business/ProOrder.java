@@ -54,6 +54,7 @@ public class ProOrder {
 
     private ProQuotation quotation;
     private ProContract contract;
+    private List<ProSupplycontract> supplycontracts;
     private List<ProEnquiry> enquiries;
     private List<ProBidder> bidders;
     private List<ProDeposit> deposits;
@@ -269,5 +270,13 @@ public class ProOrder {
 
     public void setContract(ProContract contract) {
         this.contract = contract;
+    }
+
+    public List<ProSupplycontract> getSupplycontracts() {
+        return supplycontracts;
+    }
+
+    public void setSupplycontracts(List<ProSupplycontract> supplycontracts) {
+        this.supplycontracts = supplycontracts;
     }
 }

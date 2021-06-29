@@ -10,7 +10,6 @@ import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.dao.obj.SupplierMapper;
 import cn.com.project.data.model.business.*;
 import cn.com.project.data.model.obj.Corporate;
-import cn.com.project.data.model.obj.Customer;
 import cn.com.project.data.model.obj.Supplier;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
@@ -36,7 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin
-@RequestMapping("supplyContract")
+@RequestMapping("supplycontract")
 @Controller
 public class SupplyContractController {
     private Logger logger = LoggerFactory.getLogger(SupplyContractController.class);
@@ -52,7 +51,7 @@ public class SupplyContractController {
     @Autowired
     SupplierMapper supplierMapper;
 
-    private final String templatePath = "supplyContract/";
+    private final String templatePath = "supplycontract/";
     private final String objName = "supplyContract";
     private final String objNameSub = "supplyContractPayment";
 
@@ -95,6 +94,9 @@ public class SupplyContractController {
             payment = new ProSupplycontractPayment();
             payment.setScid(scid);
         }
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+        modelAndView.addObject("corporates", corporates);
         modelAndView.addObject("payment", payment);
         modelAndView.setViewName(templatePath+objNameSub+"Edit");
         return modelAndView;
@@ -123,11 +125,14 @@ public class SupplyContractController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    supplycontract.setAnnexName(fileName);
-                    supplycontract.setAnnexPath(localName);
+                    // 比较奇怪，不选择文件也会有一个空”“的提交上来
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        supplycontract.setAnnexName(fileName);
+                        supplycontract.setAnnexPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -143,11 +148,13 @@ public class SupplyContractController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    supplycontract.setDeliveryName(fileName);
-                    supplycontract.setDeliveryPath(localName);
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        supplycontract.setDeliveryName(fileName);
+                        supplycontract.setDeliveryPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -190,11 +197,13 @@ public class SupplyContractController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    payment.setBillName(fileName);
-                    payment.setBillPath(localName);
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        payment.setBillName(fileName);
+                        payment.setBillPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
