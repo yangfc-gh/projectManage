@@ -34,9 +34,32 @@
     from pro_enquiry_detail
     where eid = #{eid,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCondition" resultMap="ResultMap_upper">
+    select
+    <include refid="Base_Column_List" />
+    from pro_enquiry_detail
+    <where>
+      <if test="eid != null and ''.toString() != eid">
+        and eid = #{eid,jdbcType=VARCHAR}
+      </if>
+      <if test="pname != null and ''.toString() != pname">
+        and pname like concat('%', #{pname,jdbcType=VARCHAR}, '%'))
+      </if>
+      <if test="pcode != null and ''.toString() != pcode">
+        and pcode like concat('%', #{pcode,jdbcType=VARCHAR}, '%'))
+      </if>
+      <if test="model != null and ''.toString() != model">
+        and model like concat('%', #{model,jdbcType=VARCHAR}, '%'))
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_enquiry_detail
     where did = #{did,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByEid" parameterType="java.lang.String">
+    delete from pro_enquiry_detail
+    where eid = #{eid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProEnquiryDetail">
     insert into pro_enquiry_detail (did, eid, pname, 

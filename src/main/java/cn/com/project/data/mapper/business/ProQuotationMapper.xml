@@ -6,14 +6,14 @@
     <result column="oid" jdbcType="VARCHAR" property="oid" />
     <result column="customer_annex_name" jdbcType="VARCHAR" property="customerAnnexName" />
     <result column="customer_annex_path" jdbcType="VARCHAR" property="customerAnnexPath" />
-    <result column="self_annes_name" jdbcType="VARCHAR" property="selfAnnesName" />
+    <result column="self_annex_name" jdbcType="VARCHAR" property="selfAnnexName" />
     <result column="self_annex_path" jdbcType="VARCHAR" property="selfAnnexPath" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
   <sql id="Base_Column_List">
-    qid, oid, customer_annex_name, customer_annex_path, self_annes_name, self_annex_path, 
+    qid, oid, customer_annex_name, customer_annex_path, self_annex_name, self_annex_path,
     remark, ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -40,11 +40,11 @@
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProQuotation">
     insert into pro_quotation (qid, oid, customer_annex_name, 
-      customer_annex_path, self_annes_name, self_annex_path, 
+      customer_annex_path, self_annex_name, self_annex_path,
       remark
       )
     values (#{qid,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{customerAnnexName,jdbcType=VARCHAR}, 
-      #{customerAnnexPath,jdbcType=VARCHAR}, #{selfAnnesName,jdbcType=VARCHAR}, #{selfAnnexPath,jdbcType=VARCHAR}, 
+      #{customerAnnexPath,jdbcType=VARCHAR}, #{selfAnnexName,jdbcType=VARCHAR}, #{selfAnnexPath,jdbcType=VARCHAR},
       #{remark,jdbcType=VARCHAR}
       )
   </insert>
@@ -63,8 +63,8 @@
       <if test="customerAnnexPath != null">
         customer_annex_path,
       </if>
-      <if test="selfAnnesName != null">
-        self_annes_name,
+      <if test="selfAnnexName != null">
+        self_annex_name,
       </if>
       <if test="selfAnnexPath != null">
         self_annex_path,
@@ -86,8 +86,8 @@
       <if test="customerAnnexPath != null">
         #{customerAnnexPath,jdbcType=VARCHAR},
       </if>
-      <if test="selfAnnesName != null">
-        #{selfAnnesName,jdbcType=VARCHAR},
+      <if test="selfAnnexName != null">
+        #{selfAnnexName,jdbcType=VARCHAR},
       </if>
       <if test="selfAnnexPath != null">
         #{selfAnnexPath,jdbcType=VARCHAR},
@@ -106,8 +106,8 @@
       <if test="customerAnnexPath != null">
         customer_annex_path = #{customerAnnexPath,jdbcType=VARCHAR},
       </if>
-      <if test="selfAnnesName != null">
-        self_annes_name = #{selfAnnesName,jdbcType=VARCHAR},
+      <if test="selfAnnexName != null">
+        self_annex_name = #{selfAnnexName,jdbcType=VARCHAR},
       </if>
       <if test="selfAnnexPath != null">
         self_annex_path = #{selfAnnexPath,jdbcType=VARCHAR},
@@ -122,7 +122,7 @@
     update pro_quotation
     set customer_annex_name = #{customerAnnexName,jdbcType=VARCHAR},
       customer_annex_path = #{customerAnnexPath,jdbcType=VARCHAR},
-      self_annes_name = #{selfAnnesName,jdbcType=VARCHAR},
+      self_annex_name = #{selfAnnexName,jdbcType=VARCHAR},
       self_annex_path = #{selfAnnexPath,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR}
     where qid = #{qid,jdbcType=VARCHAR}

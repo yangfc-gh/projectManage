@@ -17,6 +17,8 @@ public interface ProContractPaymentMapper {
 
     List<ProContractPayment> selectByCid(String cid);
 
+    List<ProContractPayment> selectByCondition(ProContractPayment record);
+
     int updateByPrimaryKeySelective(ProContractPayment record);
 
     int updateByPrimaryKey(ProContractPayment record);

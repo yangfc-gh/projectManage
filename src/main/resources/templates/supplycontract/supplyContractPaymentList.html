@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title>供应合同付款记录</title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="payment, state: ${resInfo.list}">
+			<td th:text="${payment.amount}"></td>
+			<td th:text="${payment.payDate}"></td>
+			<td th:text="${payment.payMode}"></td>
+			<td th:text="${payment.payCorporate}"></td>
+			<td>
+				<span th:onclick="toDownloadSupplycontractPaymentAnnex([[${payment.billPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${payment.billName}"></span>
+			</td>
+			<td th:text="${payment.remark}"></td>
+			<td>
+				<button th:onclick="toSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-primary btn-mini">修改</button>
+				<button th:onclick="delSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
+			</td>
+		</tr>
+	</body>
+</html>

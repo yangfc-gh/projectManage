@@ -28,9 +28,22 @@
     from pro_enquiry e left join supplier s on e.supplier=s.sid
     where e.oid = #{oid,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />, s.`name` supplierName
+    from pro_enquiry e left join supplier s on e.supplier=s.sid
+    <where>
+      <if test="oid != null and ''.toString() != oid">
+        and e.oid = #{oid,jdbcType=VARCHAR}
+      </if>
+      <if test="supplier != null and ''.toString() != supplier">
+        and e.supplier = #{supplier,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from pro_enquiry e
-    where e.eid = #{eid,jdbcType=VARCHAR}
+    delete from pro_enquiry
+    where eid = #{eid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProEnquiry">
     insert into pro_enquiry (eid, oid, supplier, 

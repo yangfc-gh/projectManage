@@ -36,6 +36,22 @@
     from pro_supplycontract_payment
     where bill_path = #{annexId,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract_payment
+    <where>
+      <if test="scid != null and ''.toString() != scid">
+        and scid = #{scid,jdbcType=VARCHAR}
+      </if>
+      <if test="ptimeb != null and ''.toString() != ptimeb">
+        and pay_date &gt;= concat(#{ptimeb,jdbcType=VARCHAR}, ' 00:00:00')
+      </if>
+      <if test="ptimee != null and ''.toString() != ptimee">
+        and pay_date &lt;= concat(#{ptimee,jdbcType=VARCHAR}, ' 23:59:59')
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_supplycontract_payment
     where pid = #{pid,jdbcType=VARCHAR}

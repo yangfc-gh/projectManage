@@ -8,12 +8,11 @@ import cn.com.project.data.dao.business.ProContractPaymentMapper;
 import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.dao.obj.CustomerMapper;
-import cn.com.project.data.model.business.ProContract;
-import cn.com.project.data.model.business.ProContractPayment;
-import cn.com.project.data.model.business.ProOrder;
-import cn.com.project.data.model.business.ProQuotation;
+import cn.com.project.data.model.business.*;
 import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Customer;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -103,6 +102,18 @@ public class ContractController {
     }
 
     /**
+     * 款项列表
+     */
+    @RequestMapping("/payment/list")
+    public ModelAndView getList(ProContractPayment payment, ModelAndView modelAndView) {
+        PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        List<ProContractPayment> payments = contractPaymentMapper.selectByCondition(payment);
+        PageInfo<ProContractPayment> resInfo = new PageInfo<>(payments);
+        modelAndView.addObject("resInfo", resInfo);
+        modelAndView.setViewName(templatePath+objNameSub+"List");
+        return modelAndView;
+    }
+    /**
      * 编辑更新
      */
     @RequestMapping("/update")
@@ -124,11 +135,13 @@ public class ContractController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    contract.setAnnexName(fileName);
-                    contract.setAnnexPath(localName);
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        contract.setAnnexName(fileName);
+                        contract.setAnnexPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -171,11 +184,13 @@ public class ContractController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    payment.setBillName(fileName);
-                    payment.setBillPath(localName);
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID() + fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        payment.setBillName(fileName);
+                        payment.setBillPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -257,6 +272,24 @@ public class ContractController {
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除款项
+     */
+    @RequestMapping("/payment/del/{pid}")
+    @ResponseBody
+    public ResponseResult getList(@PathVariable("pid") String pid, ModelAndView modelAndView) {
+        ProContractPayment payment = contractPaymentMapper.selectByPrimaryKey(pid);
+        if (null == payment) {
+            new ResponseResult(false, "未找到款项信息");
+        }
+        int res = contractPaymentMapper.deleteByPrimaryKey(pid);
+        if (res > 0) {
+            return new ResponseResult(true);
+        } else {
+            return new ResponseResult(false);
         }
     }
 }

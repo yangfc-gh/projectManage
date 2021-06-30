@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title>报价信息</title>
+	</head>
+	<body>
+		<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+			<div class="profile-info-name"> 报价单<small>(发客户)</small> </div>
+			<div class="profile-info-value">
+				<p th:if="${quotation.customerAnnexPath}" th:onclick="toDownloadQuotationAnnex([[${quotation.customerAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${quotation.customerAnnexName}"></p>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+			<div class="profile-info-name"> 明细<small>(自留)</small> </div>
+			<div class="profile-info-value">
+				<p th:if="${quotation.selfAnnexPath}" th:onclick="toDownloadQuotationAnnex([[${quotation.selfAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${quotation.selfAnnexName}"></p>
+			</div>
+		</div>
+	</body>
+</html>

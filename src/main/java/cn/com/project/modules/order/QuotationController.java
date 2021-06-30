@@ -64,6 +64,23 @@ public class QuotationController {
     }
 
     /**
+     * 报价 信息
+     * @param modelAndView
+     * @param request
+     * @return
+     */
+    @RequestMapping("/info")
+    public ModelAndView toInfo(ModelAndView modelAndView, HttpServletRequest request) {
+        String oid = request.getParameter("oid");
+        String pid = request.getParameter("pid");
+        // 传了bid按bid查，否则按oid查
+        ProQuotation quotation = StringUtils.isNotBlank(pid) ? quotationMapper.selectByPrimaryKey(pid) : quotationMapper.selectByOid(oid);
+        modelAndView.addObject("quotation", quotation);
+        modelAndView.setViewName(templatePath+"quotationInfo");
+        return modelAndView;
+    }
+
+    /**
      * 询价明细列表（询价本身不存在明细（信息比较简单），所谓明细就是询价条目明细）
      */
     @RequestMapping("/update")
@@ -87,11 +104,13 @@ public class QuotationController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID()+fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    localPath = FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    quotation.setCustomerAnnexName(files.get(0).getOriginalFilename());
-                    quotation.setCustomerAnnexPath(localName);
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID()+fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        localPath = FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        quotation.setCustomerAnnexName(files.get(0).getOriginalFilename());
+                        quotation.setCustomerAnnexPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,11 +123,13 @@ public class QuotationController {
                 String localName; // 本地存储名
                 try {
                     fileName = files.get(0).getOriginalFilename();
-                    localName = CommonUtils.createUUID()+fileName.substring(fileName.indexOf("."));
-                    //文件存储到本地
-                    localPath = FileHelper.uploadSingleFile(files.get(0), localName, null);
-                    quotation.setSelfAnnesName(files.get(0).getOriginalFilename());
-                    quotation.setSelfAnnexPath(localName);
+                    if (StringUtils.isNotBlank(fileName)) {
+                        localName = CommonUtils.createUUID()+fileName.substring(fileName.indexOf("."));
+                        //文件存储到本地
+                        localPath = FileHelper.uploadSingleFile(files.get(0), localName, null);
+                        quotation.setSelfAnnexName(files.get(0).getOriginalFilename());
+                        quotation.setSelfAnnexPath(localName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -140,7 +161,7 @@ public class QuotationController {
         if (null == quotation) {
             return;
         }
-        String downloadName = annexId.equals(quotation.getCustomerAnnexPath()) ? quotation.getCustomerAnnexName() : quotation.getSelfAnnesName();
+        String downloadName = annexId.equals(quotation.getCustomerAnnexPath()) ? quotation.getCustomerAnnexName() : quotation.getSelfAnnexName();
         try {
             response.addHeader("content-disposition", "attachment;filename="
                     + java.net.URLEncoder.encode(downloadName, "utf-8"));

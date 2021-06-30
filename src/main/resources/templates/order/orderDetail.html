@@ -109,7 +109,7 @@
 								</div>
 							</div>
 						</div>
-						<div th:if="${!#lists.isEmpty(orderInfo.enquiries)}" class="panel panel-default">
+						<div class="panel panel-default">
 							<div class="panel-heading">
 								<a class="accordion-toggle collapsed bolder" data-toggle="collapse" href="#collapseEnquiry">
 									<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
@@ -133,7 +133,8 @@
 													<td th:text="${enquiry.supplierName}"></td>
 													<td th:text="${enquiry.total}"></td>
 													<td>
-														<button th:onclick="showEnquiryDetail([[${enquiry.eid}]])" class="btn btn-white btn-info btn-mini">明细</button>
+														<button th:onclick="showEnquiryDetail([[${enquiry.eid}]])" class="btn btn-info btn-mini">明细</button>
+														<button th:onclick="delEnquiry([[${enquiry.oid}]], [[${enquiry.eid}]])" class="btn btn-white btn-danger btn-mini">删除</button>
 													</td>
 												</tr>
 											</tbody>
@@ -142,7 +143,7 @@
 								</div>
 							</div>
 						</div>
-						<div th:if="${orderInfo.quotation}" class="panel panel-default">
+						<div class="panel panel-default">
 							<div class="panel-heading">
 								<a class="accordion-toggle collapsed bolder" data-toggle="collapse" href="#collapseQuotation">
 									<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
@@ -152,19 +153,19 @@
 						
 							<div class="panel-collapse collapse in" id="collapseQuotation">
 								<div class="panel-body">
-									<div class="profile-user-info profile-user-info-striped">
-										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div id="quotationInfo" class="profile-user-info profile-user-info-striped">
+										<div th:if="${orderInfo.quotation?.customerAnnexPath}" class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
 											<div class="profile-info-name"> 报价单<small>(发客户)</small> </div>
 											<div class="profile-info-value">
 												<!-- <span class="" id="customerAnnexName" th:text="${orderInfo.quotation.customerAnnexName}"></span> -->
 												<p th:onclick="toDownloadQuotationAnnex([[${orderInfo.quotation.customerAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${orderInfo.quotation.customerAnnexName}"></p>
 											</div>
 										</div>
-										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+										<div th:if="${orderInfo.quotation?.selfAnnexPath}" class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
 											<div class="profile-info-name"> 明细<small>(自留)</small> </div>
 											<div class="profile-info-value">
 												<!-- <span class="" id="selfAnnesName" th:text="${orderInfo.quotation.selfAnnesName}"></span> -->
-												<p th:onclick="toDownloadQuotationAnnex([[${orderInfo.quotation.selfAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${orderInfo.quotation.selfAnnesName}"></p>
+												<p th:onclick="toDownloadQuotationAnnex([[${orderInfo.quotation.selfAnnexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${orderInfo.quotation.selfAnnexName}"></p>
 											</div>
 										</div>
 									</div>
@@ -195,7 +196,8 @@
 														<td th:text="${bidder?.corporateName}"></td>
 														<td th:text="${bidder?.total}"></td>
 														<td>
-															<button th:onclick="showBidderDetail([[${bidder?.bid}]])" class="btn btn-white btn-info btn-mini">明细</button>
+															<!-- <button th:onclick="showBidderDetail([[${bidder?.bid}]])" class="btn btn-info btn-mini">明细</button> -->
+															<button th:onclick="delBidder([[${bidder?.oid}]], [[${bidder?.bid}]])" class="btn btn-white btn-danger btn-mini">删除</button>
 														</td>
 													</tr>
 												</tbody>
@@ -214,8 +216,8 @@
 							</div>
 							<div class="panel-collapse collapse in" id="collapseDeposit">
 								<div class="panel-body">
-									<div id="bidder-list" style="padding: 2px 12px;">
-										<table id="bidder-table" class="table table-bordered table-hover">
+									<div id="deposit-list" style="padding: 2px 12px;">
+										<table id="deposit-table" class="table table-bordered table-hover">
 											<thead>
 												<tr>
 													<th>缴纳方</th>
@@ -228,22 +230,21 @@
 													<th></th>
 												</tr>
 											</thead>
-											<div th:if="${!#lists.isEmpty(orderInfo.deposits)}">
-												<tbody id="bidder-tbody">
-													<tr th:each="depo, state: ${orderInfo.deposits}">
-														<td th:text="${depo?.payerName}"></td>
-														<td th:text="${depo?.providerName}"></td>
-														<td th:text="${depo?.amount}"></td>
-														<td th:text="${depo?.payDate}"></td>
-														<td th:text="${depo?.forPay}"></td>
-														<td th:text="${depo?.isBack}"></td>
-														<td th:text="${depo?.backDate}"></td>
-														<td>
-															<button th:onclick="showDepositDetail([[${depo?.did}]])" class="btn btn-info btn-mini">明细</button>
-														</td>
-													</tr>
-												</tbody>
-											</div>
+											<tbody id="deposit-tbody">
+												<tr th:each="depo, state: ${orderInfo.deposits}">
+													<td th:text="${depo?.payerName}"></td>
+													<td th:text="${depo?.providerName}"></td>
+													<td th:text="${depo?.amount}"></td>
+													<td th:text="${depo?.payDate}"></td>
+													<td th:text="${depo?.forPay}"></td>
+													<td th:text="${depo?.isBack}"></td>
+													<td th:text="${depo?.backDate}"></td>
+													<td>
+														<!-- <button th:onclick="showDepositDetail([[${depo?.did}]])" class="btn btn-info btn-mini">明细</button> -->
+														<button th:onclick="delDeposit([[${depo?.oid}]], [[${depo?.did}]])" class="btn btn-white btn-danger btn-mini">删除</button>
+													</td>
+												</tr>
+											</tbody>
 										</table>
 									</div>
 								</div>
@@ -257,9 +258,9 @@
 								</a>
 							</div>
 						
-							<div th:if="${orderInfo.contract}" class="panel-collapse collapse in" id="collapseContract">
+							<div class="panel-collapse collapse in" id="collapseContract">
 								<div class="panel-body">
-									<div class="profile-user-info profile-user-info-striped">
+									<div th:if="${orderInfo.contract}" class="profile-user-info profile-user-info-striped">
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
 											<div class="profile-info-name"> 合同名称 </div>
 											<div class="profile-info-value">
@@ -287,7 +288,7 @@
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
 											<div class="profile-info-name"> 签订日期 </div>
 											<div class="profile-info-value">
-												<span class="" id="signDate" th:text="${orderInfo.contract.signDate}"></span>
+												<span class="" th:text="${orderInfo.contract.signDate}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
@@ -328,8 +329,8 @@
 												<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
 												&nbsp;合同款项信息 <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
 											</a>
-											<span class="pull-right">
-												<button th:onclick="toPayment([[${orderInfo.contract.cid}]], null)" type="button" class="btn btn-mini btn-primary">添加款项</button>
+											<span th:if="${orderInfo.contract}" class="pull-right">
+												<button th:onclick="toPayment([[${orderInfo.contract.cid}]], null)" type="button" class="btn btn-mini btn-primary">添加合同款项</button>
 											</span>
 										</div>
 										<div class="panel-collapse collapse in" id="collapseCP">
@@ -350,7 +351,7 @@
 															</tr>
 														</thead>
 														<tbody id="payment-tbody">
-															<tr th:each="payment, state: ${orderInfo.contract.payments}">
+															<tr th:each="payment, state: ${orderInfo.contract?.payments}">
 																<td th:text="${payment.payName}"></td>
 																<td th:text="${payment.amount}"></td>
 																<td th:text="${payment.expectedDate}"></td>
@@ -361,10 +362,10 @@
 																	<span th:onclick="toDownloadContractPaymentAnnex([[${payment.billPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${payment.billName}"></span>
 																</td>
 																<td th:text="${payment.remark}"></td>
-																<th>
+																<td>
 																	<button th:onclick="toPayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-primary btn-mini">修改</button>
-																	<button th:onclick="delPayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-primary btn-white btn-mini">删除</button>
-																</th>
+																	<button th:onclick="delContractpayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
+																</td>
 															</tr>
 														</tbody>
 													</table>
@@ -382,7 +383,7 @@
 									<span th:text="'供应合同'+${state.index+1}+'-'+${supplycontract.cname}"></span> <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
 								</a>
 								<span class="pull-right">
-									<button th:onclick="toSupplycontract([[${supplycontract.oid}]], [[${supplycontract.scid}]])" type="button" class="btn btn-mini btn-primary">修改</button>
+									<button th:onclick="toSupplycontract([[${supplycontract.oid}]], [[${supplycontract.scid}]])" type="button" class="btn btn-mini btn-primary">修改供应合同</button>
 								</span>
 							</div>
 						
@@ -410,7 +411,7 @@
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
 											<div class="profile-info-name"> 签订日期 </div>
 											<div class="profile-info-value">
-												<span class="" id="signDate" th:text="${supplycontract.signDate}"></span>
+												<span class="" th:text="${supplycontract.signDate}"></span>
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
@@ -444,8 +445,8 @@
 										</div>
 										<div class="panel-collapse collapse in" th:id="'collapseSCP'+${state.index+1}">
 											<div class="panel-body">
-												<div id="payment-div" style="padding: 2px 12px;">
-													<table id="payment-table" class="table table-bordered table-hover">
+												<div id="scpayment-div" style="padding: 2px 12px;">
+													<table id="scpayment-table" class="table table-bordered table-hover">
 														<thead>
 															<tr>
 																<th>金额</th>
@@ -457,7 +458,7 @@
 																<th></th>
 															</tr>
 														</thead>
-														<tbody id="payment-tbody">
+														<tbody th:id="'payment-tbody'+${supplycontract.scid}">
 															<tr th:each="payment, state: ${supplycontract.payments}">
 																<td th:text="${payment.amount}"></td>
 																<td th:text="${payment.payDate}"></td>
@@ -467,9 +468,10 @@
 																	<span th:onclick="toDownloadSupplycontractPaymentAnnex([[${payment.billPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${payment.billName}"></span>
 																</td>
 																<td th:text="${payment.remark}"></td>
-																<th>
-																	<button th:onclick="delSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-primary btn-white btn-mini">删除</button>
-																</th>
+																<td>
+																	<button th:onclick="toSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-primary btn-mini">修改</button>
+																	<button th:onclick="delSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
+																</td>
 															</tr>
 														</tbody>
 													</table>
@@ -531,7 +533,7 @@
 			}
 			// 查看报价明细
 			function showEnquiryDetail(eid) {
-				postRequest($('#contextDiv').html() + '/enquiry/enquiryDetail/list/' + eid, {}, function(data) {
+				postRequest($('#contextDiv').html() + '/enquiry/enquiryDetail/list', {eid:eid}, function(data) {
 					$('#enquiryDetail-tbody').html(data)
 					layer.open({
 					  type: 1,
@@ -577,7 +579,6 @@
 					})
 				})
 			}
-			
 			// 合同
 			function toContract(oid) {
 				postRequest($('#contextDiv').html() + '/contract/toEdit', {oid: oid}, function(data) {
@@ -590,7 +591,6 @@
 					})
 				})
 			}
-			
 			// 合同-款项
 			function toPayment(cid, pid) {
 				postRequest($('#contextDiv').html() + '/contract/payment/toEdit', {cid:cid, pid:pid}, function(data) {
@@ -615,7 +615,7 @@
 					})
 				})
 			}
-			
+			// 去付款记录
 			function toSupplycontractPayment(scid, pid) {
 				postRequest($('#contextDiv').html() + '/supplycontract/payment/toEdit', {scid:scid, pid:pid}, function(data) {
 					subopenid = layer.open({
@@ -654,42 +654,115 @@
 			function closeSubWindow() {
 				layer.close(subopenid);
 			}
-			function delFunder(eid, fid) {
-				layer.confirm('确定删除此条出资信息？', {
+			// 询价删除
+			function delEnquiry(oid, eid) {
+				layer.confirm('确定删除此条询价信息？', {
 					btn: ['确定', '取消'] //按钮
 				}, function() {
-					postRequest($('#contextDiv').html() + '/info/delFunder/' + fid, {}, function(data) {
+					postRequest($('#contextDiv').html() + '/enquiry/del/' + eid, {}, function(data) {
 						if (data.result) {
 							layer.msg('操作成功')
-							loadFunds(eid)
+							loadEnquiry(oid)
 						} else {
 							layer.msg(data.message)
 						}
 					})
 				})
 			}
-			function loadFunds(eid) {
-				postRequest($('#contextDiv').html() + '/info/funderList/' + eid, {}, function(data) {
-					$('#fundTBody').html(data)
+			// 询价重新加载
+			function loadEnquiry(oid) {
+				postRequest($('#contextDiv').html() + '/enquiry/list', {oid:oid}, function(data) {
+					$('#enquiry-tbody').html(data)
 				})
 			}
-			function delPerson(eid, pid) {
-				layer.confirm('确定删除人员信息？', {
+			// 询价重新加载
+			function loadQuotation(oid) {
+				postRequest($('#contextDiv').html() + '/quotation/info', {oid:oid}, function(data) {
+					$('#quotationInfo').html(data)
+				})
+			}
+			// 删除竞标参与方
+			function delBidder(oid, bid) {
+				layer.confirm('确定删除此竞标参与方？', {
 					btn: ['确定', '取消'] //按钮
 				}, function() {
-					postRequest($('#contextDiv').html() + '/info/delPerson/' + pid, {}, function(data) {
+					postRequest($('#contextDiv').html() + '/bidder/del/' + bid, {}, function(data) {
 						if (data.result) {
 							layer.msg('操作成功')
-							loadPersons(eid)
+							loadBidders(oid)
 						} else {
 							layer.msg(data.message)
 						}
 					})
 				})
 			}
-			function loadPersons(eid) {
-				postRequest($('#contextDiv').html() + '/info/personList/' + eid, {}, function(data) {
-					$('#personTBody').html(data)
+			// 竞标参与方重新加载
+			function loadBidders(oid) {
+				postRequest($('#contextDiv').html() + '/bidder/list', {oid:oid}, function(data) {
+					$('#bidder-tbody').html(data)
+				})
+			}
+			// 删除投标保证金
+			function delDeposit(oid, did) {
+				layer.confirm('确定删除此条保证金记录吗？', {
+					btn: ['确定', '取消'] //按钮
+				}, function() {
+					postRequest($('#contextDiv').html() + '/deposit/del/' + did, {}, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							loadDeposits(oid)
+						} else {
+							layer.msg(data.message)
+						}
+					})
+				})
+			}
+			// 投标保证金重新加载
+			function loadDeposits(oid) {
+				postRequest($('#contextDiv').html() + '/deposit/list', {oid:oid}, function(data) {
+					$('#deposit-tbody').html(data)
+				})
+			}
+			// 删除合同款项
+			function delContractpayment(cid, pid) {
+				layer.confirm('确定删除此条合同款项吗？', {
+					btn: ['确定', '取消'] //按钮
+				}, function() {
+					postRequest($('#contextDiv').html() + '/contract/payment/del/' + pid, {}, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							loadContractpayment(cid)
+						} else {
+							layer.msg(data.message)
+						}
+					})
+				})
+			}
+			// 投标保证金重新加载
+			function loadContractpayment(cid) {
+				postRequest($('#contextDiv').html() + '/contract/payment/list', {cid:cid}, function(data) {
+					$('#payment-tbody').html(data)
+				})
+			}
+			// 删除供应合同付款记录
+			function delSupplycontractPayment(scid, pid) {
+				layer.confirm('确定删除此条供应合同付款记录吗？', {
+					btn: ['确定', '取消'] //按钮
+				}, function() {
+					postRequest($('#contextDiv').html() + '/supplycontract/payment/del/' + pid, {}, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							loadSupplycontractpayment(scid)
+						} else {
+							layer.msg(data.message)
+						}
+					})
+				})
+			}
+			// 投标保证金重新加载
+			function loadSupplycontractpayment(scid) {
+				postRequest($('#contextDiv').html() + '/supplycontract/payment/list', {scid:scid}, function(data) {
+					$('#payment-tbody'+scid).html(data)
 				})
 			}
 		</script>

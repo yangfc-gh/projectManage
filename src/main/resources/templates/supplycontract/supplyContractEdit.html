@@ -97,7 +97,7 @@
 								<div id="files"></div>
 							</div>
 						</div>
-						<div th:if="${supplycontract.annexName}" class="form-group">
+						<div th:if="${!#strings.isEmpty(supplycontract.annexName)}" class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for=""></label>
 							<div class="col-sm-8">
 								已上传合同：<span th:text="${supplycontract.annexName}"></span>
@@ -160,6 +160,9 @@
 							if (data.result) {
 								layer.msg('操作成功')
 								closeSubWindow()
+								closeOpen()
+								doQuery()
+								showDetail (null, $('#hideOid').val())
 							} else {
 								layer.msg(data.message)
 							}

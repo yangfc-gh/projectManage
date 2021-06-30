@@ -11,6 +11,8 @@ import cn.com.project.data.dao.obj.SupplierMapper;
 import cn.com.project.data.model.business.*;
 import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Supplier;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -32,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -99,6 +102,24 @@ public class SupplyContractController {
         modelAndView.addObject("corporates", corporates);
         modelAndView.addObject("payment", payment);
         modelAndView.setViewName(templatePath+objNameSub+"Edit");
+        return modelAndView;
+    }
+
+    /**
+     * 款项列表
+     */
+    @RequestMapping("/payment/list")
+    public ModelAndView getList(ProSupplycontractPayment payment, ModelAndView modelAndView) {
+        PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        List<ProSupplycontractPayment> payments = supplycontractPaymentMapper.selectByCondition(payment);
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        for (ProSupplycontractPayment payment1 : payments) {
+            payment1.setPayCorporate(StringUtils.isNotBlank(payment1.getPayCorporate()) ? corp.get(payment1.getPayCorporate()) : null);
+        }
+        PageInfo<ProSupplycontractPayment> resInfo = new PageInfo<>(payments);
+        modelAndView.addObject("resInfo", resInfo);
+        modelAndView.setViewName(templatePath+objNameSub+"List");
         return modelAndView;
     }
 
@@ -285,6 +306,24 @@ public class SupplyContractController {
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除款项
+     */
+    @RequestMapping("/payment/del/{pid}")
+    @ResponseBody
+    public ResponseResult getList(@PathVariable("pid") String pid, ModelAndView modelAndView) {
+        ProSupplycontractPayment payment = supplycontractPaymentMapper.selectByPrimaryKey(pid);
+        if (null == payment) {
+            new ResponseResult(false, "未找到付款记录");
+        }
+        int res = supplycontractPaymentMapper.deleteByPrimaryKey(pid);
+        if (res > 0) {
+            return new ResponseResult(true);
+        } else {
+            return new ResponseResult(false);
         }
     }
 }

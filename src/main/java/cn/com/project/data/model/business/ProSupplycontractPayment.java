@@ -37,6 +37,11 @@ public class ProSupplycontractPayment {
 
     private Date utime;
 
+    /**支付时间起止-查询用*/
+    private String ptime;
+    private String ptimeb;
+    private String ptimee;
+
     public String getPid() {
         return pid;
     }
@@ -123,5 +128,29 @@ public class ProSupplycontractPayment {
 
     public void setUtime(Date utime) {
         this.utime = utime;
+    }
+
+    public String getPtime() {
+        return ptime;
+    }
+
+    public void setPtime(String ptime) {
+        this.ptime = ptime;
+    }
+
+    public String getPtimeb() {
+        return ptimeb;
+    }
+
+    public void setPtimeb(String ptimeb) {
+        this.ptimeb = ptimeb;
+    }
+
+    public String getPtimee() {
+        return ptimee;
+    }
+
+    public void setPtimee(String ptimee) {
+        this.ptimee = ptimee;
     }
 }

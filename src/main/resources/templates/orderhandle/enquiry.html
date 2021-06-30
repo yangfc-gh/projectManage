@@ -114,7 +114,7 @@
 							if (data.result) {
 								layer.msg('操作成功')
 								closeSubWindow()
-								doQuery()
+								loadEnquiry(enquiry.oid)
 							} else {
 								layer.msg(data.message)
 							}

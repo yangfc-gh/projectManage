@@ -46,6 +46,11 @@ public class ProContractPayment {
 
     private Date utime;
 
+    /**预计付款时间起止-查询用*/
+    private String stime;
+    private String stimeb;
+    private String stimee;
+
     public String getPid() {
         return pid;
     }
@@ -156,5 +161,29 @@ public class ProContractPayment {
 
     public void setUtime(Date utime) {
         this.utime = utime;
+    }
+
+    public String getStime() {
+        return stime;
+    }
+
+    public void setStime(String stime) {
+        this.stime = stime;
+    }
+
+    public String getStimeb() {
+        return stimeb;
+    }
+
+    public void setStimeb(String stimeb) {
+        this.stimeb = stimeb;
+    }
+
+    public String getStimee() {
+        return stimee;
+    }
+
+    public void setStimee(String stimee) {
+        this.stimee = stimee;
     }
 }

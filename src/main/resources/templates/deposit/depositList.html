@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title>投标保证金</title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="depo, state: ${resInfo.list}">
+			<td th:text="${depo.payerName}"></td>
+			<td th:text="${depo.providerName}"></td>
+			<td th:text="${depo.amount}"></td>
+			<td th:text="${depo.payDate}"></td>
+			<td th:text="${depo.forPay}"></td>
+			<td th:text="${depo.isBack}"></td>
+			<td th:text="${depo.backDate}"></td>
+			<td>
+				<!-- <button th:onclick="showDepositDetail([[${depo?.did}]])" class="btn btn-info btn-mini">明细</button> -->
+				<button th:onclick="delDeposit([[${depo?.oid}]], [[${depo?.did}]])" class="btn btn-white btn-danger btn-mini">删除</button>
+			</td>
+		</tr>
+	</body>
+</html>

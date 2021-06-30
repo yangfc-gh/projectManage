@@ -175,16 +175,6 @@
 			})
 			function saveContract() {
 				if (validate ()) {
-					/* $('#saveBtn', $('#contractForm')).attr("disabled", "disabled")
-					var formData = $("#contractForm").serialize()
-					postRequest($('#contextDiv').html() + '/contract/update', formData, function(data) {
-						if (data.result) {
-							layer.msg('操作成功')
-							closeSubWindow()
-						} else {
-							layer.msg(data.message)
-						}
-					}) */
 					$('#saveBtn', $('#contractForm')).attr("disabled", "disabled")
 					var form = new FormData(document.getElementById("contractForm"));
 					$.ajax({
@@ -198,6 +188,9 @@
 							if (data.result) {
 								layer.msg('操作成功')
 								closeSubWindow()
+								closeOpen()
+								doQuery()
+								showDetail (null, $('#hideOid').val())
 							} else {
 								layer.msg(data.message)
 							}

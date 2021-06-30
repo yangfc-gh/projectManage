@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title>竞标参与方列表</title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="bidder, state: ${resInfo.list}">
+			<td th:text="${bidder?.corporateName}"></td>
+			<td th:text="${bidder?.total}"></td>
+			<td>
+				<!-- <button th:onclick="showBidderDetail([[${bidder?.bid}]])" class="btn btn-info btn-mini">明细</button> -->
+				<button th:onclick="delBidder([[${bidder?.oid}]], [[${bidder?.bid}]])" class="btn btn-white btn-danger btn-mini">删除</button>
+			</td>
+		</tr>
+	</body>
+</html>

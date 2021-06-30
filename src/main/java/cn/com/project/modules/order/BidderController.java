@@ -5,14 +5,17 @@ import cn.com.project.common.ResponseResult;
 import cn.com.project.data.dao.business.ProBidderMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.model.business.ProBidder;
-import cn.com.project.data.model.business.ProQuotation;
+import cn.com.project.data.model.business.ProEnquiry;
 import cn.com.project.data.model.obj.Corporate;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,7 +40,7 @@ public class BidderController {
     private final String templatePath = "bidder/";
 
     /**
-     * 询价明细列表（询价本身不存在明细（信息比较简单），所谓明细就是询价条目明细）
+     * 去编辑
      */
     @RequestMapping("/toEdit")
     public ModelAndView toEdit(ModelAndView modelAndView, HttpServletRequest request) {
@@ -52,6 +55,19 @@ public class BidderController {
         modelAndView.addObject("bidder", bidder);
         modelAndView.addObject("corporates", corporates);
         modelAndView.setViewName(templatePath+"bidderEdit");
+        return modelAndView;
+    }
+
+    /**
+     * 去编辑
+     */
+    @RequestMapping("/list")
+    public ModelAndView toList(ProBidder bidder, ModelAndView modelAndView, HttpServletRequest request) {
+        PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        List<ProBidder> bidders = bidderMapper.selectByCondition(bidder);
+        PageInfo<ProBidder> resInfo = new PageInfo<ProBidder>(bidders);
+        modelAndView.addObject("resInfo", resInfo);
+        modelAndView.setViewName(templatePath+"bidderList");
         return modelAndView;
     }
     /**
@@ -75,5 +91,21 @@ public class BidderController {
         }
         return new ResponseResult(true);
     }
-
+    /**
+     * 删除
+     */
+    @RequestMapping("/del/{bid}")
+    @ResponseBody
+    public ResponseResult doDel(@PathVariable("bid") String bid, ModelAndView modelAndView) {
+        ProBidder bidder = bidderMapper.selectByPrimaryKey(bid);
+        if (null == bidder) {
+            new ResponseResult(false, "未找到参与方信息");
+        }
+        int res = bidderMapper.deleteByPrimaryKey(bid);
+        if (res > 0) {
+            return new ResponseResult(true);
+        } else {
+            return new ResponseResult(false);
+        }
+    }
 }

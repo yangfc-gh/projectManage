@@ -4,15 +4,17 @@ import cn.com.project.common.CommonUtils;
 import cn.com.project.common.ResponseResult;
 import cn.com.project.data.dao.business.ProDepositMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
-import cn.com.project.data.model.business.ProBidder;
 import cn.com.project.data.model.business.ProDeposit;
 import cn.com.project.data.model.obj.Corporate;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -78,9 +80,29 @@ public class DepositController {
 
     @RequestMapping("/list")
     public ModelAndView toList(ProDeposit deposit, ModelAndView modelAndView) {
+        PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
         List<ProDeposit> deposits = depositMapper.selectByCondition(deposit);
-        modelAndView.addObject("deposits", deposits);
+        PageInfo<ProDeposit> resInfo = new PageInfo<ProDeposit>(deposits);
+        modelAndView.addObject("resInfo", resInfo);
         modelAndView.setViewName(templatePath+"depositList");
         return modelAndView;
+    }
+
+    /**
+     * 删除
+     */
+    @RequestMapping("/del/{did}")
+    @ResponseBody
+    public ResponseResult doDel(@PathVariable("did") String did, ModelAndView modelAndView) {
+        ProDeposit deposit = depositMapper.selectByPrimaryKey(did);
+        if (null == deposit) {
+            new ResponseResult(false, "未找到保证金信息");
+        }
+        int res = depositMapper.deleteByPrimaryKey(did);
+        if (res > 0) {
+            return new ResponseResult(true);
+        } else {
+            return new ResponseResult(false);
+        }
     }
 }

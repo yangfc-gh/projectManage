@@ -35,8 +35,8 @@
   </select>
   <select id="selectByCondition" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />, (select `name` from corporate c where c.cid=b.payer) payerName,
-    (select `name` from corporate c where c.cid=b.provider) providerName
+    <include refid="Base_Column_List" />, (select `name` from corporate c where c.cid=d.payer) payerName,
+    (select `name` from corporate c where c.cid=d.provider) providerName
     from pro_deposit d
     <where>
       <if test="oid != null and ''.toString != oid">

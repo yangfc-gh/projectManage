@@ -19,7 +19,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     pid, cid, pay_name, amount, expected_date, expected_remark, pay_amount, pay_date, 
-    bill_name, bill_path, remark, `status`, ctime, utime
+    bill_name, bill_path, remark, `status`, ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -38,6 +38,25 @@
     <include refid="Base_Column_List" />
     from pro_contract_payment
     where bill_path = #{annexId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_contract_payment
+    <where>
+      <if test="cid != null and ''.toString() != cid">
+        and cid = #{cid,jdbcType=VARCHAR}
+      </if>
+      <if test="payName != null and ''.toString() != payName">
+        and pay_name like concat('%', #{payName,jdbcType=VARCHAR}, '%'))
+      </if>
+      <if test="stimeb != null and ''.toString() != stimeb">
+        and expected_date &gt;= concat(#{stimeb,jdbcType=VARCHAR}, ' 00:00:00')
+      </if>
+      <if test="stimee != null and ''.toString() != stimee">
+        and expected_date &lt;= concat(#{stimee,jdbcType=VARCHAR}, ' 23:59:59')
+      </if>
+    </where>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_contract_payment

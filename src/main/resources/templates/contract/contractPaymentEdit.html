@@ -124,6 +124,7 @@
 							if (data.result) {
 								layer.msg('操作成功')
 								closeSubWindow()
+								loadContractpayment($('#cid').val())
 							} else {
 								layer.msg(data.message)
 							}

@@ -15,6 +15,8 @@ public interface ProBidderMapper {
 
     List<ProBidder> selectByOid(String oid);
 
+    List<ProBidder> selectByCondition(ProBidder record);
+
     int updateByPrimaryKeySelective(ProBidder record);
 
     int updateByPrimaryKey(ProBidder record);

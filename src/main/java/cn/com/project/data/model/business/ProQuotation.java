@@ -18,7 +18,7 @@ public class ProQuotation {
     private String customerAnnexPath;
 
     /**报价明细（自留，包含供应商信息）*/
-    private String selfAnnesName;
+    private String selfAnnexName;
 
     /**报价明细存放路径*/
     private String selfAnnexPath;
@@ -62,12 +62,12 @@ public class ProQuotation {
         this.customerAnnexPath = customerAnnexPath == null ? null : customerAnnexPath.trim();
     }
 
-    public String getSelfAnnesName() {
-        return selfAnnesName;
+    public String getSelfAnnexName() {
+        return selfAnnexName;
     }
 
-    public void setSelfAnnesName(String selfAnnesName) {
-        this.selfAnnesName = selfAnnesName == null ? null : selfAnnesName.trim();
+    public void setSelfAnnexName(String selfAnnexName) {
+        this.selfAnnexName = selfAnnexName == null ? null : selfAnnexName.trim();
     }
 
     public String getSelfAnnexPath() {

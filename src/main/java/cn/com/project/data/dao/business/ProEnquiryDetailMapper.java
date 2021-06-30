@@ -17,6 +17,8 @@ public interface ProEnquiryDetailMapper {
 
     List<ProEnquiryDetail> selectByEid(String eid);
 
+    List<ProEnquiryDetail> selectByCondition(ProEnquiryDetail record);
+
     int updateByPrimaryKeySelective(ProEnquiryDetail record);
 
     int updateByPrimaryKey(ProEnquiryDetail record);

@@ -26,6 +26,19 @@
     from pro_bidder b left join corporate c on b.corporate_id = c.cid
     where b.oid = #{oid,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />, c.`name` corporateName
+    from pro_bidder b left join corporate c on b.corporate_id = c.cid
+    <where>
+      <if test="oid != null and ''.toString() != oid">
+        and b.oid = #{oid,jdbcType=VARCHAR}
+      </if>
+      <if test="corporateId != null and ''.toString() != corporateId">
+        and b.corporate_id = #{corporate_id,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_bidder
     where bid = #{bid,jdbcType=VARCHAR}

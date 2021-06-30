@@ -20,6 +20,8 @@ public interface ProSupplycontractPaymentMapper {
 
     List<ProSupplycontractPayment> selectByScid(String scid);
 
+    List<ProSupplycontractPayment> selectByCondition(ProSupplycontractPayment record);
+
     int updateByPrimaryKeySelective(ProSupplycontractPayment record);
 
     int updateByPrimaryKey(ProSupplycontractPayment record);

@@ -4,6 +4,9 @@ import cn.com.project.data.model.business.ProEnquiry;
 
 import java.util.List;
 
+/**
+ * 询价信息
+ */
 public interface ProEnquiryMapper {
     int deleteByPrimaryKey(String eid);
 
@@ -14,6 +17,8 @@ public interface ProEnquiryMapper {
     ProEnquiry selectByPrimaryKey(String eid);
 
     List<ProEnquiry> selectByOid(String oid);
+
+    List<ProEnquiry> selectByCondition(ProEnquiry record);
 
     int updateByPrimaryKeySelective(ProEnquiry record);
 

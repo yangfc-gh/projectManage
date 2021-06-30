@@ -22,7 +22,9 @@
 					<form id="quotationForm" class="form-horizontal" method="post">
 						<input type="hidden" id="oid" name="oid" th:value="${quotation.oid}" />
 						<input type="hidden" id="qid" name="qid" th:value="${quotation.qid}" />
+						<input type="hidden" id="customerAnnexName" name="customerAnnexName" th:value="${quotation.customerAnnexName}" />
 						<input type="hidden" id="customerAnnexPath" name="customerAnnexPath" th:value="${quotation.customerAnnexPath}" />
+						<input type="hidden" id="selfAnnexName" name="selfAnnexName" th:value="${quotation.selfAnnexName}" />
 						<input type="hidden" id="selfAnnexPath" name="selfAnnexPath" th:value="${quotation.selfAnnexPath}" />
 						<div class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="remark">报价单(给客户):</label>
@@ -46,10 +48,10 @@
 								 onclick="this.value=null"> 
 							</div>
 						</div>
-						<div class="form-group" th:if="${quotation.selfAnnesName}">
+						<div class="form-group" th:if="${quotation.selfAnnexName}">
 							<label class="col-sm-3 control-label no-padding-right" for="remark"></label>
 							<div class="col-sm-8">
-								已登记明细：<span th:text="${quotation.selfAnnesName}"></span>
+								已登记明细：<span th:text="${quotation.selfAnnexName}"></span>
 							</div>
 						</div>
 						<div class="form-group">
@@ -91,6 +93,7 @@
 							if (data.result) {
 								layer.msg('操作成功')
 								closeSubWindow()
+								loadQuotation($('#oid').val())
 							} else {
 								layer.msg(data.message)
 							}
