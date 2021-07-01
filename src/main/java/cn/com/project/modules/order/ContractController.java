@@ -3,6 +3,7 @@ package cn.com.project.modules.order;
 import cn.com.project.common.CommonUtils;
 import cn.com.project.common.FileHelper;
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProContractMapper;
 import cn.com.project.data.dao.business.ProContractPaymentMapper;
 import cn.com.project.data.dao.business.ProOrderMapper;
@@ -12,9 +13,9 @@ import cn.com.project.data.dao.sys.SysDictsMapper;
 import cn.com.project.data.model.business.*;
 import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Customer;
-import cn.com.project.data.model.obj.Supplier;
 import cn.com.project.data.model.sys.SysDicts;
 import cn.com.project.modules.order.service.OrderService;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -38,6 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,6 +68,8 @@ public class ContractController {
     SysDictsMapper sysDictsMapper;
     @Autowired
     OrderService orderService;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "contract/";
     private final String objName = "contract";
@@ -178,11 +183,75 @@ public class ContractController {
                 proContract.setProcess("0/0"); //进度
             }
         }
-        // 整理一下下一进度
 
         PageInfo<ProContract> resInfo = new PageInfo<>(contracts);
         modelAndView.addObject("resInfo", resInfo);
         modelAndView.setViewName(templatePath+objName+"List");
+        return modelAndView;
+    }
+
+    /**
+     * 合同利润计算
+     */
+    @RequestMapping("/profit/{cid}")
+    public ModelAndView profitStatistics(@PathVariable("cid") String cid, ModelAndView modelAndView) {
+        ProContract contract = contractMapper.select4Profit(cid);
+        List<ExpendDetail> expendDetails = new ArrayList<>();
+        ExpendDetail expendDetail = null;
+        // 合约金算作支出，累计一下
+        if (StringUtils.isNotBlank(contract.getTreatybz())) {
+            // 如果填写是百分比
+            if ("%".indexOf(contract.getTreatybz()) > 0) {
+                // 去除%号和空格后，如果还是数字
+                String treat = contract.getTreatybz().replaceAll("%", "").replaceAll(" ", "");
+                if (StringUtils.isNumeric(treat)) {
+                    BigDecimal divide = contract.getAmount().multiply(new BigDecimal(treat)).divide(BigDecimal.valueOf(100));
+                    expendDetail = new ExpendDetail();
+                    expendDetail.setEtype("合约金");
+                    expendDetail.setEname("友方合同合约金");
+                    expendDetail.setAmount(divide);
+                    expendDetail.setDescription("友方公司签订转交合同时支付的合约金");
+                    expendDetails.add(expendDetail);
+                }
+            } else if (StringUtils.isNumeric(contract.getTreatybz().replaceAll(" ", ""))) {
+                expendDetail = new ExpendDetail();
+                expendDetail.setEtype("合约金");
+                expendDetail.setEname("友方合同合约金");
+                expendDetail.setAmount(new BigDecimal(contract.getTreatybz().replaceAll(" ", "")));
+                expendDetail.setDescription("友方公司签订转交合同时支付的合约金");
+                expendDetails.add(expendDetail);
+            }
+        }
+        // 供应合同算作支出，累计一下
+        for (ProSupplycontract supplycontract : contract.getSupplycontracts()) {
+            if (null != supplycontract.getAmount() && supplycontract.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                expendDetail = new ExpendDetail();
+                expendDetail.setEtype("供应合同");
+                expendDetail.setEname(supplycontract.getCname());
+                expendDetail.setAmount(supplycontract.getAmount());
+                expendDetails.add(expendDetail);
+            }
+        }
+        // 支出款项，累计下
+        for (ProContractExpend expend : contract.getExpends()) {
+            if (null != expend.getAmount() && expend.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                expendDetail = new ExpendDetail();
+                expendDetail.setEtype("支出费用");
+                expendDetail.setEname(expend.getEname());
+                expendDetail.setAmount(expend.getAmount());
+                expendDetail.setDescription(expend.getRemark());
+                expendDetails.add(expendDetail);
+            }
+        }
+        BigDecimal expendTotal = expendDetails.stream().map(ExpendDetail::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (null != expendTotal && expendTotal.compareTo(BigDecimal.ZERO) > 0) {
+            contract.setProfit(contract.getAmount().subtract(expendTotal));
+            modelAndView.addObject("expendTotal", expendTotal); // 总支出
+            modelAndView.addObject("profit", contract.getAmount().subtract(expendTotal)); // 净利润
+        }
+        modelAndView.addObject("contractAmount", contract.getAmount()); // 合同金额
+        modelAndView.addObject("expendDetails", expendDetails);
+        modelAndView.setViewName(templatePath+"profitInfo");
         return modelAndView;
     }
 
@@ -259,11 +328,13 @@ public class ContractController {
             }
             // 订单状态切换为”已签合同“
             orderService.orderState(contract.getOid(), "DDZT_QDHT");
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增合同", JSONObject.toJSONString(contract), "ProContract", request);
         } else {
             int res = contractMapper.updateByPrimaryKey(contract);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改合同", JSONObject.toJSONString(contract), "ProContract", request);
         }
         return new ResponseResult(true, "操作成功");
     }
@@ -308,11 +379,13 @@ public class ContractController {
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增合同款项", JSONObject.toJSONString(payment), "ProContractPayment", request);
         } else {
             int res = contractPaymentMapper.updateByPrimaryKey(payment);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改合同款项", JSONObject.toJSONString(payment), "ProContractPayment", request);
         }
         return new ResponseResult(true, "操作成功");
     }
@@ -386,13 +459,14 @@ public class ContractController {
      */
     @RequestMapping("/payment/del/{pid}")
     @ResponseBody
-    public ResponseResult getList(@PathVariable("pid") String pid, ModelAndView modelAndView) {
+    public ResponseResult doDelete(@PathVariable("pid") String pid, HttpServletRequest request) {
         ProContractPayment payment = contractPaymentMapper.selectByPrimaryKey(pid);
         if (null == payment) {
             new ResponseResult(false, "未找到款项信息");
         }
         int res = contractPaymentMapper.deleteByPrimaryKey(pid);
         if (res > 0) {
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除合同款项", JSONObject.toJSONString(payment), "ProContractPayment", request);
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);

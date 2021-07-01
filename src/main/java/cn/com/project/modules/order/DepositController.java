@@ -2,10 +2,13 @@ package cn.com.project.modules.order;
 
 import cn.com.project.common.CommonUtils;
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProDepositMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.model.business.ProDeposit;
 import cn.com.project.data.model.obj.Corporate;
+import cn.com.project.data.model.obj.Supplier;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -35,9 +38,21 @@ public class DepositController {
     ProDepositMapper depositMapper;
     @Autowired
     CorporateMapper corporateMapper;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "deposit/";
-
+    private final String objName = "deposit";
+    /**
+     * 跳转管理首页
+     */
+    @RequestMapping("/index")
+    public ModelAndView toIndex(ModelAndView modelAndView) {
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        modelAndView.addObject("corporates", corporates);
+        modelAndView.setViewName(templatePath+objName+"Index");
+        return modelAndView;
+    }
     /**
      * 去编辑
      */
@@ -61,19 +76,22 @@ public class DepositController {
      */
     @RequestMapping("/update")
     @ResponseBody
-    public ResponseResult doUpdate(ProDeposit deposit) {
+    public ResponseResult doUpdate(ProDeposit deposit, HttpServletRequest request) {
 
+        deposit.setIsBack("on".equals(deposit.getIsBack()) ? "1" : "0");
         if (StringUtils.isBlank(deposit.getDid())) {
             deposit.setDid(CommonUtils.createUUID());
             int res = depositMapper.insertSelective(deposit);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增支出费用", JSONObject.toJSONString(deposit), "ProDeposit", request);
         } else {
             int res = depositMapper.updateByPrimaryKey(deposit);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改支出费用", JSONObject.toJSONString(deposit), "ProDeposit", request);
         }
         return new ResponseResult(true);
     }
@@ -93,13 +111,14 @@ public class DepositController {
      */
     @RequestMapping("/del/{did}")
     @ResponseBody
-    public ResponseResult doDel(@PathVariable("did") String did, ModelAndView modelAndView) {
+    public ResponseResult doDel(@PathVariable("did") String did, HttpServletRequest request) {
         ProDeposit deposit = depositMapper.selectByPrimaryKey(did);
         if (null == deposit) {
             new ResponseResult(false, "未找到保证金信息");
         }
         int res = depositMapper.deleteByPrimaryKey(did);
         if (res > 0) {
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除支出费用", JSONObject.toJSONString(deposit), "ProDeposit", request);
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);

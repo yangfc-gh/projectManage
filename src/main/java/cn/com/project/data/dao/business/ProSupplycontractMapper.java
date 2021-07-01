@@ -13,11 +13,28 @@ public interface ProSupplycontractMapper {
 
     ProSupplycontract selectByPrimaryKey(String scid);
 
+    /**
+     * 查询单个供应合同基本信息，及支付记录信息
+     * @param scid
+     * @return
+     */
     ProSupplycontract selectDetail(String scid);
 
     ProSupplycontract selectByAnnexId(String annexId);
 
+    /**
+     * 根据订单id，查询基本信息及支付记录
+     * @param oid
+     * @return
+     */
     List<ProSupplycontract> selectByOid(String oid);
+
+    /**
+     * 根据订单id，查询基本信息
+     * @param oid
+     * @return
+     */
+    List<ProSupplycontract> selectBasicByOid(String oid);
 
     List<ProSupplycontract> selectByCondition(ProSupplycontract record);
 

@@ -26,6 +26,11 @@
   </resultMap>
   <resultMap id="ResultMap_sub" extends="BaseResultMap" type="cn.com.project.data.model.business.ProContract">
     <collection property="payments" column="cid" select="cn.com.project.data.dao.business.ProContractPaymentMapper.selectByCid"></collection>
+    <collection property="expends" column="cid" select="cn.com.project.data.dao.business.ProContractExpendMapper.selectByCid"></collection>
+  </resultMap>
+  <resultMap id="ResultMap4Profit" extends="BaseResultMap" type="cn.com.project.data.model.business.ProContract">
+    <collection property="expends" column="cid" select="cn.com.project.data.dao.business.ProContractExpendMapper.selectByCid"></collection>
+    <collection property="supplycontracts" column="oid" select="cn.com.project.data.dao.business.ProSupplycontractMapper.selectBasicByOid"></collection>
   </resultMap>
   <sql id="Base_Column_List">
     cid, oid, cno, cname, pname, amount, partyA, partyB, partyU, partyZ, treatyBZ, sign_date, 
@@ -39,6 +44,13 @@
     where cid = #{cid,jdbcType=VARCHAR}
   </select>
   <select id="selectDetail" parameterType="java.lang.String" resultMap="ResultMap_sub">
+    select
+    <include refid="Base_Column_List" />
+    from pro_contract
+    where cid = #{cid,jdbcType=VARCHAR}
+  </select>
+  <!-- 为利润计算所用，关联查询出：支出费用、供应合同 -->
+  <select id="select4Profit" parameterType="java.lang.String" resultMap="ResultMap4Profit">
     select
     <include refid="Base_Column_List" />
     from pro_contract

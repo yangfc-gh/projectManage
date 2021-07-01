@@ -3,11 +3,13 @@ package cn.com.project.modules.order;
 import cn.com.project.common.CommonUtils;
 import cn.com.project.common.FileHelper;
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.business.ProQuotationMapper;
 import cn.com.project.data.model.business.ProOrder;
 import cn.com.project.data.model.business.ProQuotation;
 import cn.com.project.modules.order.service.OrderService;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -47,6 +49,8 @@ public class QuotationController {
     ProOrderMapper orderMapper;
     @Autowired
     OrderService orderService;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "quotation/";
 
@@ -146,11 +150,13 @@ public class QuotationController {
             }
             // 订单状态切换为”已报价“
             orderService.orderState(quotation.getOid(), "DDZT_YBJ");
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增报价", JSONObject.toJSONString(quotation), "ProQuotation", request);
         } else {
             int res = quotationMapper.updateByPrimaryKey(quotation);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改报价", JSONObject.toJSONString(quotation), "ProQuotation", request);
         }
         return new ResponseResult(true, "操作成功");
     }

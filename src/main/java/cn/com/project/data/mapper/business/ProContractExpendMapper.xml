@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.project.data.dao.business.ProContractExpendMapper">
+  <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProContractExpend">
+    <id column="eid" jdbcType="VARCHAR" property="eid" />
+    <result column="cid" jdbcType="VARCHAR" property="cid" />
+    <result column="ename" jdbcType="VARCHAR" property="ename" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    eid, cid, ename, amount, remark, ctime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_contract_expend
+    where eid = #{eid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_contract_expend
+    where cid = #{cid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_contract_expend
+    <where>
+      <if test="eid != null and ''.toString != eid">
+        and eid = #{eid,jdbcType=VARCHAR}
+      </if>
+      <if test="cid != null and ''.toString != cid">
+        and cid = #{cid,jdbcType=VARCHAR}
+      </if>
+      <if test="ename != null and ''.toString != ename">
+        and ename like concat('%', #{ename,jdbcType=VARCHAR}, '%')
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_contract_expend
+    where eid = #{eid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.com.project.data.model.business.ProContractExpend">
+    insert into pro_contract_expend (eid, cid, ename, 
+      amount, remark)
+    values (#{eid,jdbcType=VARCHAR}, #{cid,jdbcType=VARCHAR}, #{ename,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProContractExpend">
+    insert into pro_contract_expend
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eid != null">
+        eid,
+      </if>
+      <if test="cid != null">
+        cid,
+      </if>
+      <if test="ename != null">
+        ename,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eid != null">
+        #{eid,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null">
+        #{cid,jdbcType=VARCHAR},
+      </if>
+      <if test="ename != null">
+        #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.business.ProContractExpend">
+    update pro_contract_expend
+    <set>
+      <if test="ename != null">
+        ename = #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where eid = #{eid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProContractExpend">
+    update pro_contract_expend
+    set ename = #{ename,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      remark = #{remark,jdbcType=VARCHAR}
+    where eid = #{eid,jdbcType=VARCHAR}
+  </update>
+</mapper>

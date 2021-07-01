@@ -10,6 +10,16 @@
 		<link rel="stylesheet" th:href="@{/static/font-awesome/4.5.0/css/font-awesome.min.css}" />
 		<link rel="stylesheet" th:href="@{/static/ztree/metroStyle/metroStyle.css}" />
 		<link rel="stylesheet" th:href="@{/static/css/layui.css}" />
+		<style>
+			.footBtn {
+				position: sticky;
+				bottom: 0px;
+				padding-top: 5px;
+				padding-bottom: 10px;
+				width: 100%;
+				background-color: rgba(255,255,255, 0.1);
+			}
+		</style>
 	</head>
 	<body class="no-skin">
 	<div id="urlDiv" style="display: none;" th:text="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()+#httpServletRequest.getContextPath() }"></div>

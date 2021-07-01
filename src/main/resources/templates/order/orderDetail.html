@@ -4,15 +4,6 @@
 		<meta charset="utf-8">
 		<title></title>
 		<style>
-			.footBtn {
-				position: sticky;
-				bottom: 0px;
-				padding-top: 5px;
-				padding-bottom: 10px;
-				width: 100%;
-				background-color: #D8D8D8;
-				opacity: 0.9;
-			}
 			.panel-body {
 				padding: 5px 0px;
 			}
@@ -32,7 +23,7 @@
 					<button th:onclick="toEnquiry([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">新增询价 </button>
 					<button th:onclick="toQuotation([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">报价单 </button>
 					<button th:onclick="toBidder([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">新增竞标方 </button>
-					<button th:onclick="toDeposit([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">新增保证金 </button>
+					<button th:onclick="toDeposit([[${orderInfo.oid}]], null)" class="btn btn-mini btn-primary">新增保证金 </button>
 					<button th:onclick="toContract([[${orderInfo.oid}]])" class="btn btn-mini btn-primary">合同 </button>
 					<button th:onclick="toSupplycontract([[${orderInfo.oid}]], null)" class="btn btn-mini btn-primary">新增供应合同 </button>
 				</div>
@@ -220,11 +211,12 @@
 										<table id="deposit-table" class="table table-bordered table-hover">
 											<thead>
 												<tr>
+													<th>#</th>
+													<th>订单项目</th>
 													<th>缴纳方</th>
 													<th>出资方</th>
 													<th>金额</th>
 													<th>缴纳日期</th>
-													<th>是否代缴</th>
 													<th>是否收回</th>
 													<th>收回日期</th>
 													<th></th>
@@ -232,15 +224,16 @@
 											</thead>
 											<tbody id="deposit-tbody">
 												<tr th:each="depo, state: ${orderInfo.deposits}">
+													<td th:text="${state.index+1}"></td>
+													<td th:text="${depo.orderInfo?.projectName}"></td>
 													<td th:text="${depo?.payerName}"></td>
 													<td th:text="${depo?.providerName}"></td>
 													<td th:text="${depo?.amount}"></td>
 													<td th:text="${depo?.payDate}"></td>
-													<td th:text="${depo?.forPay}"></td>
-													<td th:text="${depo?.isBack}"></td>
+													<td th:text="${#strings.equals(depo.isBack, '0') ? '未收回' : '已收回'}"></td>
 													<td th:text="${depo?.backDate}"></td>
 													<td>
-														<!-- <button th:onclick="showDepositDetail([[${depo?.did}]])" class="btn btn-info btn-mini">明细</button> -->
+														<button th:onclick="toDeposit([[${depo?.oid}]], [[${depo?.did}]])" class="btn btn-info btn-mini">修改</button>
 														<button th:onclick="delDeposit([[${depo?.oid}]], [[${depo?.did}]])" class="btn btn-white btn-danger btn-mini">删除</button>
 													</td>
 												</tr>
@@ -568,8 +561,8 @@
 				})
 			}
 			// 去保证金
-			function toDeposit(oid) {
-				postRequest($('#contextDiv').html() + '/deposit/toEdit', {oid: oid}, function(data) {
+			function toDeposit(oid, did) {
+				postRequest($('#contextDiv').html() + '/deposit/toEdit', {oid: oid, did: did}, function(data) {
 					subopenid = layer.open({
 						type: 1,
 						// skin: 'layui-layer-rim', //加上边框

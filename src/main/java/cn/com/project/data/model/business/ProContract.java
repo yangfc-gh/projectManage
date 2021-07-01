@@ -25,6 +25,9 @@ public class ProContract {
     /**合同金额*/
     private BigDecimal amount;
 
+    /** 利润 */
+    private BigDecimal profit;
+
     /**甲方*/
     private String partya;
 
@@ -91,6 +94,8 @@ public class ProContract {
     private String process;
 
     private List<ProContractPayment> payments;
+    private List<ProContractExpend> expends;
+    private List<ProSupplycontract> supplycontracts;
 
     public String getCid() {
         return cid;
@@ -378,5 +383,29 @@ public class ProContract {
 
     public void setNextDate(String nextDate) {
         this.nextDate = nextDate;
+    }
+
+    public List<ProContractExpend> getExpends() {
+        return expends;
+    }
+
+    public void setExpends(List<ProContractExpend> expends) {
+        this.expends = expends;
+    }
+
+    public List<ProSupplycontract> getSupplycontracts() {
+        return supplycontracts;
+    }
+
+    public void setSupplycontracts(List<ProSupplycontract> supplycontracts) {
+        this.supplycontracts = supplycontracts;
+    }
+
+    public BigDecimal getProfit() {
+        return profit;
+    }
+
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
     }
 }

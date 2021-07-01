@@ -3,6 +3,7 @@ package cn.com.project.modules.order;
 import cn.com.project.common.CommonUtils;
 import cn.com.project.common.FileHelper;
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.business.ProSupplycontractMapper;
 import cn.com.project.data.dao.business.ProSupplycontractPaymentMapper;
@@ -15,6 +16,7 @@ import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Customer;
 import cn.com.project.data.model.obj.Supplier;
 import cn.com.project.data.model.sys.SysDicts;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -58,6 +60,8 @@ public class SupplyContractController {
     CorporateMapper corporateMapper;
     @Autowired
     SupplierMapper supplierMapper;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "supplycontract/";
     private final String objName = "supplyContract";
@@ -259,11 +263,13 @@ public class SupplyContractController {
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增供应合同", JSONObject.toJSONString(supplycontract), "ProSupplycontract", request);
         } else {
             int res = supplycontractMapper.updateByPrimaryKey(supplycontract);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改供应合同", JSONObject.toJSONString(supplycontract), "ProSupplycontract", request);
         }
         return new ResponseResult(true, "操作成功");
     }
@@ -308,11 +314,13 @@ public class SupplyContractController {
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增供应合同支付记录", JSONObject.toJSONString(payment), "ProSupplycontractPayment", request);
         } else {
             int res = supplycontractPaymentMapper.updateByPrimaryKey(payment);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改供应合同支付记录", JSONObject.toJSONString(payment), "ProSupplycontractPayment", request);
         }
         return new ResponseResult(true, "操作成功");
     }
@@ -386,13 +394,14 @@ public class SupplyContractController {
      */
     @RequestMapping("/payment/del/{pid}")
     @ResponseBody
-    public ResponseResult getList(@PathVariable("pid") String pid, ModelAndView modelAndView) {
+    public ResponseResult getList(@PathVariable("pid") String pid, HttpServletRequest request) {
         ProSupplycontractPayment payment = supplycontractPaymentMapper.selectByPrimaryKey(pid);
         if (null == payment) {
             new ResponseResult(false, "未找到付款记录");
         }
         int res = supplycontractPaymentMapper.deleteByPrimaryKey(pid);
         if (res > 0) {
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除供应合同支付记录", JSONObject.toJSONString(payment), "ProSupplycontractPayment", request);
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);

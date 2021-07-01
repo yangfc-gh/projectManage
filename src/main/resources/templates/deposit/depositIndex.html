@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					保证金
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form id="queryForm" class="form-horizontal" role="form">
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="projectName">项目名称</label>
+							<div class="col-sm-8">
+								<input type="text" id="projectName" name="projectName" placeholder="订单里的项目名称(可以是部分关键字)" class="col-xs-10 col-sm-12" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="payer">缴纳方</label>
+							<div class="col-sm-8">
+								<select name="payer" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="provider">出资方</label>
+							<div class="col-sm-8">
+								<select name="provider" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="isBack">是否收回</label>
+							<div class="col-sm-8">
+								<select name="isBack" onchange="doQuery()">
+									<option value=""></option>
+									<option value="0">未收回</option>
+									<option value="1">已收回</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-12 col-sm-12 text-right">
+							<button type="button" class="btn btn-sm btn-primary" onclick="doQuery()">查&nbsp;询</button>
+						</div>
+					</form>
+					<div class="pull-left" id="totalDiv"></div>
+					<table id="simple-table" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th class="center">#</th>
+								<th>订单项目名称</th>
+								<th>缴纳方</th>
+								<th>出资方</th>
+								<th>金额</th>
+								<th>缴纳日期</th>
+								<th>是否收回</th>
+								<th>收回日期</th>
+								<th></th>
+							</tr>
+						</thead>
+		
+						<tbody id="mainTBody">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	<script>
+		var subopenid;
+		$(function(){
+			doQuery()
+		})
+		// 查询
+		function doQuery() {
+			$('#mainTBody').html('')
+			var formData = $("#queryForm").serialize()
+			postRequest($('#contextDiv').html()+'/deposit/list', formData, function(data){
+				$('#mainTBody').html(data)
+				if ($('#totalRows').val()) {
+					$('#totalDiv').text('共 '+ $('#totalRows').val() + ' 条')
+				}
+			})
+		}
+		// 去保证金
+		function toDeposit(oid, did) {
+			postRequest($('#contextDiv').html() + '/deposit/toEdit', {oid: oid, did: did}, function(data) {
+				subopenid = layer.open({
+					type: 1,
+					// skin: 'layui-layer-rim', //加上边框
+					title: '保证金',
+					area: ['60%', '80%'], //宽高
+					content: data
+				})
+			})
+		}
+		// 删除投标保证金
+		function delDeposit(oid, did) {
+			layer.confirm('确定删除此条保证金记录吗？', {
+				btn: ['确定', '取消'] //按钮
+			}, function() {
+				postRequest($('#contextDiv').html() + '/deposit/del/' + did, {}, function(data) {
+					if (data.result) {
+						layer.msg('操作成功')
+						doQuery()
+					} else {
+						layer.msg(data.message)
+					}
+				})
+			})
+		}
+		// 关闭详情窗口打开的子窗口
+		function closeSubWindow() {
+			layer.close(subopenid);
+		}
+		// 关闭当前layer的open窗口
+		function closeOpen() {
+			layer.close(lidx);
+		}
+	</script>
+	</body>
+</html>

@@ -13,6 +13,13 @@ public interface ProContractMapper {
 
     ProContract selectByPrimaryKey(String cid);
 
+    /**
+     * 为利润计算所用，关联查询出：支出费用、供应合同
+     * @param cid
+     * @return
+     */
+    ProContract select4Profit(String cid);
+
     ProContract selectDetail(String cid);
 
     ProContract selectByOid(String oid);

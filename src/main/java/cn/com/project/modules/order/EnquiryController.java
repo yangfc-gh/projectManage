@@ -1,6 +1,7 @@
 package cn.com.project.modules.order;
 
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProEnquiryDetailMapper;
 import cn.com.project.data.dao.business.ProEnquiryMapper;
 import cn.com.project.data.dao.business.ProOrderMapper;
@@ -11,6 +12,7 @@ import cn.com.project.data.model.business.ProOrder;
 import cn.com.project.data.model.business.ProSupplycontract;
 import cn.com.project.data.model.obj.Supplier;
 import cn.com.project.modules.order.service.OrderService;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,8 +25,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,6 +53,8 @@ public class EnquiryController {
     OrderService orderService;
     @Autowired
     SupplierMapper supplierMapper;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "enquiry/";
     private final String objName = "enquiry";
@@ -91,7 +97,7 @@ public class EnquiryController {
      */
     @RequestMapping("/del/{eid}")
     @ResponseBody
-    public ResponseResult doDel(@PathVariable("eid") String eid, ModelAndView modelAndView) {
+    public ResponseResult doDel(@PathVariable("eid") String eid, HttpServletRequest request) {
         ProEnquiry enquiry = proEnquiryMapper.selectByPrimaryKey(eid);
         if (null == enquiry) {
             new ResponseResult(false, "未找到询价信息");
@@ -107,6 +113,7 @@ public class EnquiryController {
                     orderService.orderState(enquiry.getOid(), "DDZT_XDD");
                 }
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除询价", JSONObject.toJSONString(enquiry), "ProEnquiry", request);
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);

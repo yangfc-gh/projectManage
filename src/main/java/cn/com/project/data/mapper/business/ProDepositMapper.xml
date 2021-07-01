@@ -15,6 +15,9 @@
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
+  <resultMap id="ResultMap_upper" extends="BaseResultMap" type="cn.com.project.data.model.business.ProDeposit">
+    <association property="orderInfo" column="oid" select="cn.com.project.data.dao.business.ProOrderMapper.selectByPrimaryKey"></association>
+  </resultMap>
   <sql id="Base_Column_List">
     d.did, d.oid, d.payer, d.provider, d.amount, d.pay_date, d.for_pay, d.is_back, d.back_date, d.remark,
     d.ctime
@@ -33,7 +36,7 @@
     from pro_deposit d
     where d.oid = #{oid,jdbcType=VARCHAR}
   </select>
-  <select id="selectByCondition" resultMap="BaseResultMap">
+  <select id="selectByCondition" resultMap="ResultMap_upper">
     select
     <include refid="Base_Column_List" />, (select `name` from corporate c where c.cid=d.payer) payerName,
     (select `name` from corporate c where c.cid=d.provider) providerName
@@ -42,11 +45,17 @@
       <if test="oid != null and ''.toString != oid">
         and d.oid = #{oid,jdbcType=VARCHAR}
       </if>
+      <if test="projectName != null and ''.toString != projectName">
+        and d.oid in (select oid from pro_order where project_name like concat('%', #{projectName,jdbcType=VARCHAR}, '%'))
+      </if>
       <if test="payer != null and ''.toString != payer">
         and d.payer = #{payer,jdbcType=VARCHAR}
       </if>
       <if test="provider != null and ''.toString != provider">
         and d.provider = #{provider,jdbcType=VARCHAR}
+      </if>
+      <if test="isBack != null and ''.toString != isBack">
+        and d.is_back = #{isBack,jdbcType=VARCHAR}
       </if>
     </where>
     order by ctime desc

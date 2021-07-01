@@ -44,6 +44,10 @@ public class ProDeposit {
 
     private Date utime;
 
+    private ProOrder orderInfo;
+    /** 查询用 */
+    private String projectName;
+
     public String getDid() {
         return did;
     }
@@ -154,5 +158,21 @@ public class ProDeposit {
 
     public void setProviderName(String providerName) {
         this.providerName = providerName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public ProOrder getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(ProOrder orderInfo) {
+        this.orderInfo = orderInfo;
     }
 }

@@ -2,11 +2,13 @@ package cn.com.project.modules.order;
 
 import cn.com.project.common.CommonUtils;
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProBidderMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.model.business.ProBidder;
 import cn.com.project.data.model.business.ProEnquiry;
 import cn.com.project.data.model.obj.Corporate;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +38,8 @@ public class BidderController {
     ProBidderMapper bidderMapper;
     @Autowired
     CorporateMapper corporateMapper;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "bidder/";
 
@@ -83,11 +87,13 @@ public class BidderController {
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "添加竞标参与方", JSONObject.toJSONString(bidder), "Bidder", request);
         } else {
             int res = bidderMapper.updateByPrimaryKey(bidder);
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改竞标参与方", JSONObject.toJSONString(bidder), "Bidder", request);
         }
         return new ResponseResult(true);
     }
@@ -96,13 +102,14 @@ public class BidderController {
      */
     @RequestMapping("/del/{bid}")
     @ResponseBody
-    public ResponseResult doDel(@PathVariable("bid") String bid, ModelAndView modelAndView) {
+    public ResponseResult doDel(@PathVariable("bid") String bid, HttpServletRequest request) {
         ProBidder bidder = bidderMapper.selectByPrimaryKey(bid);
         if (null == bidder) {
             new ResponseResult(false, "未找到参与方信息");
         }
         int res = bidderMapper.deleteByPrimaryKey(bid);
         if (res > 0) {
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除竞标参与方", JSONObject.toJSONString(bidder), "Bidder", request);
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);

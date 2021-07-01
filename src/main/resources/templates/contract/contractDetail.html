@@ -159,6 +159,58 @@
 									</div>
 								</div>
 							</div>
+							<div class="panel panel-default" style="margin: 5px 12px;">
+								<div class="panel-heading">
+									<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseE">
+										<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+										&nbsp;支出费用 <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
+									</a>
+									<span th:if="${contract}" class="pull-right">
+										<button th:onclick="toExpend([[${contract.cid}]], null)" type="button" class="btn btn-mini btn-primary">添加支出费用</button>
+									</span>
+								</div>
+								<div class="panel-collapse collapse in" id="collapseE">
+									<div class="panel-body">
+										<div id="expend-div" style="padding: 2px 12px;">
+											<table id="expend-table" class="table table-bordered table-hover">
+												<thead>
+													<tr>
+														<th>#</th>
+														<th>支出款项</th>
+														<th>金额</th>
+														<th>备注</th>
+														<th></th>
+													</tr>
+												</thead>
+												<tbody id="expend-tbody">
+													<tr th:each="expend, state: ${contract?.expends}">
+														<td th:text="${state.index+1}"></td>
+														<td th:text="${expend.ename}"></td>
+														<td th:text="${expend.amount}"></td>
+														<td th:text="${expend.remark}"></td>
+														<td>
+															<button th:onclick="toExpend([[${expend.cid}]], [[${expend.eid}]])" class="btn btn-primary btn-mini">修改</button>
+															<button th:onclick="delExpend([[${expend.cid}]], [[${expend.eid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel panel-default" style="margin: 5px 12px;">
+								<div class="panel-heading">
+									<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseP">
+										<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+										&nbsp;利润明细 <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
+									</a>
+								</div>
+								<div class="panel-collapse collapse in" id="collapseP">
+									<div id="profit-div" class="panel-body">
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -177,6 +229,7 @@
 		<script>
 			var subopenid;
 			$(function() {
+				loadProfit($('#cid').val())
 			});
 			// 关闭详情窗口打开的子窗口
 			function closeSubWindow() {
@@ -225,6 +278,46 @@
 			function loadContractpayment(cid) {
 				postRequest($('#contextDiv').html() + '/contract/payment/list', {cid:cid}, function(data) {
 					$('#payment-tbody').html(data)
+				})
+			}
+			// 合同-支出费用
+			function toExpend(cid, eid) {
+				postRequest($('#contextDiv').html() + '/expend/toEdit', {cid:cid, eid:eid}, function(data) {
+					subopenid = layer.open({
+						type: 1,
+						// skin: 'layui-layer-rim', //加上边框
+						title: '支出费用',
+						area: ['50%', '60%'], //宽高
+						content: data
+					})
+				})
+			}
+			// 删除支出费用
+			function delExpend(cid, eid) {
+				layer.confirm('确定删除此条支出费用吗？', {
+					btn: ['确定', '取消'] //按钮
+				}, function() {
+					postRequest($('#contextDiv').html() + '/expend/del/' + eid, {}, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							loadExpends(cid)
+						} else {
+							layer.msg(data.message)
+						}
+					})
+				})
+			}
+			// 支出费用重新加载
+			function loadExpends(cid) {
+				postRequest($('#contextDiv').html() + '/expend/list', {cid:cid}, function(data) {
+					$('#expend-tbody').html(data)
+				})
+				loadProfit(cid)
+			}
+			// 支出费用重新加载
+			function loadProfit(cid) {
+				postRequest($('#contextDiv').html() + '/contract/profit/'+cid, {}, function(data) {
+					$('#profit-div').html(data)
 				})
 			}
 			// 下载合同电子档

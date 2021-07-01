@@ -1,6 +1,7 @@
 package cn.com.project.modules.order;
 
 import cn.com.project.common.ResponseResult;
+import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.obj.SupplierMapper;
 import cn.com.project.data.model.business.ProEnquiry;
@@ -9,6 +10,7 @@ import cn.com.project.data.model.obj.Supplier;
 import cn.com.project.data.model.sys.SysUser;
 import cn.com.project.modules.order.service.EnquiryService;
 import cn.com.project.modules.order.service.OrderService;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class OrderHandleController {
     EnquiryService enquiryService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    SysLogComponent sysLogComponent;
 
     private final String templatePath = "orderhandle/";
 
@@ -61,15 +65,16 @@ public class OrderHandleController {
      */
     @RequestMapping("/enquiry/add")
     @ResponseBody
-    public ResponseResult addEnquiry(@RequestBody ProEnquiry enquiry, ModelAndView modelAndView) {
+    public ResponseResult addEnquiry(@RequestBody ProEnquiry enquiry, HttpServletRequest request) {
         ProOrder order = proOrderMapper.selectByPrimaryKey(enquiry.getOid());
         if (null == order){
-            modelAndView.addObject("message", "未找到相应订单");
+            return new ResponseResult(false, "未找到相应订单");
         }
         try {
             boolean res = enquiryService.add(enquiry);
             if (res) {
                 orderService.orderState(enquiry.getOid(), "DDZT_XUNJIA");
+                sysLogComponent.writeLog(SysLogComponent.OPT_ADD, "新增询价", JSONObject.toJSONString(enquiry), "ProEnquiry", request);
                 return new ResponseResult(true);
             }else {
                 return new ResponseResult(false, "数据库操作失败");

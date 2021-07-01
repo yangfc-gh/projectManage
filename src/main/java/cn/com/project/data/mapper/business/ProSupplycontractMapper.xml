@@ -46,6 +46,13 @@
     from pro_supplycontract
     where oid = #{oid,jdbcType=VARCHAR}
   </select>
+  <!-- 根据订单id，查询基本信息 -->
+  <select id="selectBasicByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract
+    where oid = #{oid,jdbcType=VARCHAR}
+  </select>
   <select id="selectByAnnexId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
