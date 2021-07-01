@@ -137,7 +137,6 @@
 				if (validate ()) {
 					$('#saveBtn', $('#supplycontractForm')).attr("disabled", "disabled")
 					var form = new FormData(document.getElementById("supplycontractForm"));
-					console.log(form)
 					$.ajax({
 						url: $('#contextDiv').html() + '/supplycontract/update',
 						type: "post",
@@ -151,7 +150,7 @@
 								closeSubWindow()
 								closeOpen()
 								doQuery()
-								showDetail (null, $('#scid').val())
+								showDetail (null, $('#oid').val())
 							} else {
 								layer.msg(data.message)
 							}

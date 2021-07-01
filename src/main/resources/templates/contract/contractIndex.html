@@ -24,19 +24,19 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="cname">合同名称</label>
 							<div class="col-sm-8">
-								<input type="text" id="cname" name="cname" placeholder="合同名称(可以是部分关键字)" class="col-xs-10 col-sm-12" autocomplete="off" />
+								<input type="text" id="cname" name="cname" placeholder="合同名称(可以是部分关键字)" class="form-control" autocomplete="off" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="pname">工程名称</label>
 							<div class="col-sm-8">
-								<input type="text" id="pname" name="pname" placeholder="项目名称(可以是部分关键字)" class="col-xs-10 col-sm-12" autocomplete="off" />
+								<input type="text" id="pname" name="pname" placeholder="项目名称(可以是部分关键字)" class="form-control" autocomplete="off" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="partya">甲方</label>
 							<div class="col-sm-8">
-								<select name="partya" onchange="doQuery()">
+								<select name="partya" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
 								</select>
@@ -45,7 +45,7 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="partyb">乙方</label>
 							<div class="col-sm-8">
-								<select name="partyb" onchange="doQuery()">
+								<select name="partyb" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
 								</select>
@@ -81,19 +81,19 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="signTime">签订日期</label>
 							<div class="col-sm-8">
-								<input id="signTime" name="signTime" type="text" autocomplete="off" />
+								<input id="signTime" name="signTime" type="text" autocomplete="off" class="form-control"/>
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="expectedTime">回款日期</label>
 							<div class="col-sm-8">
-								<input id="expectedTime" name="expectedTime" type="text" autocomplete="off" />
+								<input id="expectedTime" name="expectedTime" type="text" autocomplete="off" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="isInvoice">是否开票</label>
 							<div class="col-sm-8">
-								<select name="isInvoice" onchange="doQuery()">
+								<select name="isInvoice" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option value="0">未开票</option>
 									<option value="1">已开票</option>

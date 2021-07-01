@@ -52,7 +52,7 @@
 								<div id="files"></div>
 							</div>
 						</div>
-						<div th:if="${payment.billName}" class="form-group">
+						<div th:if="${!#strings.isEmpty(payment.billName)}" class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="business"></label>
 							<div class="col-sm-8">
 								已上传票据：<span th:text="${payment.billName}"></span>

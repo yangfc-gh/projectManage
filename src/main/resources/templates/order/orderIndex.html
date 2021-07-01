@@ -24,14 +24,14 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="projectName">项目名称</label>
 							<div class="col-sm-8">
-								<input type="text" id="projectName" name="projectName" placeholder="项目名称" class="col-xs-10 col-sm-12" autocomplete="off" />
+								<input type="text" id="projectName" name="projectName" placeholder="项目名称" class="form-control" autocomplete="off" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="customerId">客户</label>
 							<div class="col-sm-8">
 								<!-- <input type="text" id="username" name="username" placeholder="客户" class="col-xs-10 col-sm-12" autocomplete="off" /> -->
-								<select name="customerId" onchange="doQuery()">
+								<select name="customerId" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
 								</select>
@@ -40,7 +40,7 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="area">区域</label>
 							<div class="col-sm-8">
-								<select name="area" onchange="doQuery()">
+								<select name="area" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="quyu : ${dict_quyu}" th:value="${quyu.dcode}" th:text="${quyu.dname}"></option>
 								</select>
@@ -49,13 +49,13 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="otime">订单日期</label>
 							<div class="col-sm-8">
-								<input id="otime" name="otime" type="text" autocomplete="off" />
+								<input id="otime" name="otime" type="text" autocomplete="off" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="status">当前进度</label>
 							<div class="col-sm-8">
-								<select name="status" onchange="doQuery()">
+								<select name="status" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="ddzt : ${dict_ddzt}" th:value="${ddzt.dcode}" th:text="${ddzt.dname}"></option>
 								</select>

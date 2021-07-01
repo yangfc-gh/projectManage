@@ -185,7 +185,7 @@ public class SupplyContractController {
      * 款项列表
      */
     @RequestMapping("/payment/list")
-    public ModelAndView getList(ProSupplycontractPayment payment, ModelAndView modelAndView) {
+    public ModelAndView getPaymentList(ProSupplycontractPayment payment, ModelAndView modelAndView) {
         PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
         List<ProSupplycontractPayment> payments = supplycontractPaymentMapper.selectByCondition(payment);
         List<Corporate> corporates = corporateMapper.selectByCondition(null);
@@ -394,7 +394,7 @@ public class SupplyContractController {
      */
     @RequestMapping("/payment/del/{pid}")
     @ResponseBody
-    public ResponseResult getList(@PathVariable("pid") String pid, HttpServletRequest request) {
+    public ResponseResult doDelete(@PathVariable("pid") String pid, HttpServletRequest request) {
         ProSupplycontractPayment payment = supplycontractPaymentMapper.selectByPrimaryKey(pid);
         if (null == payment) {
             new ResponseResult(false, "未找到付款记录");

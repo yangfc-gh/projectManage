@@ -18,13 +18,13 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="cname">合同名称</label>
 							<div class="col-sm-8">
-								<input type="text" id="cname" name="cname" placeholder="合同名称(可以是部分关键字)" class="col-xs-10 col-sm-12" autocomplete="off" />
+								<input type="text" id="cname" name="cname" placeholder="合同名称(可以是部分关键字)" class="form-control" autocomplete="off" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="partya">甲方</label>
 							<div class="col-sm-8">
-								<select name="partya" onchange="doQuery()">
+								<select name="partya" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
 								</select>
@@ -33,7 +33,7 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="partyb">乙方</label>
 							<div class="col-sm-8">
-								<select name="partyb" onchange="doQuery()">
+								<select name="partyb" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option th:each="supp : ${suppliers}" th:value="${supp.sid}" th:text="${supp.name}"></option>
 								</select>
@@ -42,13 +42,13 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="signTime">签订日期</label>
 							<div class="col-sm-8">
-								<input id="signTime" name="signTime" type="text" autocomplete="off" />
+								<input id="signTime" name="signTime" type="text" autocomplete="off" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="sendState">送货单</label>
 							<div class="col-sm-8">
-								<select name="sendState" onchange="doQuery()">
+								<select name="sendState" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option value="0">无送货单</option>
 									<option value="1">有送货单</option>
@@ -58,7 +58,7 @@
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="payoffState">是否结清</label>
 							<div class="col-sm-8">
-								<select name="payoffState" onchange="doQuery()">
+								<select name="payoffState" onchange="doQuery()" class="form-control">
 									<option value=""></option>
 									<option value="0">未结清</option>
 									<option value="1">已结清</option>

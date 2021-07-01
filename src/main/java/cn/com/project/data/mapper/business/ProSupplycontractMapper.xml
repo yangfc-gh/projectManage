@@ -60,7 +60,7 @@
     where annex_path = #{annexId,jdbcType=VARCHAR} or delivery_path = #{annexId,jdbcType=VARCHAR}
   </select>
   <select id="selectByCondition" resultMap="ResultMap_sub">
-    select sc.*, sc.amount=p.payTotal isPayoff
+    select sc.*, sc.amount=ifnull(p.payTotal, 0) isPayoff
     from pro_supplycontract sc
     left join (select scid, sum(amount) payTotal from pro_supplycontract_payment scp group by scid) p
     on sc.scid=p.scid
@@ -99,10 +99,10 @@
         and delivery_date &lt;= #{deliveryTimee,jdbcType=VARCHAR}
       </if>
       <if test="payoffState != null and '0'.toString() == payoffState">
-        and sc.amount != p.payTotal
+        and sc.amount != ifnull(p.payTotal, 0)
       </if>
       <if test="payoffState != null and '1'.toString() == payoffState">
-        and sc.amount = p.payTotal
+        and sc.amount = ifnull(p.payTotal, 0)
       </if>
     </where>
     order by sign_date desc

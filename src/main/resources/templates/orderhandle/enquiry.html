@@ -146,11 +146,13 @@
 				var idx = 0
 				rows.forEach(function(row, idx) {
 					var columns = row.split(',')
-					html += '<tr>'
-					columns.forEach(function(column) {
-						html += '<td>'+column+'</td>'
-					})
-					html += '</tr>'
+					if (verifyRow(columns)) {
+						html += '<tr>'
+						columns.forEach(function(column) {
+							html += '<td>'+column+'</td>'
+						})
+						html += '</tr>'
+					}
 				})
 				html += '</table>'
 				return html
@@ -248,6 +250,13 @@
 					allDatas.push(record)
 				});
 				return allDatas
+			}
+			// 验证一行是否全是空
+			function verifyRow(columns){
+				if (!columns[1] && !columns[2] && !columns[3] && !columns[4] && !columns[5] && !columns[6] && !columns[7]) {
+					return false
+				}
+				return true
 			}
 		</script>
 	</body>
