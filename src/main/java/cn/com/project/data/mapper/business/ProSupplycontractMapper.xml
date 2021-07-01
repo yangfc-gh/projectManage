@@ -34,6 +34,12 @@
     from pro_supplycontract
     where scid = #{scid,jdbcType=VARCHAR}
   </select>
+  <select id="selectDetail" parameterType="java.lang.String" resultMap="ResultMap_sub">
+    select
+    <include refid="Base_Column_List" />
+    from pro_supplycontract
+    where scid = #{scid,jdbcType=VARCHAR}
+  </select>
   <select id="selectByOid" parameterType="java.lang.String" resultMap="ResultMap_sub">
     select
     <include refid="Base_Column_List" />
@@ -45,6 +51,54 @@
     <include refid="Base_Column_List" />
     from pro_supplycontract
     where annex_path = #{annexId,jdbcType=VARCHAR} or delivery_path = #{annexId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="ResultMap_sub">
+    select sc.*, sc.amount=p.payTotal isPayoff
+    from pro_supplycontract sc
+    left join (select scid, sum(amount) payTotal from pro_supplycontract_payment scp group by scid) p
+    on sc.scid=p.scid
+    <where>
+      <if test="oid != null and ''.toString() != oid">
+        and oid = #{oid,jdbcType=VARCHAR}
+      </if>
+      <if test="scid != null and ''.toString() != scid">
+        and sc.oid = #{oid,jdbcType=VARCHAR}
+      </if>
+      <if test="cname != null and ''.toString() != cname">
+        and cname like concat('%', #{cname,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="partya != null and ''.toString() != partya">
+        and partyA = #{partya,jdbcType=VARCHAR}
+      </if>
+      <if test="partyb != null and ''.toString() != partyb">
+        and partyB = #{partyb,jdbcType=VARCHAR}
+      </if>
+      <if test="sendState != null and '0'.toString() == sendState">
+        and (delivery_path is null or delivery_path = '')
+      </if>
+      <if test="sendState != null and '1'.toString() == sendState">
+        and (delivery_path is not null and delivery_path != '')
+      </if>
+      <if test="signTimeb != null and ''.toString() != signTimeb">
+        and sign_date &gt;= #{signTimeb,jdbcType=VARCHAR}
+      </if>
+      <if test="signTimee != null and ''.toString() != signTimee">
+        and sign_date &lt;= #{signTimee,jdbcType=VARCHAR}
+      </if>
+      <if test="deliveryTimeb != null and ''.toString() != deliveryTimeb">
+        and delivery_date &gt;= #{deliveryTimeb,jdbcType=VARCHAR}
+      </if>
+      <if test="deliveryTimee != null and ''.toString() != deliveryTimee">
+        and delivery_date &lt;= #{deliveryTimee,jdbcType=VARCHAR}
+      </if>
+      <if test="payoffState != null and '0'.toString() == payoffState">
+        and sc.amount != p.payTotal
+      </if>
+      <if test="payoffState != null and '1'.toString() == payoffState">
+        and sc.amount = p.payTotal
+      </if>
+    </where>
+    order by sign_date desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_supplycontract

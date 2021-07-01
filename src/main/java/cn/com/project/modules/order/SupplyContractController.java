@@ -7,12 +7,17 @@ import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.business.ProSupplycontractMapper;
 import cn.com.project.data.dao.business.ProSupplycontractPaymentMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
+import cn.com.project.data.dao.obj.CustomerMapper;
 import cn.com.project.data.dao.obj.SupplierMapper;
+import cn.com.project.data.dao.sys.SysDictsMapper;
 import cn.com.project.data.model.business.*;
 import cn.com.project.data.model.obj.Corporate;
+import cn.com.project.data.model.obj.Customer;
 import cn.com.project.data.model.obj.Supplier;
+import cn.com.project.data.model.sys.SysDicts;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -59,6 +64,18 @@ public class SupplyContractController {
     private final String objNameSub = "supplyContractPayment";
 
     /**
+     * 跳转管理首页
+     */
+    @RequestMapping("/index")
+    public ModelAndView toIndex(ModelAndView modelAndView) {
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        modelAndView.addObject("corporates", corporates);
+        List<Supplier> suppliers = supplierMapper.selectByCondition(null);
+        modelAndView.addObject("suppliers", suppliers);
+        modelAndView.setViewName(templatePath+objName+"Index");
+        return modelAndView;
+    }
+    /**
      * 去编辑
      */
     @RequestMapping("/toEdit")
@@ -104,7 +121,62 @@ public class SupplyContractController {
         modelAndView.setViewName(templatePath+objNameSub+"Edit");
         return modelAndView;
     }
+    /**
+     * 跳转管理首页
+     */
+    @RequestMapping("/detail/{scid}")
+    public ModelAndView toDetail(@PathVariable("scid") String scid, ModelAndView modelAndView) {
+        ProSupplycontract supplycontract = supplycontractMapper.selectDetail(scid);
+        // 全部主体信息
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部供应商信息
+        List<Supplier> suppliers = supplierMapper.selectByCondition(null);
+        Map<String, String> supp = suppliers.stream().collect(Collectors.toMap(Supplier::getSid, Supplier::getName));
 
+        supplycontract.setPartya(StringUtils.isNotBlank(supplycontract.getPartya()) ? corp.get(supplycontract.getPartya()) : null);
+        supplycontract.setPartyb(StringUtils.isNotBlank(supplycontract.getPartyb()) ? supp.get(supplycontract.getPartyb()) : null);
+        for (ProSupplycontractPayment payment : supplycontract.getPayments()) {
+            payment.setPayCorporate(StringUtils.isNotBlank(payment.getPayCorporate()) ? corp.get(payment.getPayCorporate()) : null);
+        }
+        modelAndView.addObject("supplycontract", supplycontract);
+        modelAndView.setViewName(templatePath+objName+"Detail");
+        return modelAndView;
+    }
+    /**
+     * 列表
+     */
+    @RequestMapping("/list")
+    public ModelAndView getList(ProSupplycontract supplycontract, ModelAndView modelAndView) {
+        if (null != supplycontract && StringUtils.isNotBlank(supplycontract.getSignTime())) {
+            String[] times = supplycontract.getSignTime().split("~");
+            supplycontract.setSignTimeb(times[0].trim());
+            supplycontract.setSignTimee(times[1].trim());
+        }
+        if (null != supplycontract && StringUtils.isNotBlank(supplycontract.getDeliveryTime())) {
+            String[] times = supplycontract.getDeliveryTime().split("~");
+            supplycontract.setDeliveryTimeb(times[0].trim());
+            supplycontract.setDeliveryTimee(times[1].trim());
+        }
+        PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        List<ProSupplycontract> supplycontracts = supplycontractMapper.selectByCondition(supplycontract);
+        // 全部主体信息
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部供应商信息
+        List<Supplier> suppliers = supplierMapper.selectByCondition(null);
+        Map<String, String> supp = suppliers.stream().collect(Collectors.toMap(Supplier::getSid, Supplier::getName));
+        // 翻译一下甲方乙方
+        for (ProSupplycontract supplycontract1 : supplycontracts) {
+            supplycontract1.setPartya(StringUtils.isNotBlank(supplycontract1.getPartya()) ? corp.get(supplycontract1.getPartya()) : null);
+            supplycontract1.setPartyb(StringUtils.isNotBlank(supplycontract1.getPartyb()) ? supp.get(supplycontract1.getPartyb()) : null);
+        }
+
+        PageInfo<ProSupplycontract> resInfo = new PageInfo<>(supplycontracts);
+        modelAndView.addObject("resInfo", resInfo);
+        modelAndView.setViewName(templatePath+objName+"List");
+        return modelAndView;
+    }
     /**
      * 款项列表
      */

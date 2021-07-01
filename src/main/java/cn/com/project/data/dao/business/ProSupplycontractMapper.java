@@ -13,9 +13,13 @@ public interface ProSupplycontractMapper {
 
     ProSupplycontract selectByPrimaryKey(String scid);
 
+    ProSupplycontract selectDetail(String scid);
+
     ProSupplycontract selectByAnnexId(String annexId);
 
     List<ProSupplycontract> selectByOid(String oid);
+
+    List<ProSupplycontract> selectByCondition(ProSupplycontract record);
 
     int updateByPrimaryKeySelective(ProSupplycontract record);
 

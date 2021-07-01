@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -159,7 +160,7 @@ public class OrderController {
      * @param order
      */
     @RequestMapping("/list")
-    public ModelAndView getList(ProOrder order, ModelAndView modelAndView, HttpServletRequest request) {
+    public String getList(ProOrder order, Model model, HttpServletRequest request) {
         if (null != order && StringUtils.isNotBlank(order.getOtime())) {
             String[] times = order.getOtime().split("~");
             order.setOtimeb(times[0].trim());
@@ -167,8 +168,6 @@ public class OrderController {
         }
         PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
         List<ProOrder> orders = proOrderMapper.selectByCondition(order);
-        PageInfo<ProOrder> resInfo = new PageInfo<ProOrder>(orders);
-        modelAndView.addObject("resInfo", resInfo);
         // 所有字典
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);
         // 翻译一下字典项
@@ -177,14 +176,18 @@ public class OrderController {
         Map<String, String> quyu = sysDictsList.stream().filter(d -> "D_QUYU".equals(d.getPcode())).collect(Collectors.toMap(SysDicts::getDcode, SysDicts::getDname));
         List<Customer> customers = customerMapper.selectByCondition(null);
         Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
-        for(ProOrder order1 : resInfo.getList()){
+        for(ProOrder order1 : orders){
             order1.setAreaText(quyu.get(order1.getArea()));
             order1.setCustomerText(cust.get(order1.getCustomerId()));
             order1.setStatusText(ddzt.get(order1.getStatus()));
         }
+        PageInfo<ProOrder> resInfo = new PageInfo<ProOrder>(orders);
+        model.addAttribute("resInfo", resInfo);
+        return templatePath+"orderList";
+        /*modelAndView.addObject("resInfo", resInfo);
         modelAndView.addObject("orders", orders);
         modelAndView.setViewName(templatePath+"orderList");
-        return modelAndView;
+        return modelAndView;*/
     }
 
     /**

@@ -58,6 +58,20 @@ public class ProSupplycontract {
 
     private Date utime;
 
+    private String isPayoff;
+
+    /** 查询用-签订日期 */
+    private String signTime;
+    private String signTimeb;
+    private String signTimee;
+    /** 查询用-交付日期 */
+    private String deliveryTime;
+    private String deliveryTimeb;
+    private String deliveryTimee;
+    /** 查询用-交付日期 */
+    private String sendState; // 是否送货单
+    private String payoffState; // 是否付清
+
     private List<ProSupplycontractPayment> payments;
 
     public String getScid() {
@@ -210,5 +224,77 @@ public class ProSupplycontract {
 
     public void setPayments(List<ProSupplycontractPayment> payments) {
         this.payments = payments;
+    }
+
+    public String getSignTime() {
+        return signTime;
+    }
+
+    public void setSignTime(String signTime) {
+        this.signTime = signTime == null ? null : signTime.trim();
+    }
+
+    public String getSignTimeb() {
+        return signTimeb;
+    }
+
+    public void setSignTimeb(String signTimeb) {
+        this.signTimeb = signTimeb == null ? null : signTimeb.trim();
+    }
+
+    public String getSignTimee() {
+        return signTimee;
+    }
+
+    public void setSignTimee(String signTimee) {
+        this.signTimee = signTimee == null ? null : signTimee.trim();
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime == null ? null : deliveryTime.trim();
+    }
+
+    public String getDeliveryTimeb() {
+        return deliveryTimeb;
+    }
+
+    public void setDeliveryTimeb(String deliveryTimeb) {
+        this.deliveryTimeb = deliveryTimeb == null ? null : deliveryTimeb.trim();
+    }
+
+    public String getDeliveryTimee() {
+        return deliveryTimee;
+    }
+
+    public void setDeliveryTimee(String deliveryTimee) {
+        this.deliveryTimee = deliveryTimee == null ? null : deliveryTimee.trim();
+    }
+
+    public String getSendState() {
+        return sendState;
+    }
+
+    public void setSendState(String sendState) {
+        this.sendState = sendState;
+    }
+
+    public String getPayoffState() {
+        return payoffState;
+    }
+
+    public void setPayoffState(String payoffState) {
+        this.payoffState = payoffState;
+    }
+
+    public String getIsPayoff() {
+        return isPayoff;
+    }
+
+    public void setIsPayoff(String isPayoff) {
+        this.isPayoff = isPayoff;
     }
 }

@@ -38,6 +38,12 @@
     from pro_contract
     where cid = #{cid,jdbcType=VARCHAR}
   </select>
+  <select id="selectDetail" parameterType="java.lang.String" resultMap="ResultMap_sub">
+    select
+    <include refid="Base_Column_List" />
+    from pro_contract
+    where cid = #{cid,jdbcType=VARCHAR}
+  </select>
   <select id="selectByOid" parameterType="java.lang.String" resultMap="ResultMap_sub">
     select
     <include refid="Base_Column_List" />
@@ -49,6 +55,73 @@
     <include refid="Base_Column_List" />
     from pro_contract
     where annex_path = #{annexId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="ResultMap_sub">
+    <!--select
+    <include refid="Base_Column_List" />
+    from pro_contract-->
+    select c.*
+    from pro_contract c
+    left join (select cid,min(expected_date) expected_date from pro_contract_payment where pay_amount is null and (pay_date is null or pay_date = '')
+    group by cid) p
+    on c.cid=p.cid
+    <where>
+      <if test="oid != null and ''.toString() != oid">
+        and oid = #{oid,jdbcType=VARCHAR}
+      </if>
+      <if test="cno != null and ''.toString() != cno">
+        and cno like concat('%', #{cno,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="cname != null and ''.toString() != cname">
+        and cname like concat('%', #{cname,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="pname != null and ''.toString() != pname">
+        and pname like concat('%', #{pname,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="partya != null and ''.toString() != partya">
+        and partyA = #{partya,jdbcType=VARCHAR}
+      </if>
+      <if test="partyb != null and ''.toString() != partyb">
+        and partyB = #{partyb,jdbcType=VARCHAR}
+      </if>
+      <if test="partyu != null and ''.toString() != partyu">
+        and partyU = #{partyu,jdbcType=VARCHAR}
+      </if>
+      <if test="partyz != null and ''.toString() != partyz">
+        and partyZ = #{partyz,jdbcType=VARCHAR}
+      </if>
+      <if test="isInvoice != null and '0'.toString() == isInvoice">
+        and (invoice_amount is null or invoice_amount = '')
+      </if>
+      <if test="isInvoice != null and '1'.toString() == isInvoice">
+        and (invoice_amount is not null and invoice_amount != '')
+      </if>
+      <if test="signTimeb != null and ''.toString() != signTimeb">
+        and sign_date &gt;= #{signTimeb,jdbcType=VARCHAR}
+      </if>
+      <if test="signTimee != null and ''.toString() != signTimee">
+        and sign_date &lt;= #{signTimee,jdbcType=VARCHAR}
+      </if>
+      <if test="deliveryTimeb != null and ''.toString() != deliveryTimeb">
+        and delivery_date &gt;= #{deliveryTimeb,jdbcType=VARCHAR}
+      </if>
+      <if test="deliveryTimee != null and ''.toString() != deliveryTimee">
+        and delivery_date &lt;= #{deliveryTimee,jdbcType=VARCHAR}
+      </if>
+      <if test="expectedTimeb != null and ''.toString() != expectedTimeb">
+        and p.expected_date &gt;= #{expectedTimeb,jdbcType=VARCHAR}
+        <!--and cid in (select cid from pro_contract_payment where pay_amount is null and (pay_date is null or pay_date = '')
+        and expected_date &gt;= #{expectedTimeb,jdbcType=VARCHAR}
+        group by cid)-->
+      </if>
+      <if test="expectedTimee != null and ''.toString() != expectedTimee">
+        and p.expected_date &lt;= #{expectedTimee,jdbcType=VARCHAR}
+        <!--and cid in (select cid from pro_contract_payment where pay_amount is null and (pay_date is null or pay_date = '')
+        and expected_date &lt;= #{expectedTimee,jdbcType=VARCHAR}
+        group by cid)-->
+      </if>
+    </where>
+    order by sign_date desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_contract

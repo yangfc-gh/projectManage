@@ -66,9 +66,29 @@ public class ProContract {
 
     private String status;
 
+    private String isInvoice;
+
     private Date ctime;
 
     private Date utime;
+
+    /** 查询用-签订日期 */
+    private String signTime;
+    private String signTimeb;
+    private String signTimee;
+    /** 查询用-交付日期 */
+    private String deliveryTime;
+    private String deliveryTimeb;
+    private String deliveryTimee;
+    /** 查询用-下次回款日期 */
+    private String expectedTime;
+    private String expectedTimeb;
+    private String expectedTimee;
+
+    /** 显示用-下次回款日期 */
+    private String nextStep;
+    private String nextDate;
+    private String process;
 
     private List<ProContractPayment> payments;
 
@@ -245,7 +265,7 @@ public class ProContract {
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.status = status == null ? null : status.trim();
     }
 
     public List<ProContractPayment> getPayments() {
@@ -254,5 +274,109 @@ public class ProContract {
 
     public void setPayments(List<ProContractPayment> payments) {
         this.payments = payments;
+    }
+
+    public String getIsInvoice() {
+        return isInvoice;
+    }
+
+    public void setIsInvoice(String isInvoice) {
+        this.isInvoice = isInvoice == null ? null : isInvoice.trim();
+    }
+
+    public String getSignTime() {
+        return signTime;
+    }
+
+    public void setSignTime(String signTime) {
+        this.signTime = signTime == null ? null : signTime.trim();
+    }
+
+    public String getSignTimeb() {
+        return signTimeb;
+    }
+
+    public void setSignTimeb(String signTimeb) {
+        this.signTimeb = signTimeb == null ? null : signTimeb.trim();
+    }
+
+    public String getSignTimee() {
+        return signTimee;
+    }
+
+    public void setSignTimee(String signTimee) {
+        this.signTimee = signTimee == null ? null : signTimee.trim();
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime == null ? null : deliveryTime.trim();
+    }
+
+    public String getDeliveryTimeb() {
+        return deliveryTimeb;
+    }
+
+    public void setDeliveryTimeb(String deliveryTimeb) {
+        this.deliveryTimeb = deliveryTimeb == null ? null : deliveryTimeb.trim();
+    }
+
+    public String getDeliveryTimee() {
+        return deliveryTimee;
+    }
+
+    public void setDeliveryTimee(String deliveryTimee) {
+        this.deliveryTimee = deliveryTimee == null ? null : deliveryTimee.trim();
+    }
+
+    public String getExpectedTime() {
+        return expectedTime;
+    }
+
+    public void setExpectedTime(String expectedTime) {
+        this.expectedTime = expectedTime == null ? null : expectedTime.trim();
+    }
+
+    public String getExpectedTimeb() {
+        return expectedTimeb;
+    }
+
+    public void setExpectedTimeb(String expectedTimeb) {
+        this.expectedTimeb = expectedTimeb == null ? null : expectedTimeb.trim();
+    }
+
+    public String getExpectedTimee() {
+        return expectedTimee;
+    }
+
+    public void setExpectedTimee(String expectedTimee) {
+        this.expectedTimee = expectedTimee == null ? null : expectedTimee.trim();
+    }
+
+    public String getNextStep() {
+        return nextStep;
+    }
+
+    public void setNextStep(String nextStep) {
+        this.nextStep = nextStep;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
+
+    public String getNextDate() {
+        return nextDate;
+    }
+
+    public void setNextDate(String nextDate) {
+        this.nextDate = nextDate;
     }
 }

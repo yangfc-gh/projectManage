@@ -8,11 +8,16 @@ import cn.com.project.data.dao.business.ProContractPaymentMapper;
 import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
 import cn.com.project.data.dao.obj.CustomerMapper;
+import cn.com.project.data.dao.sys.SysDictsMapper;
 import cn.com.project.data.model.business.*;
 import cn.com.project.data.model.obj.Corporate;
 import cn.com.project.data.model.obj.Customer;
+import cn.com.project.data.model.obj.Supplier;
+import cn.com.project.data.model.sys.SysDicts;
+import cn.com.project.modules.order.service.OrderService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -34,6 +39,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -55,11 +61,32 @@ public class ContractController {
     CorporateMapper corporateMapper;
     @Autowired
     CustomerMapper customerMapper;
+    @Autowired
+    SysDictsMapper sysDictsMapper;
+    @Autowired
+    OrderService orderService;
 
     private final String templatePath = "contract/";
     private final String objName = "contract";
     private final String objNameSub = "contractPayment";
-
+    /**
+     * 跳转管理首页
+     */
+    @RequestMapping("/index")
+    public ModelAndView toIndex(ModelAndView modelAndView) {
+        // 所有字典
+        List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);
+        List<SysDicts> ddzt = sysDictsList.stream().filter(d -> "D_DDZT".equals(d.getPcode())).collect(Collectors.toList());
+        List<SysDicts> quyu = sysDictsList.stream().filter(d -> "D_QUYU".equals(d.getPcode())).collect(Collectors.toList());
+        modelAndView.addObject("dict_ddzt", ddzt);
+        modelAndView.addObject("dict_quyu", quyu);
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        modelAndView.addObject("corporates", corporates);
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        modelAndView.addObject("customers", customers);
+        modelAndView.setViewName(templatePath+"contractIndex");
+        return modelAndView;
+    }
     /**
      * 去编辑
      */
@@ -79,6 +106,83 @@ public class ContractController {
         customers = customers.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
         modelAndView.addObject("customers", customers);
         modelAndView.setViewName(templatePath+objName+"Edit");
+        return modelAndView;
+    }
+
+    /**
+     * 跳转管理首页
+     */
+    @RequestMapping("/detail/{cid}")
+    public ModelAndView toDetail(@PathVariable("cid") String cid, ModelAndView modelAndView) {
+        ProContract contract = contractMapper.selectDetail(cid);
+        // 全部主体信息
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部客户信息
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+
+        contract.setPartya(StringUtils.isNotBlank(contract.getPartya()) ? cust.get(contract.getPartya()) : null);
+        contract.setPartyb(StringUtils.isNotBlank(contract.getPartyb()) ? corp.get(contract.getPartyb()) : null);
+        contract.setPartyu(StringUtils.isNotBlank(contract.getPartyu()) ? cust.get(contract.getPartyu()) : null);
+        contract.setPartyz(StringUtils.isNotBlank(contract.getPartyz()) ? corp.get(contract.getPartyz()) : null);
+        modelAndView.addObject("contract", contract);
+        modelAndView.setViewName(templatePath+objName+"Detail");
+        return modelAndView;
+    }
+
+    /**
+     * 列表
+     */
+    @RequestMapping("/list")
+    public ModelAndView getList(ProContract contract, ModelAndView modelAndView) {
+        if (null != contract && StringUtils.isNotBlank(contract.getSignTime())) {
+            String[] times = contract.getSignTime().split("~");
+            contract.setSignTimeb(times[0].trim());
+            contract.setSignTimee(times[1].trim());
+        }
+        if (null != contract && StringUtils.isNotBlank(contract.getDeliveryTime())) {
+            String[] times = contract.getDeliveryTime().split("~");
+            contract.setDeliveryTimeb(times[0].trim());
+            contract.setDeliveryTimee(times[1].trim());
+        }
+        if (null != contract && StringUtils.isNotBlank(contract.getExpectedTime())) {
+            String[] times = contract.getExpectedTime().split("~");
+            contract.setExpectedTimeb(times[0].trim());
+            contract.setExpectedTimee(times[1].trim());
+        }
+        PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        List<ProContract> contracts = contractMapper.selectByCondition(contract);
+        // 全部主体信息
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部客户信息
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+        // 翻译一下甲方乙方
+        for (ProContract proContract : contracts) {
+            proContract.setPartya(StringUtils.isNotBlank(proContract.getPartya()) ? cust.get(proContract.getPartya()) : null);
+            proContract.setPartyb(StringUtils.isNotBlank(proContract.getPartyb()) ? corp.get(proContract.getPartyb()) : null);
+            if (CollectionUtils.isNotEmpty(proContract.getPayments())) {
+                long total = proContract.getPayments().size();
+                long process = proContract.getPayments().stream().filter(p -> null != p.getPayAmount() && StringUtils.isNotBlank(p.getPayDate())).count();
+                proContract.setProcess(process+"/"+total); //进度
+                for (ProContractPayment payment : proContract.getPayments()) {
+                    if (null == payment.getPayAmount() && StringUtils.isBlank(payment.getPayDate())) {
+                        proContract.setNextStep(payment.getPayName());
+                        proContract.setNextDate(payment.getExpectedDate());
+                        break;
+                    }
+                }
+            } else {
+                proContract.setProcess("0/0"); //进度
+            }
+        }
+        // 整理一下下一进度
+
+        PageInfo<ProContract> resInfo = new PageInfo<>(contracts);
+        modelAndView.addObject("resInfo", resInfo);
+        modelAndView.setViewName(templatePath+objName+"List");
         return modelAndView;
     }
 
@@ -153,6 +257,8 @@ public class ContractController {
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            // 订单状态切换为”已签合同“
+            orderService.orderState(contract.getOid(), "DDZT_QDHT");
         } else {
             int res = contractMapper.updateByPrimaryKey(contract);
             if (res <= 0) {

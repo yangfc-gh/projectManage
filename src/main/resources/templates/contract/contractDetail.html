@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="page-content" style="margin-bottom: 50px; min-height: 800px;">
+			<input type="hidden" name="oid" id="oid" th:value="${contract.oid}" />
+			<input type="hidden" name="cid" id="cid" th:value="${contract.cid}" />
+			<div id="accordion" class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a class="accordion-toggle bolder" data-toggle="collapse" href="#collapseContract">
+							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+							&nbsp;合同信息 <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
+						</a>
+						<span class="pull-right">
+							<button th:onclick="toContract([[${contract.oid}]])" type="button" class="btn btn-mini btn-primary">修改合同</button>
+						</span>
+					</div>
+				
+					<div class="panel-collapse collapse in" id="collapseContract">
+						<div class="panel-body">
+							<div th:if="${contract}" class="profile-user-info profile-user-info-striped">
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 合同名称 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.cname}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 合同号 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.cno}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 合同金额 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.amount}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 工程名称 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.pname}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 签订日期 </div>
+									<div class="profile-info-value">
+										<span class="" th:text="${contract.signDate}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 附件 </div>
+									<div class="profile-info-value">
+										<span id="" th:onclick="toDownloadContractAnnex([[${contract.annexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载"  th:text="${contract.annexName}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 甲方 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.partya}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 乙方 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.partyb}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 使用方 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.partyu}"></span>
+									</div>
+								</div>
+								
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 执行方 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.partyz}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 发票日期 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.invoiceDate}"></span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 profile-info-row">
+									<div class="profile-info-name"> 发票金额 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.invoiceAmount}"></span>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-12 col-md-12 profile-info-row">
+									<div class="profile-info-name"> 概要 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.description}"></span>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-12 col-md-12 profile-info-row">
+									<div class="profile-info-name"> 备注 </div>
+									<div class="profile-info-value">
+										<span class="" id="" th:text="${contract.remark}"></span>
+									</div>
+								</div>
+							</div>
+							<div class="panel panel-default" style="margin: 5px 12px;">
+								<div class="panel-heading">
+									<a class="accordion-toggle collapsed" data-toggle="collapse" href="#collapseCP">
+										<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+										&nbsp;合同款项信息 <span style="color: #B7B7B7;font-size: 12px;">(点击此处可收起)</span> 
+									</a>
+									<span th:if="${contract}" class="pull-right">
+										<button th:onclick="toPayment([[${contract.cid}]], null)" type="button" class="btn btn-mini btn-primary">添加合同款项</button>
+									</span>
+								</div>
+								<div class="panel-collapse collapse in" id="collapseCP">
+									<div class="panel-body">
+										<div id="payment-div" style="padding: 2px 12px;">
+											<table id="payment-table" class="table table-bordered table-hover">
+												<thead>
+													<tr>
+														<th>款项</th>
+														<th>金额</th>
+														<th>应回日期</th>
+														<th>备注</th>
+														<th>回款金额</th>
+														<th>回款日期</th>
+														<th>票据</th>
+														<th>回款说明</th>
+														<th></th>
+													</tr>
+												</thead>
+												<tbody id="payment-tbody">
+													<tr th:each="payment, state: ${contract?.payments}">
+														<td th:text="${payment.payName}"></td>
+														<td th:text="${payment.amount}"></td>
+														<td th:text="${payment.expectedDate}"></td>
+														<td th:text="${payment.expectedRemark}"></td>
+														<td th:text="${payment.payAmount}"></td>
+														<td th:text="${payment.payDate}"></td>
+														<td>
+															<span th:onclick="toDownloadContractPaymentAnnex([[${payment.billPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载" th:text="${payment.billName}"></span>
+														</td>
+														<td th:text="${payment.remark}"></td>
+														<td>
+															<button th:onclick="toPayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-primary btn-mini">修改</button>
+															<button th:onclick="delContractpayment([[${payment.cid}]], [[${payment.pid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footBtn">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-5 col-sm-5 col-md-5"></div>
+					<div class="">
+						<button class="btn btn-white btn-default" onclick="closeOpen()"> 关 &nbsp; 闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var subopenid;
+			$(function() {
+			});
+			// 关闭详情窗口打开的子窗口
+			function closeSubWindow() {
+				layer.close(subopenid);
+			}
+			// 合同
+			function toContract(oid) {
+				postRequest($('#contextDiv').html() + '/contract/toEdit', {oid: oid}, function(data) {
+					subopenid = layer.open({
+						type: 1,
+						// skin: 'layui-layer-rim', //加上边框
+						title: '合同信息',
+						area: ['60%', '80%'], //宽高
+						content: data
+					})
+				})
+			}
+			// 合同-款项
+			function toPayment(cid, pid) {
+				postRequest($('#contextDiv').html() + '/contract/payment/toEdit', {cid:cid, pid:pid}, function(data) {
+					subopenid = layer.open({
+						type: 1,
+						// skin: 'layui-layer-rim', //加上边框
+						title: '合同款项',
+						area: ['60%', '80%'], //宽高
+						content: data
+					})
+				})
+			}
+			// 删除合同款项
+			function delContractpayment(cid, pid) {
+				layer.confirm('确定删除此条合同款项吗？', {
+					btn: ['确定', '取消'] //按钮
+				}, function() {
+					postRequest($('#contextDiv').html() + '/contract/payment/del/' + pid, {}, function(data) {
+						if (data.result) {
+							layer.msg('操作成功')
+							loadContractpayment(cid)
+						} else {
+							layer.msg(data.message)
+						}
+					})
+				})
+			}
+			// 合同款项重新加载
+			function loadContractpayment(cid) {
+				postRequest($('#contextDiv').html() + '/contract/payment/list', {cid:cid}, function(data) {
+					$('#payment-tbody').html(data)
+				})
+			}
+			// 下载合同电子档
+			function toDownloadContractAnnex (annexId) {
+				window.location.href = $('#contextDiv').html() + '/contract/downloadAnnex/'+ annexId
+			}
+			// 下载款项票据附件
+			function toDownloadContractPaymentAnnex (annexId) {
+				window.location.href = $('#contextDiv').html() + '/contract/payment/downloadAnnex/'+ annexId
+			}
+		</script>
+	</body>
+</html>

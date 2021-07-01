@@ -8,6 +8,7 @@ import cn.com.project.data.model.business.ProOrder;
 import cn.com.project.data.model.obj.Supplier;
 import cn.com.project.data.model.sys.SysUser;
 import cn.com.project.modules.order.service.EnquiryService;
+import cn.com.project.modules.order.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class OrderHandleController {
     SupplierMapper supplierMapper;
     @Autowired
     EnquiryService enquiryService;
+    @Autowired
+    OrderService orderService;
 
     private final String templatePath = "orderhandle/";
 
@@ -66,6 +69,7 @@ public class OrderHandleController {
         try {
             boolean res = enquiryService.add(enquiry);
             if (res) {
+                orderService.orderState(enquiry.getOid(), "DDZT_XUNJIA");
                 return new ResponseResult(true);
             }else {
                 return new ResponseResult(false, "数据库操作失败");

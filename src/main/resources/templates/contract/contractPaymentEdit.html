@@ -151,6 +151,16 @@
 					$('#expectedDate', $('#paymentForm')).focus()
 					return false
 				}
+				if (!$('#payAmount', $('#paymentForm')).val() && $('#payDate', $('#paymentForm')).val()) {
+					layer.msg('登记了回款日期，必须登记回款金额')
+					$('#payAmount', $('#paymentForm')).focus()
+					return false
+				}
+				if (!$('#payDate', $('#paymentForm')).val() && $('#payAmount', $('#paymentForm')).val()) {
+					layer.msg('登记了回款金额，必须登记回款日期')
+					$('#payDate', $('#paymentForm')).focus()
+					return false
+				}
 				return true
 			}
 		</script>

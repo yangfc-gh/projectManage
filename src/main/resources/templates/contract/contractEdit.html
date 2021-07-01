@@ -222,6 +222,16 @@
 					$('#partyb', $('#contractForm')).focus()
 					return false
 				}
+				if (!$('#invoiceAmount', $('#contractForm')).val() && $('#invoiceDate', $('#contractForm')).val()) {
+					layer.msg('登记了发票日期，必须登记发票金额')
+					$('#invoiceAmount', $('#paymentForm')).focus()
+					return false
+				}
+				if (!$('#invoiceDate', $('#contractForm')).val() && $('#invoiceAmount', $('#contractForm')).val()) {
+					layer.msg('登记了发票金额，必须登记发票日期')
+					$('#invoiceDate', $('#contractForm')).focus()
+					return false
+				}
 				return true
 			}
 		</script>

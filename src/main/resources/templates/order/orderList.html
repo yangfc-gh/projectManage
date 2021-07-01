@@ -16,9 +16,9 @@
 			<td th:text="${order.statusText}"></td>
 			<td th:text="${order.remark}"></td>
 			<td>
-				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${order.oid}]])">编辑</button>&nbsp;
 				<button class="btn btn-minier btn-purple" th:onclick="showDetail(this, [[${order.oid}]])">查看</button>
-				<button class="btn btn-minier btn-danger" th:onclick="toDel(this, [[${order.oid}]])">删除</button>
+				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${order.oid}]])">编辑</button>&nbsp;
+				<button class="btn btn-minier btn-light" th:onclick="toDel(this, [[${order.oid}]])">删除</button>
 			</td>
 		</tr>
 	</body>

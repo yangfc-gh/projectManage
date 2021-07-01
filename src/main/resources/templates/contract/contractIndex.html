@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					项目合同
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form id="queryForm" class="form-horizontal" role="form">
+						<!-- <div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 col-md-3 col-lg-3 control-label no-padding-right" for="ono">合同编号</label>
+							<div class="col-sm-8 col-md-8 col-lg-8">
+								<input type="text" id="ono" name="ono" placeholder="单号" class="col-xs-10 col-md-12" />
+							</div>
+						</div> -->
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="cname">合同名称</label>
+							<div class="col-sm-8">
+								<input type="text" id="cname" name="cname" placeholder="合同名称(可以是部分关键字)" class="col-xs-10 col-sm-12" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="pname">工程名称</label>
+							<div class="col-sm-8">
+								<input type="text" id="pname" name="pname" placeholder="项目名称(可以是部分关键字)" class="col-xs-10 col-sm-12" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="partya">甲方</label>
+							<div class="col-sm-8">
+								<select name="partya" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="partyb">乙方</label>
+							<div class="col-sm-8">
+								<select name="partyb" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<!-- <div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="partyu">使用方</label>
+							<div class="col-sm-8">
+								<select name="partyu" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="partyz">执行方</label>
+							<div class="col-sm-8">
+								<select name="partyz" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="corp : ${corporates}" th:value="${corp.cid}" th:text="${corp.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="area">区域</label>
+							<div class="col-sm-8">
+								<select name="area" onchange="doQuery()">
+									<option value=""></option>
+									<option th:each="quyu : ${dict_quyu}" th:value="${quyu.dcode}" th:text="${quyu.dname}"></option>
+								</select>
+							</div>
+						</div> -->
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="signTime">签订日期</label>
+							<div class="col-sm-8">
+								<input id="signTime" name="signTime" type="text" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="expectedTime">回款日期</label>
+							<div class="col-sm-8">
+								<input id="expectedTime" name="expectedTime" type="text" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="isInvoice">是否开票</label>
+							<div class="col-sm-8">
+								<select name="isInvoice" onchange="doQuery()">
+									<option value=""></option>
+									<option value="0">未开票</option>
+									<option value="1">已开票</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-12 col-sm-12 text-right">
+							<!-- <button type="button" class="btn btn-success btn-sm" onclick="toEdit(null, '')">新增</button> -->
+							<button type="button" class="btn btn-sm btn-primary" onclick="doQuery()">查&nbsp;询</button>
+							<!-- <button type="button" class="btn btn-sm btn-grey" onclick="doExport()">导&nbsp;出</button> -->
+						</div>
+					</form>
+					<div class="pull-left" id="totalDiv"></div>
+					<table id="simple-table" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th class="center">#</th>
+								<th width="100px">日期</th>
+								<th>合同名</th>
+								<th>工程名</th>
+								<th>甲方</th>
+								<th>乙方</th>
+								<th>开票金额</th>
+								<th>进度</th>
+								<th>下一款项</th>
+								<th>应回日期</th>
+								<th>签订日期</th>
+								<th></th>
+							</tr>
+						</thead>
+		
+						<tbody id="mainTBody">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	<script>
+		$(function(){
+			doQuery()
+			laydate.render({
+			  elem: '#signTime',
+			  range: '~'
+			})
+			laydate.render({
+			  elem: '#expectedTime',
+			  range: '~'
+			})
+			$('#signTime').one('mouseover', function(){
+				layer.tips('先点一个起始日期，再点一个截止日期，最后点[确定]', '#signTime')
+			})
+			$('#expectedTime').one('mouseover', function(){
+				layer.tips('先点一个起始日期，再点一个截止日期，最后点[确定]', '#expectedTime')
+			})
+		})
+		// 新增或修改
+		function toEdit(obj, oid) {
+			if (obj) {
+				obj.blur() // 一个小bug，就是虽然有遮罩层，但敲空格会再次点击按钮
+			}
+			postRequest($('#contextDiv').html()+'/contract/toEdit', {oid: oid}, function(data){
+				lidx = layer.open({
+				  type: 1,
+				  // skin: 'layui-layer-rim', //加上边框
+				  title: '编辑订单信息',
+				  area: ['600px', '90%'], //宽高
+				  content: data
+				})
+			})
+		}
+		function showDetail (obj, oid) {
+			if (obj) {
+				obj.blur() // 一个小bug，就是虽然有遮罩层，但敲空格会再次点击按钮
+			}
+			postRequest($('#contextDiv').html()+'/contract/detail/'+oid, {}, function(data){
+				lidx = layer.open({
+				  type: 1,
+				  // skin: 'layui-layer-rim', //加上边框
+				  title: '项目合同明细',
+				  area: ['100%', '90%'], //宽高
+				  content: data
+				})
+			})
+		}
+		// 查询
+		function doQuery() {
+			$('#mainTBody').html('')
+			var formData = $("#queryForm").serialize()
+			postRequest($('#contextDiv').html()+'/contract/list', formData, function(data){
+				$('#mainTBody').html(data)
+				if ($('#totalRows').val()) {
+					$('#totalDiv').text('共 '+ $('#totalRows').val() + ' 条')
+				}
+			})
+		}
+		function toDel(obj, oid) {
+			if (obj) {
+				obj.blur() // 一个小bug，就是虽然有遮罩层，但敲空格会再次点击按钮
+			}
+			layer.confirm('确定删除此条订单？', {
+				btn: ['确定', '取消'] //按钮
+			}, function() {
+				postRequest($('#contextDiv').html() + '/contract/del/' + oid, {}, function(data) {
+					if (data.result) {
+						layer.msg('操作成功')
+						doQuery()
+					} else {
+						layer.msg(data.message)
+					}
+				})
+			})
+		}
+		function doExport() {
+			var formData = $("#queryForm").serialize()
+			window.location.href = $('#contextDiv').html() + '/contract/export?'+ formData
+		}
+		// 关闭当前layer的open窗口
+		function closeOpen() {
+			layer.close(lidx);
+		}
+	</script>
+	</body>
+</html>

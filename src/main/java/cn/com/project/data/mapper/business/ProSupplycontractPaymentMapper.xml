@@ -29,6 +29,7 @@
     <include refid="Base_Column_List" />
     from pro_supplycontract_payment
     where scid = #{scid,jdbcType=VARCHAR}
+    order by pay_date
   </select>
   <select id="selectByAnnexId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -51,6 +52,7 @@
         and pay_date &lt;= concat(#{ptimee,jdbcType=VARCHAR}, ' 23:59:59')
       </if>
     </where>
+    order by pay_date
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_supplycontract_payment

@@ -7,6 +7,7 @@ import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.business.ProQuotationMapper;
 import cn.com.project.data.model.business.ProOrder;
 import cn.com.project.data.model.business.ProQuotation;
+import cn.com.project.modules.order.service.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -44,6 +45,8 @@ public class QuotationController {
     ProQuotationMapper quotationMapper;
     @Autowired
     ProOrderMapper orderMapper;
+    @Autowired
+    OrderService orderService;
 
     private final String templatePath = "quotation/";
 
@@ -141,6 +144,8 @@ public class QuotationController {
             if (res <= 0) {
                 return new ResponseResult(false);
             }
+            // 订单状态切换为”已报价“
+            orderService.orderState(quotation.getOid(), "DDZT_YBJ");
         } else {
             int res = quotationMapper.updateByPrimaryKey(quotation);
             if (res <= 0) {

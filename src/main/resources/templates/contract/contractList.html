@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="hidden" id="totalRows" th:value="${resInfo?.total}" />
+		<tr th:each="contract, state: ${resInfo.list}">
+			<td th:text="${state.index + 1}"></td>
+			<td th:text="${contract.signDate}"></td>
+			<td th:text="${contract.cname?:''}"></td>
+			<td th:text="${contract.pname}"></td>
+			<td th:text="${contract.partya}"></td>
+			<td th:text="${contract.partyb}"></td>
+			<td th:text="${contract.invoiceAmount}"></td>
+			<td th:text="${contract.process}"></td>
+			<td th:text="${contract.nextStep}"></td>
+			<td th:text="${contract.nextDate}"></td>
+			<td>
+				<button class="btn btn-minier btn-primary" th:onclick="showDetail(this, [[${contract.cid}]])">查看</button>&nbsp;
+				<button class="btn btn-minier btn-light" th:onclick="del([[${contract.cid}]])">删除</button>&nbsp;
+			</td>
+		</tr>
+	</body>
+</html>
