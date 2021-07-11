@@ -11,6 +11,8 @@
 					<form id="bidderForm" class="form-horizontal" method="post">
 						<input type="hidden" id="oid" name="oid" th:value="${bidder?.oid}" />
 						<input type="hidden" id="bid" name="bid" th:value="${bidder?.bid}" />
+						<input type="hidden" id="annexName" name="annexName" th:value="${bidder?.annexName}" />
+						<input type="hidden" id="annexPath" name="annexPath" th:value="${bidder?.annexPath}" />
 						<div class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="corporateId">竞标参与方:</label>
 							<div class="col-sm-8">
@@ -28,10 +30,25 @@
 								 autocomplete="off" maxlength="17" />
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="detail">明细:</label>
 							<div class="col-sm-8">
 								<textarea id="detail" name="detail" rows="4" class="form-control" th:text="${bidder?.detail}"></textarea>
+							</div>
+						</div> -->
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="business">报价明细:</label>
+							<div class="col-sm-8">
+								<input id="attachment" name="attachment" type="file" class=""
+								 accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+								 onclick="this.value=null"> 
+								<div id="files"></div>
+							</div>
+						</div>
+						<div th:if="${bidder.annexName}" class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for=""></label>
+							<div class="col-sm-8">
+								已上传报价明细：<span th:text="${bidder.annexName}"></span>
 							</div>
 						</div>
 						<div class="form-group">
@@ -61,14 +78,25 @@
 			function saveBidder() {
 				if (validate ()) {
 					$('#saveBtn', $('#bidderForm')).attr("disabled", "disabled")
-					var formData = $("#bidderForm").serialize()
-					postRequest($('#contextDiv').html() + '/bidder/update', formData, function(data) {
-						if (data.result) {
-							layer.msg('操作成功')
-							closeSubWindow()
-							loadBidders($('#oid').val())
-						} else {
-							layer.msg(data.message)
+					var formData = new FormData(document.getElementById("bidderForm"));
+					$.ajax({
+						url: $('#contextDiv').html() + '/bidder/update',
+						type: "post",
+						data: formData,
+						cache: false,
+						processData: false,
+						contentType: false,
+						success: function(data) {
+							if (data.result) {
+								layer.msg('操作成功')
+								closeSubWindow()
+								loadBidders($('#oid').val())
+							} else {
+								layer.msg(data.message)
+							}
+						},
+						error: function(e) {
+							layer.msg("网络错误，请重试！！")
 						}
 					})
 				}

@@ -72,6 +72,7 @@ public class CustomerController {
     @RequestMapping("/list")
     public ModelAndView getList(Customer customer, ModelAndView modelAndView) {
         PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        customer.setStatus("1"); // 只让查询到未删除的吧
         List<Customer> customers = customerMapper.selectByCondition(customer);
         PageInfo<Customer> resInfo = new PageInfo<Customer>(customers);
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);

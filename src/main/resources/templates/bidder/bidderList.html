@@ -9,6 +9,7 @@
 		<tr th:each="bidder, state: ${resInfo.list}">
 			<td th:text="${bidder?.corporateName}"></td>
 			<td th:text="${bidder?.total}"></td>
+			<td><span th:onclick="toDownloadBidderAnnex([[${bidder.annexPath}]])" style="color: #007DDB;cursor: pointer;" title="点击下载"  th:text="${bidder.annexName}"></span></td>
 			<td>
 				<!-- <button th:onclick="showBidderDetail([[${bidder?.bid}]])" class="btn btn-info btn-mini">明细</button> -->
 				<button th:onclick="delBidder([[${bidder?.oid}]], [[${bidder?.bid}]])" class="btn btn-white btn-danger btn-mini">删除</button>

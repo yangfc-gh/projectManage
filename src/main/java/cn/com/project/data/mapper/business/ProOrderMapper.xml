@@ -59,6 +59,7 @@
         and o.`status` = #{status,jdbcType=VARCHAR}
       </if>
     </where>
+    order by ctime desc
   </select>
   <select id="selectDetail" parameterType="java.lang.String" resultMap="ResultMapDetail">
     select

@@ -13,6 +13,8 @@ public interface ProBidderMapper {
 
     ProBidder selectByPrimaryKey(String bid);
 
+    ProBidder selectByAnnexId(String annexId);
+
     List<ProBidder> selectByOid(String oid);
 
     List<ProBidder> selectByCondition(ProBidder record);

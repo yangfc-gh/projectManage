@@ -72,6 +72,9 @@ public class ProSupplycontract {
     private String sendState; // 是否送货单
     private String payoffState; // 是否付清
 
+    private BigDecimal payTotal; // 已支付合计
+    private BigDecimal unpayTotal; // 未支付合计
+
     private List<ProSupplycontractPayment> payments;
 
     public String getScid() {
@@ -296,5 +299,21 @@ public class ProSupplycontract {
 
     public void setIsPayoff(String isPayoff) {
         this.isPayoff = isPayoff;
+    }
+
+    public BigDecimal getPayTotal() {
+        return payTotal;
+    }
+
+    public void setPayTotal(BigDecimal payTotal) {
+        this.payTotal = payTotal;
+    }
+
+    public BigDecimal getUnpayTotal() {
+        return unpayTotal;
+    }
+
+    public void setUnpayTotal(BigDecimal unpayTotal) {
+        this.unpayTotal = unpayTotal;
     }
 }

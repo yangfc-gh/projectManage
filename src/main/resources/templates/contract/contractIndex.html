@@ -59,7 +59,7 @@
 									<option th:each="cust : ${customers}" th:value="${cust.cid}" th:text="${cust.name}"></option>
 								</select>
 							</div>
-						</div>
+						</div> -->
 						<div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="partyz">执行方</label>
 							<div class="col-sm-8">
@@ -69,7 +69,7 @@
 								</select>
 							</div>
 						</div>
-						<div class="form-group col-xs-4 col-sm-4">
+						<!-- <div class="form-group col-xs-4 col-sm-4">
 							<label class="col-sm-3 control-label no-padding-right" for="area">区域</label>
 							<div class="col-sm-8">
 								<select name="area" onchange="doQuery()">
@@ -103,7 +103,7 @@
 						<div class="form-group col-xs-12 col-sm-12 text-right">
 							<!-- <button type="button" class="btn btn-success btn-sm" onclick="toEdit(null, '')">新增</button> -->
 							<button type="button" class="btn btn-sm btn-primary" onclick="doQuery()">查&nbsp;询</button>
-							<!-- <button type="button" class="btn btn-sm btn-grey" onclick="doExport()">导&nbsp;出</button> -->
+							<button type="button" class="btn btn-sm btn-grey" onclick="doExport()">导&nbsp;出</button>
 						</div>
 					</form>
 					<div class="pull-left" id="totalDiv"></div>
@@ -116,11 +116,14 @@
 								<th>工程名</th>
 								<th>甲方</th>
 								<th>乙方</th>
+								<th>执行方</th>
 								<th>开票金额</th>
+								<th>总金额</th>
+								<th>已收</th>
+								<th>未收</th>
 								<th>进度</th>
 								<th>下一款项</th>
 								<th>应回日期</th>
-								<th>签订日期</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -187,7 +190,36 @@
 				if ($('#totalRows').val()) {
 					$('#totalDiv').text('共 '+ $('#totalRows').val() + ' 条')
 				}
+				calcTotal()
 			})
+		}
+		/** 计算合计  */
+		function calcTotal(){
+			var amountTotal = 0
+			var receivedTotal = 0
+			var unReceiveTotal = 0
+			$.each($('#mainTBody tr'),function(idx,itm){
+				var vvv = Number($(this).find('td').eq(8).html())
+				if(vvv != NaN){
+					amountTotal += vvv
+				}
+				vvv = Number($(this).find('td').eq(9).html());
+				if(vvv != NaN){
+					receivedTotal += vvv
+				}
+				vvv = Number($(this).find('td').eq(10).html());
+				if(vvv != NaN){
+					unReceiveTotal += vvv
+				}
+			})
+			if(amountTotal != 0 || receivedTotal != 0 || unReceiveTotal != 0){
+				var appendHtml = "<tr style='font-weight:bold'><td colspan='8' align='center'>合计</td>"
+				appendHtml += "<td>"+amountTotal.toFixed(2)+"</td>"
+				appendHtml += "<td>"+receivedTotal.toFixed(2)+"</td>"
+				appendHtml += "<td>"+unReceiveTotal.toFixed(2)+"</td>"
+				appendHtml += "<td colspan='4'>&nbsp;</td>"
+				$('#mainTBody').append(appendHtml)
+			}
 		}
 		function toDel(obj, oid) {
 			if (obj) {

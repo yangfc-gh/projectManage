@@ -11,6 +11,10 @@ public class ProDeposit {
 
     /**订单id*/
     private String oid;
+    /**收缴方*/
+    private String receiver;
+
+    private String receiverName;
 
     /**缴纳方（不一定是出钱方）*/
     private String payer;
@@ -174,5 +178,21 @@ public class ProDeposit {
 
     public void setOrderInfo(ProOrder orderInfo) {
         this.orderInfo = orderInfo;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }

@@ -12,6 +12,15 @@
 						<input type="hidden" id="oid" name="oid" th:value="${deposit?.oid}" />
 						<input type="hidden" id="did" name="did" th:value="${deposit?.did}" />
 						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="receiver">收缴方:</label>
+							<div class="col-sm-8">
+								<select id="receiver" name="receiver" class="form-control">
+									<option value=""></option>
+									<option th:each="cust : ${customers}" th:selected="${cust.cid eq deposit?.receiver}" th:value="${cust.cid}" th:text="${cust.name}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="payer">缴纳方:</label>
 							<div class="col-sm-8">
 								<select id="payer" name="payer" class="form-control">

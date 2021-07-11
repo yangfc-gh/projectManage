@@ -2,24 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.com.project.data.dao.business.ProDepositMapper">
   <resultMap id="BaseResultMap" type="cn.com.project.data.model.business.ProDeposit">
-    <id column="did" jdbcType="VARCHAR" property="did" />
-    <result column="oid" jdbcType="VARCHAR" property="oid" />
-    <result column="payer" jdbcType="VARCHAR" property="payer" />
-    <result column="provider" jdbcType="VARCHAR" property="provider" />
-    <result column="amount" jdbcType="DECIMAL" property="amount" />
-    <result column="pay_date" jdbcType="VARCHAR" property="payDate" />
-    <result column="for_pay" jdbcType="VARCHAR" property="forPay" />
-    <result column="is_back" jdbcType="VARCHAR" property="isBack" />
-    <result column="back_date" jdbcType="VARCHAR" property="backDate" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
-    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+    <id column="did"  jdbcType="VARCHAR" property="did" />
+    <result column="oid"  jdbcType="VARCHAR" property="oid" />
+    <result column="receiver"  jdbcType="VARCHAR" property="receiver" />
+    <result column="payer"  jdbcType="VARCHAR" property="payer" />
+    <result column="provider"  jdbcType="VARCHAR" property="provider" />
+    <result column="amount"  jdbcType="DECIMAL" property="amount" />
+    <result column="pay_date"  jdbcType="VARCHAR" property="payDate" />
+    <result column="for_pay"  jdbcType="VARCHAR" property="forPay" />
+    <result column="is_back"  jdbcType="VARCHAR" property="isBack" />
+    <result column="back_date"  jdbcType="VARCHAR" property="backDate" />
+    <result column="remark"  jdbcType="VARCHAR" property="remark" />
+    <result column="ctime"  jdbcType="TIMESTAMP" property="ctime" />
+    <result column="utime"  jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
   <resultMap id="ResultMap_upper" extends="BaseResultMap" type="cn.com.project.data.model.business.ProDeposit">
     <association property="orderInfo" column="oid" select="cn.com.project.data.dao.business.ProOrderMapper.selectByPrimaryKey"></association>
   </resultMap>
   <sql id="Base_Column_List">
-    d.did, d.oid, d.payer, d.provider, d.amount, d.pay_date, d.for_pay, d.is_back, d.back_date, d.remark,
+    d.did, d.oid, d.receiver, d.payer, d.provider, d.amount, d.pay_date, d.for_pay, d.is_back, d.back_date, d.remark,
     d.ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -27,14 +28,14 @@
     <include refid="Base_Column_List" />, (select `name` from corporate c where c.cid=d.payer) payerName,
     (select `name` from corporate c where c.cid=d.provider) providerName
     from pro_deposit d
-    where d.did = #{did,jdbcType=VARCHAR}
+    where d.did = #{did, jdbcType=VARCHAR}
   </select>
   <select id="selectByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />, (select `name` from corporate c where c.cid=d.payer) payerName,
     (select `name` from corporate c where c.cid=d.provider) providerName
     from pro_deposit d
-    where d.oid = #{oid,jdbcType=VARCHAR}
+    where d.oid = #{oid, jdbcType=VARCHAR}
   </select>
   <select id="selectByCondition" resultMap="ResultMap_upper">
     select
@@ -43,37 +44,37 @@
     from pro_deposit d
     <where>
       <if test="oid != null and ''.toString != oid">
-        and d.oid = #{oid,jdbcType=VARCHAR}
+        and d.oid = #{oid, jdbcType=VARCHAR}
       </if>
       <if test="projectName != null and ''.toString != projectName">
-        and d.oid in (select oid from pro_order where project_name like concat('%', #{projectName,jdbcType=VARCHAR}, '%'))
+        and d.oid in (select oid from pro_order where project_name like concat('%', #{projectName, jdbcType=VARCHAR}, '%'))
       </if>
       <if test="payer != null and ''.toString != payer">
-        and d.payer = #{payer,jdbcType=VARCHAR}
+        and d.payer = #{payer, jdbcType=VARCHAR}
       </if>
       <if test="provider != null and ''.toString != provider">
-        and d.provider = #{provider,jdbcType=VARCHAR}
+        and d.provider = #{provider, jdbcType=VARCHAR}
       </if>
       <if test="isBack != null and ''.toString != isBack">
-        and d.is_back = #{isBack,jdbcType=VARCHAR}
+        and d.is_back = #{isBack, jdbcType=VARCHAR}
       </if>
     </where>
     order by ctime desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_deposit
-    where did = #{did,jdbcType=VARCHAR}
+    where did = #{did, jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProDeposit">
-    insert into pro_deposit (did, oid, payer, 
+    insert into pro_deposit (did, oid, receiver, payer,
       provider, amount, pay_date, 
       for_pay, is_back, back_date, 
       remark
       )
-    values (#{did,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{payer,jdbcType=VARCHAR}, 
-      #{provider,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{payDate,jdbcType=VARCHAR}, 
-      #{forPay,jdbcType=VARCHAR}, #{isBack,jdbcType=VARCHAR}, #{backDate,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}
+    values (#{did, jdbcType=VARCHAR}, #{oid, jdbcType=VARCHAR}, #{receiver, jdbcType=VARCHAR}, #{payer, jdbcType=VARCHAR},
+      #{provider, jdbcType=VARCHAR}, #{amount, jdbcType=DECIMAL}, #{payDate, jdbcType=VARCHAR}, 
+      #{forPay, jdbcType=VARCHAR}, #{isBack, jdbcType=VARCHAR}, #{backDate, jdbcType=VARCHAR}, 
+      #{remark, jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProDeposit">
@@ -84,6 +85,9 @@
       </if>
       <if test="oid != null">
         oid,
+      </if>
+      <if test="receiver != null">
+        receiver,
       </if>
       <if test="payer != null">
         payer,
@@ -112,77 +116,84 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="did != null">
-        #{did,jdbcType=VARCHAR},
+        #{did, jdbcType=VARCHAR},
       </if>
       <if test="oid != null">
-        #{oid,jdbcType=VARCHAR},
+        #{oid, jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null">
+        #{receiver, jdbcType=VARCHAR},
       </if>
       <if test="payer != null">
-        #{payer,jdbcType=VARCHAR},
+        #{payer, jdbcType=VARCHAR},
       </if>
       <if test="provider != null">
-        #{provider,jdbcType=VARCHAR},
+        #{provider, jdbcType=VARCHAR},
       </if>
       <if test="amount != null">
-        #{amount,jdbcType=DECIMAL},
+        #{amount, jdbcType=DECIMAL},
       </if>
       <if test="payDate != null">
-        #{payDate,jdbcType=VARCHAR},
+        #{payDate, jdbcType=VARCHAR},
       </if>
       <if test="forPay != null">
-        #{forPay,jdbcType=VARCHAR},
+        #{forPay, jdbcType=VARCHAR},
       </if>
       <if test="isBack != null">
-        #{isBack,jdbcType=VARCHAR},
+        #{isBack, jdbcType=VARCHAR},
       </if>
       <if test="backDate != null">
-        #{backDate,jdbcType=VARCHAR},
+        #{backDate, jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
+        #{remark, jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.project.data.model.business.ProDeposit">
     update pro_deposit
     <set>
+      <if test="receiver != null">
+        receiver = #{receiver, jdbcType=VARCHAR},
+      </if>
       <if test="payer != null">
-        payer = #{payer,jdbcType=VARCHAR},
+        payer = #{payer, jdbcType=VARCHAR},
       </if>
       <if test="provider != null">
-        provider = #{provider,jdbcType=VARCHAR},
+        provider = #{provider, jdbcType=VARCHAR},
       </if>
       <if test="amount != null">
-        amount = #{amount,jdbcType=DECIMAL},
+        amount = #{amount, jdbcType=DECIMAL},
       </if>
       <if test="payDate != null">
-        pay_date = #{payDate,jdbcType=VARCHAR},
+        pay_date = #{payDate, jdbcType=VARCHAR},
       </if>
       <if test="forPay != null">
-        for_pay = #{forPay,jdbcType=VARCHAR},
+        for_pay = #{forPay, jdbcType=VARCHAR},
       </if>
       <if test="isBack != null">
-        is_back = #{isBack,jdbcType=VARCHAR},
+        is_back = #{isBack, jdbcType=VARCHAR},
       </if>
       <if test="backDate != null">
-        back_date = #{backDate,jdbcType=VARCHAR},
+        back_date = #{backDate, jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
+        remark = #{remark, jdbcType=VARCHAR},
       </if>
     </set>
-    where did = #{did,jdbcType=VARCHAR}
+    where did = #{did, jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.com.project.data.model.business.ProDeposit">
     update pro_deposit
-    set payer = #{payer,jdbcType=VARCHAR},
-      provider = #{provider,jdbcType=VARCHAR},
-      amount = #{amount,jdbcType=DECIMAL},
-      pay_date = #{payDate,jdbcType=VARCHAR},
-      for_pay = #{forPay,jdbcType=VARCHAR},
-      is_back = #{isBack,jdbcType=VARCHAR},
-      back_date = #{backDate,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR}
-    where did = #{did,jdbcType=VARCHAR}
+    set receiver = #{receiver, jdbcType=VARCHAR},
+        payer = #{payer, jdbcType=VARCHAR},
+      provider = #{provider, jdbcType=VARCHAR},
+      amount = #{amount, jdbcType=DECIMAL},
+      pay_date = #{payDate, jdbcType=VARCHAR},
+      for_pay = #{forPay, jdbcType=VARCHAR},
+      is_back = #{isBack, jdbcType=VARCHAR},
+      back_date = #{backDate, jdbcType=VARCHAR},
+      remark = #{remark, jdbcType=VARCHAR}
+    where did = #{did, jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -1,9 +1,6 @@
 package cn.com.project.modules.order;
 
-import cn.com.project.common.CommonUtils;
-import cn.com.project.common.FileHelper;
-import cn.com.project.common.ResponseResult;
-import cn.com.project.common.SysLogComponent;
+import cn.com.project.common.*;
 import cn.com.project.data.dao.business.ProOrderMapper;
 import cn.com.project.data.dao.business.ProSupplycontractMapper;
 import cn.com.project.data.dao.business.ProSupplycontractPaymentMapper;
@@ -37,9 +34,12 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -95,10 +95,11 @@ public class SupplyContractController {
         }
         modelAndView.addObject("supplycontract", supplycontract);
         List<Corporate> corporates = corporateMapper.selectByCondition(null);
-        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+        ProSupplycontract finalSupplycontract = supplycontract;
+        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus()) || StringUtils.equals(c.getCid(), finalSupplycontract.getPartya())).collect(Collectors.toList());
         modelAndView.addObject("corporates", corporates);
         List<Supplier> suppliers = supplierMapper.selectByCondition(null);
-        suppliers = suppliers.stream().filter(s -> "1".equals(s.getStatus())).collect(Collectors.toList());
+        suppliers = suppliers.stream().filter(s -> "1".equals(s.getStatus()) || StringUtils.equals(s.getStatus(), finalSupplycontract.getPartyb())).collect(Collectors.toList());
         modelAndView.addObject("suppliers", suppliers);
         modelAndView.setViewName(templatePath+objName+"Edit");
         return modelAndView;
@@ -119,7 +120,8 @@ public class SupplyContractController {
             payment.setScid(scid);
         }
         List<Corporate> corporates = corporateMapper.selectByCondition(null);
-        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+        ProSupplycontractPayment finalPayment = payment;
+        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus()) || StringUtils.equals(finalPayment.getPayCorporate(), c.getCid())).collect(Collectors.toList());
         modelAndView.addObject("corporates", corporates);
         modelAndView.addObject("payment", payment);
         modelAndView.setViewName(templatePath+objNameSub+"Edit");
@@ -174,6 +176,8 @@ public class SupplyContractController {
         for (ProSupplycontract supplycontract1 : supplycontracts) {
             supplycontract1.setPartya(StringUtils.isNotBlank(supplycontract1.getPartya()) ? corp.get(supplycontract1.getPartya()) : null);
             supplycontract1.setPartyb(StringUtils.isNotBlank(supplycontract1.getPartyb()) ? supp.get(supplycontract1.getPartyb()) : null);
+            supplycontract1.setPayTotal(supplycontract1.getPayments().stream().map(ProSupplycontractPayment::getAmount).reduce(BigDecimal.ZERO,BigDecimal::add));
+            supplycontract1.setUnpayTotal(supplycontract1.getAmount().subtract(supplycontract1.getPayTotal()));
         }
 
         PageInfo<ProSupplycontract> resInfo = new PageInfo<>(supplycontracts);
@@ -405,6 +409,74 @@ public class SupplyContractController {
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);
+        }
+    }
+
+    /**
+     * 导出
+     */
+    @RequestMapping("/export")
+    public void doExport(ProSupplycontract supplycontract,  HttpServletResponse response, HttpServletRequest request) {
+        if (null != supplycontract && StringUtils.isNotBlank(supplycontract.getSignTime())) {
+            String[] times = supplycontract.getSignTime().split("~");
+            supplycontract.setSignTimeb(times[0].trim());
+            supplycontract.setSignTimee(times[1].trim());
+        }
+        if (null != supplycontract && StringUtils.isNotBlank(supplycontract.getDeliveryTime())) {
+            String[] times = supplycontract.getDeliveryTime().split("~");
+            supplycontract.setDeliveryTimeb(times[0].trim());
+            supplycontract.setDeliveryTimee(times[1].trim());
+        }
+        List<ProSupplycontract> supplycontracts = supplycontractMapper.selectByCondition(supplycontract);
+        // 全部主体信息
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部供应商信息
+        List<Supplier> suppliers = supplierMapper.selectByCondition(null);
+        Map<String, String> supp = suppliers.stream().collect(Collectors.toMap(Supplier::getSid, Supplier::getName));
+        // 翻译一下甲方乙方
+        for (ProSupplycontract supplycontract1 : supplycontracts) {
+            supplycontract1.setPartya(StringUtils.isNotBlank(supplycontract1.getPartya()) ? corp.get(supplycontract1.getPartya()) : null);
+            supplycontract1.setPartyb(StringUtils.isNotBlank(supplycontract1.getPartyb()) ? supp.get(supplycontract1.getPartyb()) : null);
+            supplycontract1.setPayTotal(supplycontract1.getPayments().stream().map(ProSupplycontractPayment::getAmount).reduce(BigDecimal.ZERO,BigDecimal::add));
+            supplycontract1.setUnpayTotal(supplycontract1.getAmount().subtract(supplycontract1.getPayTotal()));
+        }
+
+        List<List<Object>> datas = new ArrayList<>(); // 所有数据
+        List<Object> data = null; // 一条数据
+        String[] headers = {"日期", "工程名", "甲方", "乙方", "合同金额", "已支付", "未支付", "送货单"};
+        for (ProSupplycontract supplycontract1 : supplycontracts) {
+            data = new ArrayList<>();
+            data.add(supplycontract1.getSignDate());//
+            data.add(supplycontract1.getCname()); //
+            data.add(supplycontract1.getPartya()); //
+            data.add(supplycontract1.getPartyb()); //
+            data.add(supplycontract1.getAmount()); //
+            data.add(supplycontract1.getPayTotal()); //
+            data.add(supplycontract1.getUnpayTotal()); //
+            data.add(StringUtils.isNotBlank(supplycontract1.getDeliveryPath()) ? "有" : "无"); //
+            datas.add(data);
+        }
+
+        try {
+            String path = ExcelUtils.writeExcel(0,"供应合同信息", headers, datas);
+            response.addHeader("content-disposition", "attachment;filename="
+                    + java.net.URLEncoder.encode("供应合同信息.xls", "utf-8"));
+            OutputStream out = response.getOutputStream();
+            // inputStream：读文件，前提是这个文件必须存在，要不就会报错
+            InputStream is = new FileInputStream(path);
+            byte[] b = new byte[4096];
+            int size = is.read(b);
+            while (size > 0) {
+                out.write(b, 0, size);
+                size = is.read(b);
+            }
+            out.close();
+            is.close();
+            File file= new File(path);
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

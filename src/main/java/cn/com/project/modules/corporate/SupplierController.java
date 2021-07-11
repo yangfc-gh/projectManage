@@ -61,6 +61,7 @@ public class SupplierController {
     @RequestMapping("/list")
     public ModelAndView getList(Supplier supplier, ModelAndView modelAndView) {
         PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        supplier.setStatus("1"); // 只让查询到未删除的吧
         List<Supplier> suppliers = supplierMapper.selectByCondition(supplier);
         PageInfo<Supplier> resInfo = new PageInfo<Supplier>(suppliers);
         modelAndView.addObject("resInfo", resInfo);

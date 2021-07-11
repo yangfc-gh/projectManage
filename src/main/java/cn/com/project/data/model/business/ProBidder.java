@@ -21,7 +21,9 @@ public class ProBidder {
     private BigDecimal total;
 
     /**明细*/
-    private String detail;
+    private String annexName;
+
+    private String annexPath;
 
     /**备注*/
     private String remark;
@@ -62,14 +64,6 @@ public class ProBidder {
         this.total = total;
     }
 
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -100,5 +94,21 @@ public class ProBidder {
 
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;
+    }
+
+    public String getAnnexName() {
+        return annexName;
+    }
+
+    public void setAnnexName(String annexName) {
+        this.annexName = annexName;
+    }
+
+    public String getAnnexPath() {
+        return annexPath;
+    }
+
+    public void setAnnexPath(String annexPath) {
+        this.annexPath = annexPath;
     }
 }

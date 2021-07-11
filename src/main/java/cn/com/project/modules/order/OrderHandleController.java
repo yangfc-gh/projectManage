@@ -11,6 +11,7 @@ import cn.com.project.data.model.sys.SysUser;
 import cn.com.project.modules.order.service.EnquiryService;
 import cn.com.project.modules.order.service.OrderService;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 订单流程（生命周期）控制
@@ -54,6 +56,7 @@ public class OrderHandleController {
             modelAndView.addObject("message", "未找到相应订单");
         }
         List<Supplier> suppliers = supplierMapper.selectByCondition(null);
+        suppliers = suppliers.stream().filter(s -> "1".equals(s.getStatus())).collect(Collectors.toList());
         modelAndView.addObject("suppliers", suppliers);
         modelAndView.addObject("oid", oid);
         modelAndView.setViewName(templatePath+"enquiry");

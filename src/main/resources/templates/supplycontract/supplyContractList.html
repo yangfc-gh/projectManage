@@ -12,7 +12,10 @@
 			<td th:text="${supplycontract.cname?:''}"></td>
 			<td th:text="${supplycontract.partya}"></td>
 			<td th:text="${supplycontract.partyb}"></td>
-			<td th:text="${supplycontract.deliveryName}"></td>
+			<td th:text="${#strings.isEmpty(supplycontract.deliveryName) ? '无送货单' : '有送货单'}"></td>
+			<td th:text="${supplycontract.amount}"></td>
+			<td th:text="${supplycontract.payTotal}"></td>
+			<td th:text="${supplycontract.unpayTotal}"></td>
 			<td th:text="${#strings.equals(supplycontract.isPayoff, '0') ? '未结清' : '已结清'}"></td>
 			<td>
 				<button class="btn btn-minier btn-primary" th:onclick="showDetail(this, [[${supplycontract.scid}]])">查看</button>&nbsp;

@@ -6,13 +6,14 @@
     <result column="oid" jdbcType="VARCHAR" property="oid" />
     <result column="corporate_id" jdbcType="VARCHAR" property="corporateId" />
     <result column="total" jdbcType="DECIMAL" property="total" />
-    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="annex_name" jdbcType="VARCHAR" property="annexName" />
+    <result column="annex_path" jdbcType="VARCHAR" property="annexPath" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
   <sql id="Base_Column_List">
-    b.bid, b.oid, b.corporate_id, b.total, b.detail, b.remark, b.ctime
+    b.bid, b.oid, b.corporate_id, b.total, b.annex_name, b.annex_path,  b.remark, b.ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -25,6 +26,12 @@
     <include refid="Base_Column_List" />, c.`name` corporateName
     from pro_bidder b left join corporate c on b.corporate_id = c.cid
     where b.oid = #{oid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByAnnexId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pro_bidder b
+    where b.annex_path = #{annexId,jdbcType=VARCHAR}
   </select>
   <select id="selectByCondition" resultMap="BaseResultMap">
     select
@@ -45,9 +52,9 @@
   </delete>
   <insert id="insert" parameterType="cn.com.project.data.model.business.ProBidder">
     insert into pro_bidder (bid, oid, corporate_id, 
-      total, detail, remark)
+      total, annex_name, annex_path, remark)
     values (#{bid,jdbcType=VARCHAR}, #{oid,jdbcType=VARCHAR}, #{corporateId,jdbcType=VARCHAR}, 
-      #{total,jdbcType=DECIMAL}, #{detail,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+      #{total,jdbcType=DECIMAL}, #{annexName,jdbcType=VARCHAR}, #{annexPath,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProBidder">
     insert into pro_bidder
@@ -64,8 +71,11 @@
       <if test="total != null">
         total,
       </if>
-      <if test="detail != null">
-        detail,
+      <if test="annexName != null">
+        annex_name,
+      </if>
+      <if test="annexPath != null">
+        annex_path,
       </if>
       <if test="remark != null">
         remark,
@@ -84,8 +94,11 @@
       <if test="total != null">
         #{total,jdbcType=DECIMAL},
       </if>
-      <if test="detail != null">
-        #{detail,jdbcType=VARCHAR},
+      <if test="annexName != null">
+        #{annexName,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPath != null">
+        #{annexPath,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -104,6 +117,12 @@
       <if test="detail != null">
         detail = #{detail,jdbcType=VARCHAR},
       </if>
+      <if test="annexName != null">
+        annex_name = #{annexName,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPath != null">
+        annex_path = #{annexPath,jdbcType=VARCHAR},
+      </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
@@ -114,7 +133,8 @@
     update pro_bidder
     set corporate_id = #{corporateId,jdbcType=VARCHAR},
       total = #{total,jdbcType=DECIMAL},
-      detail = #{detail,jdbcType=VARCHAR},
+        annex_name = #{annexName,jdbcType=VARCHAR},
+        annex_path = #{annexPath,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR}
     where bid = #{bid,jdbcType=VARCHAR}
   </update>

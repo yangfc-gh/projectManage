@@ -89,18 +89,29 @@ public class OrderController {
     @RequestMapping("/toEdit")
     public ModelAndView toEdit(ModelAndView modelAndView, HttpServletRequest request) {
         String oid = request.getParameter("oid");
+
+        SysDicts dicts = new SysDicts();
+        dicts.setPcode("D_QUYU");
+        List<SysDicts> quyu = sysDictsMapper.selectByCondition(dicts);
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        List<Customer> customers = customerMapper.selectByCondition(null);
         if (StringUtils.isNotBlank(oid)) {
             ProOrder order = proOrderMapper.selectByPrimaryKey(oid);
-            modelAndView.addObject("orderInfo", order);
+            if (null != order) {
+                // 过滤一下，去除已删除的，但要保留当前实体信息里包含
+                corporates = corporates.stream().filter(c -> "1".equals(c.getStatus()) || order.getBidderZ().equals(c.getCid())).collect(Collectors.toList());
+                customers = customers.stream().filter(c -> "1".equals(c.getStatus()) || order.getCustomerId().equals(c.getCid())).collect(Collectors.toList());
+                quyu = quyu.stream().filter(d -> 1 == d.getState() || order.getArea().equals(d.getDcode())).collect(Collectors.toList());
+                modelAndView.addObject("orderInfo", order);
+            }
+        } else {
+            // 过滤一下，去除已删除的
+            corporates = corporates.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+            customers = customers.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+            quyu = quyu.stream().filter(d -> 1 == d.getState()).collect(Collectors.toList());
         }
-        SysDicts dicts = new SysDicts();
-        dicts.setState((byte)1);
-        List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(dicts);
-        List<SysDicts> quyu = sysDictsList.stream().filter(d -> "D_QUYU".equals(d.getPcode())).collect(Collectors.toList());
         modelAndView.addObject("dict_quyu", quyu);
-        List<Corporate> corporates = corporateMapper.selectByCondition(null);
         modelAndView.addObject("corporates", corporates);
-        List<Customer> customers = customerMapper.selectByCondition(null);
         modelAndView.addObject("customers", customers);
         modelAndView.setViewName(templatePath+"orderEdit");
         return modelAndView;

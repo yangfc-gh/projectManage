@@ -93,6 +93,9 @@ public class ProContract {
     private String nextDate;
     private String process;
 
+    private BigDecimal received; // 已收款
+    private BigDecimal unReceive; // 未收
+
     private List<ProContractPayment> payments;
     private List<ProContractExpend> expends;
     private List<ProSupplycontract> supplycontracts;
@@ -407,5 +410,21 @@ public class ProContract {
 
     public void setProfit(BigDecimal profit) {
         this.profit = profit;
+    }
+
+    public BigDecimal getReceived() {
+        return received;
+    }
+
+    public void setReceived(BigDecimal received) {
+        this.received = received;
+    }
+
+    public BigDecimal getUnReceive() {
+        return unReceive;
+    }
+
+    public void setUnReceive(BigDecimal unReceive) {
+        this.unReceive = unReceive;
     }
 }

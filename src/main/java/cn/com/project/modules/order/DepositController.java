@@ -5,8 +5,10 @@ import cn.com.project.common.ResponseResult;
 import cn.com.project.common.SysLogComponent;
 import cn.com.project.data.dao.business.ProDepositMapper;
 import cn.com.project.data.dao.obj.CorporateMapper;
+import cn.com.project.data.dao.obj.CustomerMapper;
 import cn.com.project.data.model.business.ProDeposit;
 import cn.com.project.data.model.obj.Corporate;
+import cn.com.project.data.model.obj.Customer;
 import cn.com.project.data.model.obj.Supplier;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 投标保证金
@@ -38,6 +41,8 @@ public class DepositController {
     ProDepositMapper depositMapper;
     @Autowired
     CorporateMapper corporateMapper;
+    @Autowired
+    CustomerMapper customerMapper;
     @Autowired
     SysLogComponent sysLogComponent;
 
@@ -66,8 +71,13 @@ public class DepositController {
             deposit.setOid(oid);
         }
         List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        ProDeposit finalDeposit = deposit;
+        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus()) || StringUtils.equals(finalDeposit.getProvider(), c.getCid()) || StringUtils.equals(finalDeposit.getPayer(), c.getCid())).collect(Collectors.toList());
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        customers = customers.stream().filter(c -> "1".equals(c.getStatus()) || StringUtils.equals(finalDeposit.getReceiver(), c.getCid())).collect(Collectors.toList());
         modelAndView.addObject("deposit", deposit);
         modelAndView.addObject("corporates", corporates);
+        modelAndView.addObject("customers", customers);
         modelAndView.setViewName(templatePath+"depositEdit");
         return modelAndView;
     }

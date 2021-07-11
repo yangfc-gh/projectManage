@@ -79,6 +79,7 @@ public class CorporateController {
     @RequestMapping("/list")
     public ModelAndView getList(Corporate corporate, ModelAndView modelAndView) {
         PageHelper.startPage(Integer.valueOf(1), 500);//不分页，一页默认最多展示500条，在这使用分页的目的是获取总行数
+        corporate.setStatus("1"); // 只让查询到未删除的吧
         List<Corporate> corporates = corporateMapper.selectByCondition(corporate);
         PageInfo<Corporate> resInfo = new PageInfo<Corporate>(corporates);
         List<SysDicts> sysDictsList = sysDictsMapper.selectByCondition(null);

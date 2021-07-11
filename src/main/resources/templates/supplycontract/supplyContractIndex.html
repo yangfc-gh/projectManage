@@ -68,7 +68,7 @@
 						<div class="form-group col-xs-12 col-sm-12 text-right">
 							<!-- <button type="button" class="btn btn-success btn-sm" onclick="toEdit(null, '')">新增</button> -->
 							<button type="button" class="btn btn-sm btn-primary" onclick="doQuery()">查&nbsp;询</button>
-							<!-- <button type="button" class="btn btn-sm btn-grey" onclick="doExport()">导&nbsp;出</button> -->
+							<button type="button" class="btn btn-sm btn-grey" onclick="doExport()">导&nbsp;出</button>
 						</div>
 					</form>
 					<div class="pull-left" id="totalDiv"></div>
@@ -81,6 +81,9 @@
 								<th>甲方</th>
 								<th>乙方</th>
 								<th>送货单</th>
+								<th>总金额</th>
+								<th>已支付</th>
+								<th>未付</th>
 								<th>是否结清</th>
 								<th></th>
 							</tr>
@@ -148,7 +151,36 @@
 				if ($('#totalRows').val()) {
 					$('#totalDiv').text('共 '+ $('#totalRows').val() + ' 条')
 				}
+				calcTotal()
 			})
+		}
+		/** 计算合计  */
+		function calcTotal(){
+			var amountTotal = 0
+			var pay = 0
+			var unpay = 0
+			$.each($('#mainTBody tr'),function(idx,itm){
+				var vvv = Number($(this).find('td').eq(6).html())
+				if(vvv != NaN){
+					amountTotal += vvv
+				}
+				vvv = Number($(this).find('td').eq(7).html());
+				if(vvv != NaN){
+					pay += vvv
+				}
+				vvv = Number($(this).find('td').eq(8).html());
+				if(vvv != NaN){
+					unpay += vvv
+				}
+			})
+			if(amountTotal != 0 || pay != 0 || unpay != 0){
+				var appendHtml = "<tr style='font-weight:bold'><td colspan='6' align='center'>合计</td>"
+				appendHtml += "<td>"+amountTotal.toFixed(2)+"</td>"
+				appendHtml += "<td>"+pay.toFixed(2)+"</td>"
+				appendHtml += "<td>"+unpay.toFixed(2)+"</td>"
+				appendHtml += "<td colspan='2'>&nbsp;</td>"
+				$('#mainTBody').append(appendHtml)
+			}
 		}
 		function toDel(obj, oid) {
 			if (obj) {

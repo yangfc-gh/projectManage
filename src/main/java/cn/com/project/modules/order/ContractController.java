@@ -1,9 +1,6 @@
 package cn.com.project.modules.order;
 
-import cn.com.project.common.CommonUtils;
-import cn.com.project.common.FileHelper;
-import cn.com.project.common.ResponseResult;
-import cn.com.project.common.SysLogComponent;
+import cn.com.project.common.*;
 import cn.com.project.data.dao.business.ProContractMapper;
 import cn.com.project.data.dao.business.ProContractPaymentMapper;
 import cn.com.project.data.dao.business.ProOrderMapper;
@@ -36,10 +33,12 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,16 +98,20 @@ public class ContractController {
     public ModelAndView toEdit(ModelAndView modelAndView, HttpServletRequest request) {
         String oid = request.getParameter("oid");
         ProContract contract = contractMapper.selectByOid(oid);
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        List<Customer> customers = customerMapper.selectByCondition(null);
         if (null == contract) {
             contract = new ProContract();
             contract.setOid(oid);
+            customers = customers.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+            corporates = corporates.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
+        } else {
+            ProContract finalContract = contract;
+            customers = customers.stream().filter(c -> "1".equals(c.getStatus()) || StringUtils.equals(finalContract.getPartya(), c.getCid()) || StringUtils.equals(finalContract.getPartyu(), c.getCid())).collect(Collectors.toList());
+            corporates = corporates.stream().filter(c -> "1".equals(c.getStatus()) || StringUtils.equals(finalContract.getPartyb(), c.getCid()) || StringUtils.equals(finalContract.getPartyz(), c.getCid())).collect(Collectors.toList());
         }
         modelAndView.addObject("contract", contract);
-        List<Corporate> corporates = corporateMapper.selectByCondition(null);
-        corporates = corporates.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
         modelAndView.addObject("corporates", corporates);
-        List<Customer> customers = customerMapper.selectByCondition(null);
-        customers = customers.stream().filter(c -> "1".equals(c.getStatus())).collect(Collectors.toList());
         modelAndView.addObject("customers", customers);
         modelAndView.setViewName(templatePath+objName+"Edit");
         return modelAndView;
@@ -168,10 +171,12 @@ public class ContractController {
         for (ProContract proContract : contracts) {
             proContract.setPartya(StringUtils.isNotBlank(proContract.getPartya()) ? cust.get(proContract.getPartya()) : null);
             proContract.setPartyb(StringUtils.isNotBlank(proContract.getPartyb()) ? corp.get(proContract.getPartyb()) : null);
+            proContract.setPartyz(StringUtils.isNotBlank(proContract.getPartyz()) ? corp.get(proContract.getPartyz()) : null);
             if (CollectionUtils.isNotEmpty(proContract.getPayments())) {
                 long total = proContract.getPayments().size();
                 long process = proContract.getPayments().stream().filter(p -> null != p.getPayAmount() && StringUtils.isNotBlank(p.getPayDate())).count();
                 proContract.setProcess(process+"/"+total); //进度
+                // 按顺序查询款项信息，查找到下一个未支付的款项
                 for (ProContractPayment payment : proContract.getPayments()) {
                     if (null == payment.getPayAmount() && StringUtils.isBlank(payment.getPayDate())) {
                         proContract.setNextStep(payment.getPayName());
@@ -179,6 +184,9 @@ public class ContractController {
                         break;
                     }
                 }
+                // 计算已支付和未支付
+                proContract.setReceived(proContract.getPayments().stream().filter(p -> null != p.getPayAmount() && StringUtils.isNotBlank(p.getPayDate())).map(ProContractPayment::getPayAmount).reduce(BigDecimal.ZERO,BigDecimal::add));
+                proContract.setUnReceive(proContract.getAmount().subtract(proContract.getReceived()));
             } else {
                 proContract.setProcess("0/0"); //进度
             }
@@ -470,6 +478,103 @@ public class ContractController {
             return new ResponseResult(true);
         } else {
             return new ResponseResult(false);
+        }
+    }
+
+    /**
+     * 导出
+     */
+    @RequestMapping("/export")
+    public void doExport(ProContract contract, HttpServletResponse response, HttpServletRequest request) {
+        if (null != contract && StringUtils.isNotBlank(contract.getSignTime())) {
+            String[] times = contract.getSignTime().split("~");
+            contract.setSignTimeb(times[0].trim());
+            contract.setSignTimee(times[1].trim());
+        }
+        if (null != contract && StringUtils.isNotBlank(contract.getDeliveryTime())) {
+            String[] times = contract.getDeliveryTime().split("~");
+            contract.setDeliveryTimeb(times[0].trim());
+            contract.setDeliveryTimee(times[1].trim());
+        }
+        if (null != contract && StringUtils.isNotBlank(contract.getExpectedTime())) {
+            String[] times = contract.getExpectedTime().split("~");
+            contract.setExpectedTimeb(times[0].trim());
+            contract.setExpectedTimee(times[1].trim());
+        }
+        List<ProContract> contracts = contractMapper.selectByCondition(contract);
+        // 全部主体信息
+        List<Corporate> corporates = corporateMapper.selectByCondition(null);
+        Map<String, String> corp = corporates.stream().collect(Collectors.toMap(Corporate::getCid, Corporate::getName));
+        // 全部客户信息
+        List<Customer> customers = customerMapper.selectByCondition(null);
+        Map<String, String> cust = customers.stream().collect(Collectors.toMap(Customer::getCid, Customer::getName));
+        // 翻译一下甲方乙方
+        for (ProContract proContract : contracts) {
+            proContract.setPartya(StringUtils.isNotBlank(proContract.getPartya()) ? cust.get(proContract.getPartya()) : null);
+            proContract.setPartyb(StringUtils.isNotBlank(proContract.getPartyb()) ? corp.get(proContract.getPartyb()) : null);
+            proContract.setPartyu(StringUtils.isNotBlank(proContract.getPartyu()) ? cust.get(proContract.getPartyu()) : null);
+            proContract.setPartyz(StringUtils.isNotBlank(proContract.getPartyz()) ? corp.get(proContract.getPartyz()) : null);
+            if (CollectionUtils.isNotEmpty(proContract.getPayments())) {
+                long total = proContract.getPayments().size();
+                long process = proContract.getPayments().stream().filter(p -> null != p.getPayAmount() && StringUtils.isNotBlank(p.getPayDate())).count();
+                proContract.setProcess(process+"/"+total); //进度
+                // 按顺序查询款项信息，查找到下一个未支付的款项
+                for (ProContractPayment payment : proContract.getPayments()) {
+                    if (null == payment.getPayAmount() && StringUtils.isBlank(payment.getPayDate())) {
+                        proContract.setNextStep(payment.getPayName());
+                        proContract.setNextDate(payment.getExpectedDate());
+                        break;
+                    }
+                }
+                // 计算已支付和未支付
+                proContract.setReceived(proContract.getPayments().stream().filter(p -> null != p.getPayAmount() && StringUtils.isNotBlank(p.getPayDate())).map(ProContractPayment::getPayAmount).reduce(BigDecimal.ZERO,BigDecimal::add));
+                proContract.setUnReceive(proContract.getAmount().subtract(proContract.getReceived()));
+            } else {
+                proContract.setProcess("0/0"); //进度
+            }
+        }
+
+        List<List<Object>> datas = new ArrayList<>(); // 所有数据
+        List<Object> data = null; // 一条数据
+        String[] headers = {"日期", "合同名", "工程名", "甲方", "乙方", "使用方", "执行方", "开票金额", "合同金额", "已收", "未收", "收款进度", "下一款项", "应回日期"};
+        for (ProContract contract1 : contracts) {
+            data = new ArrayList<>();
+            data.add(contract1.getSignDate());//
+            data.add(contract1.getCname()); //
+            data.add(contract1.getPname()); //
+            data.add(contract1.getPartya()); //
+            data.add(contract1.getPartyb()); //
+            data.add(contract1.getPartyu()); //
+            data.add(contract1.getPartyz()); //
+            data.add(contract1.getInvoiceAmount()); //
+            data.add(contract1.getAmount()); //
+            data.add(contract1.getReceived()); //
+            data.add(contract1.getUnReceive()); //
+            data.add(contract1.getProcess()); //
+            data.add(contract1.getNextStep());
+            data.add(contract1.getNextDate());
+            datas.add(data);
+        }
+
+        try {
+            String path = ExcelUtils.writeExcel(0,"项目合同信息", headers, datas);
+            response.addHeader("content-disposition", "attachment;filename="
+                    + java.net.URLEncoder.encode("项目合同信息.xls", "utf-8"));
+            OutputStream out = response.getOutputStream();
+            // inputStream：读文件，前提是这个文件必须存在，要不就会报错
+            InputStream is = new FileInputStream(path);
+            byte[] b = new byte[4096];
+            int size = is.read(b);
+            while (size > 0) {
+                out.write(b, 0, size);
+                size = is.read(b);
+            }
+            out.close();
+            is.close();
+            File file= new File(path);
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
