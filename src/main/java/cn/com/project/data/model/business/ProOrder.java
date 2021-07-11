@@ -48,6 +48,9 @@ public class ProOrder {
     /**登记人*/
     private String creater;
 
+    /** 是否是已完工，无合同 */
+    private String supplement;
+
     private Date ctime;
 
     private Date utime;
@@ -278,5 +281,13 @@ public class ProOrder {
 
     public void setSupplycontracts(List<ProSupplycontract> supplycontracts) {
         this.supplycontracts = supplycontracts;
+    }
+
+    public String getSupplement() {
+        return supplement;
+    }
+
+    public void setSupplement(String supplement) {
+        this.supplement = supplement;
     }
 }

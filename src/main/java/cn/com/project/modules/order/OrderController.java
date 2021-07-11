@@ -211,6 +211,7 @@ public class OrderController {
         if (null == order || StringUtils.isBlank(order.getArea())) {
             return new ResponseResult(false, "关键信息为空");
         }
+        order.setSupplement("on".equals(order.getSupplement()) ? "1" : "0");
         SysUser user = (SysUser)request.getSession().getAttribute("userInfo");
         if(StringUtils.isBlank(order.getOid())) {
             order.setOid(CommonUtils.createUUID());

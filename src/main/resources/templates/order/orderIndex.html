@@ -61,6 +61,15 @@
 								</select>
 							</div>
 						</div>
+						<div class="form-group col-xs-4 col-sm-4">
+							<label class="col-sm-3 control-label no-padding-right" for="status"></label>
+							<div class="col-sm-8">
+								<label class="middle" title="">
+									<input onchange="doQuery()" value="1" name="supplement" id="supplement" class="ace ace-checkbox-2" type="checkbox" />
+									<span class="lbl">先完工，后补合同</span>
+								</label>
+							</div>
+						</div>
 						<div class="form-group col-xs-12 col-sm-12 text-right">
 							<button type="button" class="btn btn-sm btn-primary" onclick="doQuery()">查&nbsp;询</button>
 							<button type="button" class="btn btn-success btn-sm" onclick="toEdit(null, '')">新增</button>
@@ -78,6 +87,7 @@
 								<th>客户</th>
 								<th>来源</th>
 								<th>当前进度</th>
+								<th>完工无合同</th>
 								<th>备注</th>
 								<th width="150px"></th>
 							</tr>

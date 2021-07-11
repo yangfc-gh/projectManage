@@ -14,6 +14,7 @@
     <result column="bid_amount" jdbcType="DECIMAL" property="bidAmount" />
     <result column="bid_detail" jdbcType="VARCHAR" property="bidDetail" />
     <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="supplement" jdbcType="VARCHAR" property="supplement" />
     <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
     <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
@@ -27,7 +28,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     oid, ono, customer_id, area, project_name, source, `status`, remark, bidder_z, bid_amount,
-    bid_detail, creater, ctime
+    bid_detail, creater, supplement, ctime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -55,6 +56,9 @@
       <if test="otimee != null and ''.toString() != otimee">
         and o.ctime &lt;= concat(#{otimee,jdbcType=VARCHAR}, ' 23:59:59')
       </if>
+      <if test="supplement != null and ''.toString() != supplement">
+        and o.supplement = #{supplement,jdbcType=VARCHAR}
+      </if>
       <if test="status != null and ''.toString() != status">
         and o.`status` = #{status,jdbcType=VARCHAR}
       </if>
@@ -75,11 +79,11 @@
     insert into pro_order (oid, ono, customer_id, 
       area, project_name, source,
       remark, bidder_z, bid_amount, 
-      bid_detail, creater)
+      bid_detail, creater, supplement)
     values (#{oid,jdbcType=VARCHAR}, #{ono,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, 
       #{area,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR},
       #{remark,jdbcType=VARCHAR}, #{bidderZ,jdbcType=VARCHAR}, #{bidAmount,jdbcType=DECIMAL}, 
-      #{bidDetail,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR})
+      #{bidDetail,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{supplement,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.com.project.data.model.business.ProOrder">
     insert into pro_order
@@ -117,6 +121,9 @@
       <if test="creater != null">
         creater,
       </if>
+      <if test="supplement != null">
+        supplement,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="oid != null">
@@ -151,6 +158,9 @@
       </if>
       <if test="creater != null">
         #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="supplement != null">
+        #{supplement,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -190,6 +200,9 @@
       <if test="creater != null">
         creater = #{creater,jdbcType=VARCHAR},
       </if>
+      <if test="supplement != null">
+        supplement = #{supplement,jdbcType=VARCHAR},
+      </if>
     </set>
     where oid = #{oid,jdbcType=VARCHAR}
   </update>
@@ -202,7 +215,8 @@
       remark = #{remark,jdbcType=VARCHAR},
       bidder_z = #{bidderZ,jdbcType=VARCHAR},
       bid_amount = #{bidAmount,jdbcType=DECIMAL},
-      bid_detail = #{bidDetail,jdbcType=VARCHAR}
+      bid_detail = #{bidDetail,jdbcType=VARCHAR},
+        supplement = #{supplement,jdbcType=VARCHAR}
     where oid = #{oid,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -51,7 +51,14 @@
 								 autocomplete="off" maxlength="50" />
 							</div>
 						</div>
-						<div class="divider"></div>
+						<hr class="simple" color="#6f5499" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="isBack">补合同:</label>
+							<div class="col-sm-8">
+								<input id="supplement" name="supplement" th:checked="${#strings.isEmpty(orderInfo?.supplement) ? 'false' : 'checked'}" class="ace ace-checkbox-2" type="checkbox" />
+								<span class="lbl"> 已完工，待补充合同</span>
+							</div>
+						</div>
 						<hr class="simple" color="#6f5499" />
 						<div class="form-group layui-form-item">
 							<label class="col-sm-3 control-label no-padding-right" for="bidderZ">中标方:</label>

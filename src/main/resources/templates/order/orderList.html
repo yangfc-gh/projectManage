@@ -14,6 +14,7 @@
 			<td th:text="${order.customerText}"></td>
 			<td th:text="${order.source}"></td>
 			<td th:text="${order.statusText}"></td>
+			<td th:text="${#strings.equals('1', order.supplement) ? '先完工' : '正常'}"></td>
 			<td th:text="${order.remark}"></td>
 			<td>
 				<button class="btn btn-minier btn-purple" th:onclick="showDetail(this, [[${order.oid}]])">查看</button>
