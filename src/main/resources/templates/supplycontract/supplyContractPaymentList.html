@@ -17,7 +17,7 @@
 			<td th:text="${payment.remark}"></td>
 			<td>
 				<button th:onclick="toSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-primary btn-mini">修改</button>
-				<button th:onclick="delSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
+				<button th:if="${#arrays.contains(#session.getAttribute('userInfo').roleids, 'ee0d5d80c2304db1870d9d8e1d01e671')}" th:onclick="delSupplycontractPayment([[${payment.scid}]], [[${payment.pid}]])" class="btn btn-danger btn-white btn-mini">删除</button>
 			</td>
 		</tr>
 	</body>

@@ -23,7 +23,7 @@
 			<td th:text="${contract.nextDate}"></td>
 			<td>
 				<button class="btn btn-minier btn-primary" th:onclick="showDetail(this, [[${contract.cid}]])">查看</button>&nbsp;
-				<button class="btn btn-minier btn-light" th:onclick="del([[${contract.cid}]])">删除</button>&nbsp;
+				<button th:if="${#arrays.contains(#session.getAttribute('userInfo').roleids, 'ee0d5d80c2304db1870d9d8e1d01e671')}" class="btn btn-minier btn-light" th:onclick="del([[${contract.cid}]])">删除</button>&nbsp;
 			</td>
 		</tr>
 	</body>

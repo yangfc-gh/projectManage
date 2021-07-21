@@ -14,7 +14,7 @@
 			<td th:text="${customer.remark}"></td>
 			<td>
 				<button class="btn btn-minier btn-yellow" th:onclick="toEdit(this, [[${customer.cid}]])">编辑</button>&nbsp;
-				<button class="btn btn-minier btn-light" th:onclick="delPlace([[${customer.cid}]])">删除</button>&nbsp;
+				<button th:if="${#arrays.contains(#session.getAttribute('userInfo').roleids, 'ee0d5d80c2304db1870d9d8e1d01e671')}" class="btn btn-minier btn-light" th:onclick="delPlace([[${customer.cid}]])">删除</button>&nbsp;
 			</td>
 		</tr>
 	</body>

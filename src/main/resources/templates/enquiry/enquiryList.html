@@ -11,7 +11,7 @@
 			<td th:text="${enquiry.total}"></td>
 			<td>
 				<button th:onclick="showEnquiryDetail([[${enquiry.eid}]])" class="btn btn-info btn-mini">明细</button>
-				<button th:onclick="delEnquiry([[${enquiry.oid}]], [[${enquiry.eid}]])" class="btn btn-white btn-danger btn-mini">删除</button>
+				<button th:if="${#arrays.contains(#session.getAttribute('userInfo').roleids, 'ee0d5d80c2304db1870d9d8e1d01e671')}" th:onclick="delEnquiry([[${enquiry.oid}]], [[${enquiry.eid}]])" class="btn btn-white btn-danger btn-mini">删除</button>
 			</td>
 		</tr>
 	</body>
