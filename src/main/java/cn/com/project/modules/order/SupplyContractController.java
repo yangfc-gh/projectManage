@@ -23,10 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -274,6 +271,26 @@ public class SupplyContractController {
                 return new ResponseResult(false);
             }
             sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改供应合同", JSONObject.toJSONString(supplycontract), "ProSupplycontract", request);
+        }
+        return new ResponseResult(true, "操作成功");
+    }
+
+    /**
+     * （管理员）删除一个信息
+     * @param scid
+     */
+    @PostMapping("/del/{scid}")
+    @ResponseBody
+    public ResponseResult doDel(@PathVariable("scid") String scid, HttpServletRequest request) {
+        ProSupplycontract proSupplycontract = supplycontractMapper.selectDetail(scid);
+        if (null == proSupplycontract) {
+            return new ResponseResult(false, "未找到该供应合同");
+        }
+        int res = supplycontractMapper.deleteByPrimaryKey(scid);
+        if (res > 0) {
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除供应合同", JSONObject.toJSONString(proSupplycontract), "ProSupplycontract", request);
+        } else {
+            return new ResponseResult(true, "删除（操作数据）失败");
         }
         return new ResponseResult(true, "操作成功");
     }

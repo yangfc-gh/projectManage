@@ -22,10 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -343,6 +340,26 @@ public class ContractController {
                 return new ResponseResult(false);
             }
             sysLogComponent.writeLog(SysLogComponent.OPT_UPD, "修改合同", JSONObject.toJSONString(contract), "ProContract", request);
+        }
+        return new ResponseResult(true, "操作成功");
+    }
+
+    /**
+     * （管理员）删除一个信息
+     * @param cid
+     */
+    @PostMapping("/del/{cid}")
+    @ResponseBody
+    public ResponseResult doDel(@PathVariable("cid") String cid, HttpServletRequest request) {
+        ProContract proContract = contractMapper.selectDetail(cid);
+        if (null == proContract) {
+            return new ResponseResult(false, "未找到该合同");
+        }
+        int res = contractMapper.deleteByPrimaryKey(cid);
+        if (res > 0) {
+            sysLogComponent.writeLog(SysLogComponent.OPT_DEL, "删除合同", JSONObject.toJSONString(proContract), "ProContract", request);
+        } else {
+            return new ResponseResult(true, "删除（操作数据）失败");
         }
         return new ResponseResult(true, "操作成功");
     }

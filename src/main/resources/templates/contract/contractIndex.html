@@ -221,14 +221,14 @@
 				$('#mainTBody').append(appendHtml)
 			}
 		}
-		function toDel(obj, oid) {
+		function toDel(obj, cid) {
 			if (obj) {
 				obj.blur() // 一个小bug，就是虽然有遮罩层，但敲空格会再次点击按钮
 			}
 			layer.confirm('确定删除此条订单？', {
 				btn: ['确定', '取消'] //按钮
 			}, function() {
-				postRequest($('#contextDiv').html() + '/contract/del/' + oid, {}, function(data) {
+				postRequest($('#contextDiv').html() + '/contract/del/' + cid, {}, function(data) {
 					if (data.result) {
 						layer.msg('操作成功')
 						doQuery()
